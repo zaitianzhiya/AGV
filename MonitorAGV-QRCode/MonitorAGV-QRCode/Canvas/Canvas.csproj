@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EEB3EDD5-F8E8-470B-BED3-415C2BAA0033}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Canvas</RootNamespace>
+    <AssemblyName>Canvas</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CanvasCtrl\CanvasCtrller.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CanvasCtrl\CanvasWrapper.cs" />
+    <Compile Include="CanvasCtrl\eCommandType.cs" />
+    <Compile Include="CanvasInterfaces\eDrawObjectMouseDownEnum.cs" />
+    <Compile Include="CanvasInterfaces\ICanvas.cs" />
+    <Compile Include="CanvasInterfaces\ICanvasLayer.cs" />
+    <Compile Include="CanvasInterfaces\ICanvasOwner.cs" />
+    <Compile Include="CanvasInterfaces\IDrawObject.cs" />
+    <Compile Include="CanvasInterfaces\IEditTool.cs" />
+    <Compile Include="CanvasInterfaces\IEditToolOwner.cs" />
+    <Compile Include="CanvasInterfaces\IModel.cs" />
+    <Compile Include="CanvasInterfaces\INodePoint.cs" />
+    <Compile Include="CanvasInterfaces\IObjectEditInstance.cs" />
+    <Compile Include="CanvasInterfaces\ISnapPoint.cs" />
+    <Compile Include="CursorCollection.cs" />
+    <Compile Include="DataModel.cs" />
+    <Compile Include="drawingMode.cs" />
+    <Compile Include="DrawToolsImages16x16.cs" />
+    <Compile Include="DrawTools\AGVTool.cs" />
+    <Compile Include="DrawTools\BezierTool.cs" />
+    <Compile Include="DrawTools\BezierType.cs" />
+    <Compile Include="DrawTools\ButtonTool.cs" />
+    <Compile Include="DrawTools\CenterSnapPoint.cs" />
+    <Compile Include="DrawTools\DivisionSnapPoint.cs" />
+    <Compile Include="DrawTools\DrawObjectBase.cs" />
+    <Compile Include="DrawTools\GridSnapPoint.cs" />
+    <Compile Include="DrawTools\ImgeTool.cs" />
+    <Compile Include="DrawTools\IntersectSnapPoint.cs" />
+    <Compile Include="DrawTools\LandMarkTool.cs" />
+    <Compile Include="DrawTools\LineEdit.cs" />
+    <Compile Include="DrawTools\LineTool.cs" />
+    <Compile Include="DrawTools\LineType.cs" />
+    <Compile Include="DrawTools\MidpointSnapPoint.cs" />
+    <Compile Include="DrawTools\NearestSnapPoint.cs" />
+    <Compile Include="DrawTools\NodePointLine.cs" />
+    <Compile Include="DrawTools\PerpendicularSnapPoint.cs" />
+    <Compile Include="DrawTools\QuadrantSnapPoint.cs" />
+    <Compile Include="DrawTools\SnapPointBase.cs" />
+    <Compile Include="DrawTools\StorageTool.cs" />
+    <Compile Include="DrawTools\TangentSnapPoint.cs" />
+    <Compile Include="DrawTools\TextTool.cs" />
+    <Compile Include="DrawTools\VertextSnapPoint.cs" />
+    <Compile Include="EditCommandAdd.cs" />
+    <Compile Include="EditCommandBase.cs" />
+    <Compile Include="EditCommandEditTool.cs" />
+    <Compile Include="EditCommandMove.cs" />
+    <Compile Include="EditCommandNodeMove.cs" />
+    <Compile Include="EditCommandRemove.cs" />
+    <Compile Include="EditToolsImages16x16.cs" />
+    <Compile Include="EditTools\LinePoints.cs" />
+    <Compile Include="EditTools\LineShrinkExtendEditTool.cs" />
+    <Compile Include="EditTools\LinesMeetEditTool.cs" />
+    <Compile Include="GDI.cs" />
+    <Compile Include="HitUtil.cs" />
+    <Compile Include="ImagesUtil.cs" />
+    <Compile Include="ISerialize.cs" />
+    <Compile Include="Layers\BackgroundLayer.cs" />
+    <Compile Include="Layers\DrawingLayer.cs" />
+    <Compile Include="Layers\GridLayer.cs" />
+    <Compile Include="MenuImages16x16.cs" />
+    <Compile Include="MoveHelper.cs" />
+    <Compile Include="NodeMoveHelper.cs" />
+    <Compile Include="PenStyles.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyUtil.cs" />
+    <Compile Include="ScreenUtils.cs" />
+    <Compile Include="SelectionRectangle.cs" />
+    <Compile Include="SerializeUtil.cs" />
+    <Compile Include="UndoRedoBuffer.cs" />
+    <Compile Include="UnitPoint.cs" />
+    <Compile Include="Utiles.cs" />
+    <Compile Include="Utils\DrawUtils.cs" />
+    <Compile Include="XmlSerializable.cs" />
+    <Compile Include="XmlUtil.cs" />
+    <Compile Include="XorGdi.cs" />
+    <EmbeddedResource Include="CanvasCtrl\CanvasCtrller.resx">
+      <DependentUpon>CanvasCtrller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\drawtoolimages.bmp" />
+    <Content Include="Resources\edittoolimages.bmp" />
+    <Content Include="Resources\menuimages.bmp" />
+    <EmbeddedResource Include="Resources\hmove.cur" />
+    <Content Include="Image\timg.bmp" />
+    <Content Include="Image\_default.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonTools\CommonTools.csproj">
+      <Project>{2e8ea867-2be9-4138-974b-a44eadbc522a}</Project>
+      <Name>CommonTools</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
