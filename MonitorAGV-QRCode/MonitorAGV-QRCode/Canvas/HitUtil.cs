@@ -475,9 +475,8 @@ namespace Canvas
 			double y4 = lp3.Y;
 			double y5 = lp4.Y;
 			double num = (y5 - y4) * (x3 - x2) - (x5 - x4) * (y3 - y2);
-			bool flag = num == 0.0;
 			bool result;
-			if (flag)
+            if (num == 0.0)
 			{
 				result = false;
 			}
@@ -487,28 +486,23 @@ namespace Canvas
 				double num3 = (x3 - x2) * (y2 - y4) - (y3 - y2) * (x2 - x4);
 				double num4 = num2 / num;
 				double num5 = num3 / num;
-				bool flag2 = !extendA;
-				if (flag2)
+				if (!extendA)
 				{
-					bool flag3 = num4 < 0.0 || num4 > 1.0;
-					if (flag3)
+					if (num4 < 0.0 || num4 > 1.0)
 					{
 						result = false;
 						return result;
 					}
 				}
-				bool flag4 = !extendB;
-				if (flag4)
+				if (!extendB)
 				{
-					bool flag5 = num5 < 0.0 || num5 > 1.0;
-					if (flag5)
+					if (num5 < 0.0 || num5 > 1.0)
 					{
 						result = false;
 						return result;
 					}
 				}
-				bool flag6 = extendA | extendB;
-				if (flag6)
+				if (extendA | extendB)
 				{
 					x = x2 + num4 * (x3 - x2);
 					y = y2 + num4 * (y3 - y2);
@@ -516,8 +510,7 @@ namespace Canvas
 				}
 				else
 				{
-					bool flag7 = num4 >= 0.0 && num4 <= 1.0 && num5 >= 0.0 && num5 <= 1.0;
-					if (flag7)
+					if (num4 >= 0.0 && num4 <= 1.0 && num5 >= 0.0 && num5 <= 1.0)
 					{
 						if (returnpoint)
 						{
@@ -539,7 +532,7 @@ namespace Canvas
 		{
 			double num = 0.0;
 			double num2 = 0.0;
-			return HitUtil.LinesIntersect(lp1, lp2, lp3, lp4, ref num, ref num2, false, false, false);
+			return LinesIntersect(lp1, lp2, lp3, lp4, ref num, ref num2, false, false, false);
 		}
 
 		public static UnitPoint LinesIntersectPoint(UnitPoint lp1, UnitPoint lp2, UnitPoint lp3, UnitPoint lp4)
@@ -595,16 +588,14 @@ namespace Canvas
 
 		public static bool LineIntersectWithRect(UnitPoint lp1, UnitPoint lp2, RectangleF r)
 		{
-			bool flag = r.Contains(lp1.Point);
 			bool result;
-			if (flag)
+			if (r.Contains(lp1.Point))
 			{
 				result = true;
 			}
 			else
 			{
-				bool flag2 = r.Contains(lp2.Point);
-				if (flag2)
+				if ( r.Contains(lp2.Point))
 				{
 					result = true;
 				}
@@ -612,8 +603,7 @@ namespace Canvas
 				{
 					UnitPoint lp3 = new UnitPoint((double)r.Left, (double)r.Top);
 					UnitPoint lp4 = new UnitPoint((double)r.Left, (double)r.Bottom);
-					bool flag3 = HitUtil.LinesIntersect(lp1, lp2, lp3, lp4);
-					if (flag3)
+					if (LinesIntersect(lp1, lp2, lp3, lp4))
 					{
 						result = true;
 					}
@@ -621,8 +611,7 @@ namespace Canvas
 					{
 						lp4.Y = (double)r.Top;
 						lp4.X = (double)r.Right;
-						bool flag4 = HitUtil.LinesIntersect(lp1, lp2, lp3, lp4);
-						if (flag4)
+						if (LinesIntersect(lp1, lp2, lp3, lp4))
 						{
 							result = true;
 						}
@@ -632,8 +621,7 @@ namespace Canvas
 							lp3.Y = (double)r.Top;
 							lp4.X = (double)r.Right;
 							lp4.Y = (double)r.Bottom;
-							bool flag5 = HitUtil.LinesIntersect(lp1, lp2, lp3, lp4);
-							result = flag5;
+                            result = LinesIntersect(lp1, lp2, lp3, lp4);
 						}
 					}
 				}

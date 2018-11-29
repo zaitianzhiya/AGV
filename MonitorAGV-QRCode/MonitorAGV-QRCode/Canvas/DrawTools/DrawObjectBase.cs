@@ -1,3 +1,4 @@
+using Canvas.CanvasCtrl;
 using Canvas.CanvasInterfaces;
 using Canvas.Layers;
 using System;
@@ -33,7 +34,7 @@ namespace Canvas.DrawTools
 			}
 			set
 			{
-				this.SetFlag(DrawObjectBase.eFlags.useLayerWidth, value);
+				SetFlag(eFlags.useLayerWidth, value);
 			}
 		}
 
@@ -46,7 +47,7 @@ namespace Canvas.DrawTools
 			}
 			set
 			{
-				this.SetFlag(DrawObjectBase.eFlags.useLayerColor, value);
+				SetFlag(eFlags.useLayerColor, value);
 			}
 		}
 
@@ -55,11 +56,11 @@ namespace Canvas.DrawTools
 		{
 			get
 			{
-				return this.m_width;
+				return m_width;
 			}
 			set
 			{
-				this.m_width = value;
+				m_width = value;
 			}
 		}
 
@@ -81,11 +82,11 @@ namespace Canvas.DrawTools
 		{
 			get
 			{
-				return this.m_layer;
+				return m_layer;
 			}
 			set
 			{
-				this.m_layer = value;
+				m_layer = value;
 			}
 		}
 
@@ -94,11 +95,11 @@ namespace Canvas.DrawTools
 		{
 			get
 			{
-				return this.GetFlag(DrawObjectBase.eFlags.selected);
+				return GetFlag(eFlags.selected);
 			}
 			set
 			{
-				this.SetFlag(DrawObjectBase.eFlags.selected, value);
+				SetFlag(eFlags.selected, value);
 			}
 		}
 
@@ -107,39 +108,44 @@ namespace Canvas.DrawTools
 		{
 			get
 			{
-				return this.GetFlag(DrawObjectBase.eFlags.highlighted);
+				return GetFlag(eFlags.highlighted);
 			}
 			set
 			{
-				this.SetFlag(DrawObjectBase.eFlags.highlighted, value);
+				SetFlag(eFlags.highlighted, value);
 			}
 		}
 
-		private bool GetFlag(DrawObjectBase.eFlags flag)
+		private bool GetFlag(eFlags flag)
 		{
-			return (this.m_flag & (int)flag) > 0;
+			return (m_flag & (int)flag) > 0;
 		}
 
-		private void SetFlag(DrawObjectBase.eFlags flag, bool enable)
+		private void SetFlag(eFlags flag, bool enable)
 		{
 			if (enable)
 			{
-				this.m_flag |= (int)flag;
+				m_flag |= (int)flag;
 			}
 			else
 			{
-				this.m_flag &= (int)(~(int)flag);
+				m_flag &= (int)(~(int)flag);
 			}
 		}
 
 		public abstract void InitializeFromModel(UnitPoint point, DrawingLayer layer, ISnapPoint snap);
 
+	    public virtual void InitializeFromModel(CanvasCtrller cc,UnitPoint point, DrawingLayer layer, ISnapPoint snap)
+	    {
+	        
+	    }
+
 		public virtual void Copy(DrawObjectBase acopy)
 		{
-			this.UseLayerColor = acopy.UseLayerColor;
-			this.UseLayerWidth = acopy.UseLayerWidth;
-			this.Width = acopy.Width;
-			this.Color = acopy.Color;
+			UseLayerColor = acopy.UseLayerColor;
+			UseLayerWidth = acopy.UseLayerWidth;
+			Width = acopy.Width;
+			Color = acopy.Color;
 		}
 	}
 }

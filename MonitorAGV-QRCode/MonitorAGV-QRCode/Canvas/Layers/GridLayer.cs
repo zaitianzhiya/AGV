@@ -164,6 +164,9 @@ namespace Canvas.Layers
                         float x1, y1, x2, y2;
                         int xC, yC, cC;
                         xC = yC = cC = 0;
+                        int xMin, yMin, xMax, yMax;
+                        xMin = yMin = xMax = yMax = 0;
+                        bool isFirst = true;
 
                         for (int i = 0; i <= dataModel.XCount; i++)
                         {
@@ -176,6 +179,7 @@ namespace Canvas.Layers
                                 {
                                     y2 = yEnd;
                                 }
+                                xMax = i;
                                 graphicsPath.AddLine(x1, y1, x1, y2);
                                 graphicsPath.CloseFigure();
                                 xC++;
@@ -185,6 +189,11 @@ namespace Canvas.Layers
                                 x1 = (20 + i * dataModel.Distance + dataModel.Distance / 2) * dataModel.Zoom;
                                 if (x1 >= xStart && x1 <= xEnd)
                                 {
+                                    if (isFirst)
+                                    {
+                                        xMin = i;
+                                        isFirst = false;
+                                    }
                                     y1 = 20 * dataModel.Zoom;
                                     y2 = (20 + dataModel.YCount * dataModel.Distance) * dataModel.Zoom;
                                     graphicsPath2.AddLine(x1, y1, x1, y2);
@@ -193,6 +202,7 @@ namespace Canvas.Layers
                             }
                         }
 
+                        isFirst = true;
                         for (int i = 0; i <= dataModel.YCount; i++)
                         {
                             y1 = (20 + i * dataModel.Distance) * dataModel.Zoom;
@@ -204,16 +214,21 @@ namespace Canvas.Layers
                                 {
                                     x2 = xEnd;
                                 }
+                                yMax = i;
                                 graphicsPath.AddLine(x1, y1, x2, y1);
                                 graphicsPath.CloseFigure();
                                 yC++;
                             }
-
                             if (i != dataModel.YCount)
                             {
                                 y1 = (20 + i * dataModel.Distance + dataModel.Distance / 2) * dataModel.Zoom;
                                 if (y1 >= yStart && y1 <= yEnd)
                                 {
+                                    if (isFirst)
+                                    {
+                                        yMin = i;
+                                        isFirst = false;
+                                    }
                                     x1 = 20 * dataModel.Zoom;
                                     x2 = (20 + dataModel.XCount * dataModel.Distance) * dataModel.Zoom;
                                     graphicsPath2.AddLine(x1, y1, x2, y1);
@@ -223,9 +238,9 @@ namespace Canvas.Layers
                         }
 
                         //g.FillRectangle(Brushes.Red, unitrect);
-                        for (int i = 0; i <= dataModel.XCount; i++)
+                        for (int i = xMin; i <= xMax; i++)
                         {
-                            for (int j = 0; j <= dataModel.YCount; j++)
+                            for (int j = yMin; j <= yMax; j++)
                             {
                                 x1 = (20 + i * dataModel.Distance) * dataModel.Zoom;
                                 y1 = (20 + j * dataModel.Distance) * dataModel.Zoom;
@@ -250,47 +265,7 @@ namespace Canvas.Layers
 
         public ISnapPoint SnapPoint(ICanvas canvas, UnitPoint point, List<IDrawObject> otherobj)
         {
-            ISnapPoint result;
-            try
-            {
-                bool flag = !this.Enabled;
-                if (flag)
-                {
-                    result = null;
-                }
-                else
-                {
-                    UnitPoint snappoint = default(UnitPoint);
-                    UnitPoint unitPoint = point;
-                    float width = this.Spacing.Width;
-                    float height = this.Spacing.Height;
-                    snappoint.X = (double)((float)Math.Round(unitPoint.X / (double)width) * width);
-                    snappoint.Y = (double)((float)Math.Round(unitPoint.Y / (double)height) * height);
-                    double num = canvas.ToUnit(6f);
-                    bool flag2 = snappoint.X < point.X - num || snappoint.X > point.X + num;
-                    if (flag2)
-                    {
-                        result = null;
-                    }
-                    else
-                    {
-                        bool flag3 = snappoint.Y < point.Y - num || snappoint.Y > point.Y + num;
-                        if (flag3)
-                        {
-                            result = null;
-                        }
-                        else
-                        {
-                            result = new GridSnapPoint(canvas, snappoint);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return result;
+            return null;
         }
 
         public void GetObjectData(XmlWriter wr)

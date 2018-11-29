@@ -197,28 +197,29 @@ namespace Canvas.Layers
 			{
 				Tracing.StartTrack(Tracing.TracePaint);
 				int num = 0;
-				foreach (IDrawObject current in this.m_objects)
+				foreach (IDrawObject current in m_objects)
 				{
-					DrawObjectBase drawObjectBase = current as DrawObjectBase;
-					bool flag = drawObjectBase is IDrawObject && !((IDrawObject)drawObjectBase).ObjectInRectangle(canvas, unitrect, true);
-					if (!flag)
-					{
-						bool selected = drawObjectBase.Selected;
-						bool highlighted = drawObjectBase.Highlighted;
-						drawObjectBase.Selected = false;
-						try
-						{
-							current.Draw(canvas, unitrect);
-						}
-						catch (Exception ex)
-						{
-							throw ex;
-						}
-						drawObjectBase.Selected = selected;
-						drawObjectBase.Highlighted = highlighted;
-						int num2 = num;
-						num = num2 + 1;
-					}
+                    DrawObjectBase drawObjectBase = current as DrawObjectBase;
+                    //bool flag = drawObjectBase is IDrawObject && !((IDrawObject)drawObjectBase).ObjectInRectangle(canvas, unitrect, true);
+                    //if (!flag)
+                    if (drawObjectBase is IDrawObject)
+                    {
+                        //bool selected = drawObjectBase.Selected;
+                        //bool highlighted = drawObjectBase.Highlighted;
+                        //drawObjectBase.Selected = false;
+                        //try
+                        //{
+                            current.Draw(canvas, unitrect);
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    throw ex;
+                        //}
+                        //drawObjectBase.Selected = selected;
+                        //drawObjectBase.Highlighted = highlighted;
+                        int num2 = num;
+                        num = num2 + 1;
+                    }
 				}
 				Tracing.EndTrack(Tracing.TracePaint, "Draw Layer {0}, ObjCount {1}, Painted ObjCount {2}", new object[]
 				{

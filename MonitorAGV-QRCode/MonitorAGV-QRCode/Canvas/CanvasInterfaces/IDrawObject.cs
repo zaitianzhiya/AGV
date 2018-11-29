@@ -12,6 +12,8 @@ namespace Canvas.CanvasInterfaces
 			get;
 		}
 
+        int MapNo { get; set; }
+
 		UnitPoint RepeatStartingPoint
 		{
 			get;

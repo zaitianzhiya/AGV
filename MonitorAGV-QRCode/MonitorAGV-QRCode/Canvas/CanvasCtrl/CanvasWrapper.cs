@@ -211,5 +211,15 @@ namespace Canvas.CanvasCtrl
 		{
 			m_canvas.DrawAGV(canvas, pen, p, Code);
 		}
-	}
+
+        public void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p)
+        {
+            m_canvas.DrawForbid(canvas, pen, p);
+        }
+
+	    public void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p)
+	    {
+            m_canvas.DrawCharge(canvas, pen, p);
+	    }
+    }
 }

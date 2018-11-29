@@ -1,3 +1,4 @@
+using Canvas.CanvasCtrl;
 using Canvas.CanvasInterfaces;
 using Canvas.DrawTools;
 using Canvas.Layers;
@@ -163,13 +164,19 @@ namespace Canvas
 		public DataModel()
 		{
 			m_toolTypes.Clear();
-			m_toolTypes[LineTool.ObjectType] = typeof(LineTool);
-			m_toolTypes[LandMarkTool.ObjectType] = typeof(LandMarkTool);
-			m_toolTypes[ImgeTool.ObjectType] = typeof(ImgeTool);
-			m_toolTypes[TextTool.ObjectType] = typeof(TextTool);
-			m_toolTypes[BezierTool.ObjectType] = typeof(BezierTool);
-			m_toolTypes[StorageTool.ObjectType] = typeof(StorageTool);
-			m_toolTypes[ButtonTool.ObjectType] = typeof(ButtonTool);
+            //m_toolTypes[LineTool.ObjectType] = typeof(LineTool);
+            //m_toolTypes[LandMarkTool.ObjectType] = typeof(LandMarkTool);
+            //m_toolTypes[ImgeTool.ObjectType] = typeof(ImgeTool);
+            //m_toolTypes[TextTool.ObjectType] = typeof(TextTool);
+            //m_toolTypes[BezierTool.ObjectType] = typeof(BezierTool);
+            //m_toolTypes[StorageTool.ObjectType] = typeof(StorageTool);
+            //m_toolTypes[ButtonTool.ObjectType] = typeof(ButtonTool);
+            m_toolTypes[ArrowLeft.ObjectType] = typeof(ArrowLeft);
+            m_toolTypes[ArrowRight.ObjectType] = typeof(ArrowRight);
+            m_toolTypes[ArrowUp.ObjectType] = typeof(ArrowUp);
+            m_toolTypes[ArrowDown.ObjectType] = typeof(ArrowDown);
+            m_toolTypes[ChargeTool.ObjectType] = typeof(ChargeTool);
+            m_toolTypes[Forbid.ObjectType] = typeof(Forbid);
 			DefaultLayer();
 			m_centerPoint = new UnitPoint(0.0, 0.0);
 		}
@@ -313,9 +320,8 @@ namespace Canvas
 			}
 			else
 			{
-				DrawObjectBase drawObjectBase = this.CreateObject(type);
-				bool flag2 = drawObjectBase != null;
-				if (flag2)
+				DrawObjectBase drawObjectBase = CreateObject(type);
+				if (drawObjectBase != null)
 				{
 					drawObjectBase.Layer = drawingLayer;
 					drawObjectBase.InitializeFromModel(point, drawingLayer, snappoint);
@@ -324,6 +330,27 @@ namespace Canvas
 			}
 			return result;
 		}
+
+        public IDrawObject CreateObject(CanvasCtrller cc, string type, UnitPoint point, ISnapPoint snappoint)
+        {
+            DrawingLayer drawingLayer = ActiveLayer as DrawingLayer;
+            IDrawObject result;
+            if (!drawingLayer.Enabled)
+            {
+                result = null;
+            }
+            else
+            {
+                DrawObjectBase drawObjectBase = CreateObject(type);
+                if (drawObjectBase != null)
+                {
+                    drawObjectBase.Layer = drawingLayer;
+                    drawObjectBase.InitializeFromModel(cc,point, drawingLayer, snappoint);
+                }
+                result = (drawObjectBase as IDrawObject);
+            }
+            return result;
+        }
 
 		public void AddObject(ICanvasLayer layer, IDrawObject drawobject)
 		{
@@ -414,20 +441,7 @@ namespace Canvas
 
 		public void MoveNodes(UnitPoint position, IEnumerable<INodePoint> nodes)
 		{
-			if (m_undoBuffer.CanCapture)
-			{
-				m_undoBuffer.AddCommand(new EditCommandNodeMove(nodes));
-			}
-			foreach (INodePoint current in nodes)
-			{
-				IDrawObject original = current.GetOriginal();
-				bool flag = (original is LineTool && (original as LineTool).Type == LineType.PointLine) || (original is BezierTool && (original as BezierTool).Type == BezierType.PointBezier);
-				if (!flag)
-				{
-					current.SetPosition(position);
-					current.Finish();
-				}
-			}
+
 		}
 
 		public List<IDrawObject> GetHitObjects(ICanvas canvas, RectangleF selection, bool anyPoint)
@@ -475,22 +489,7 @@ namespace Canvas
 
 		public void AddSelectedObject(IDrawObject drawobject)
 		{
-			DrawObjectBase drawObjectBase = drawobject as DrawObjectBase;
-			RemoveSelectedObject(drawobject);
-		    if (drawObjectBase is ImgeTool)
-		    {
-		        if (m_selection.Count <= 0)
-		        {
-                    m_selection[drawobject] = true;
-                    drawObjectBase.Selected = true;
-		        }
-		    }
-		    else
-		    {
-		        m_selection.Clear();
-                m_selection[drawobject] = true;
-                drawObjectBase.Selected = true;
-		    }
+			
 		}
 
 		public void RemoveSelectedObject(IDrawObject drawobject)
@@ -557,5 +556,5 @@ namespace Canvas
 		{
 			return m_undoBuffer.DoRedo(this);
 		}
-    }
+        }
 }

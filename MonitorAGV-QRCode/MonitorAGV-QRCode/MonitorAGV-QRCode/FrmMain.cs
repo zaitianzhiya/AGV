@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,8 +17,11 @@ using Canvas;
 using Canvas.CanvasCtrl;
 using Canvas.CanvasInterfaces;
 using Canvas.DrawTools;
+using Canvas.Layers;
 using DevExpress.Utils;
+using DevExpress.XtraBars;
 using DevExpress.XtraGrid;
+using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraNavBar;
 using SimulationModel;
 
@@ -32,6 +36,7 @@ namespace MonitorAGV_QRCode
         private int Distance = 40;
         private float Zoom = 1;
         private DataTable dtSourceProperty;
+        private DataTable dtSourcePropertyOld;
         private Dictionary<string, NavBarGroup> dicNavBarGroups = new Dictionary<string, NavBarGroup>();
         private Dictionary<string, GridControl> dicGrid = new Dictionary<string, GridControl>();
 
@@ -42,11 +47,13 @@ namespace MonitorAGV_QRCode
         public FrmMain()
         {
             InitializeComponent();
+            Control.CheckForIllegalCrossThreadCalls = false;
             SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             foreach (NavBarGroup g in navBarControl1.Groups)
             {
                 dicNavBarGroups[g.Caption] = g;
+                g.Visible = false;
             }
             dicGrid[gridControl1.Name] = gridControl1;
             dicGrid[gridControl2.Name] = gridControl2;
@@ -98,12 +105,6 @@ namespace MonitorAGV_QRCode
             dicGrid[gridControl48.Name] = gridControl48;
             dicGrid[gridControl49.Name] = gridControl49;
             dicGrid[gridControl50.Name] = gridControl50;
-
-            //navBarControl1.Groups.Clear();
-            foreach (NavBarGroup n in navBarControl1.Groups)
-            {
-                n.Visible = false;
-            }
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
@@ -113,26 +114,37 @@ namespace MonitorAGV_QRCode
             Ycount = int.Parse(SetFileControl.ReadIniValue("X_Y", "Y", Path));
             txtX.Text = Xcount.ToString();
             txtY.Text = Ycount.ToString();
-            using (new WaitDialogForm("正在启动,请稍后...", "提示"))
-            {
-                InitCanvas();
-            }
             dtSourceProperty = new DataTable();
             dtSourceProperty.Columns.Add("Property");
             dtSourceProperty.Columns.Add("VAL");
+            using (new WaitDialogForm("正在启动,请稍后...", "提示"))
+            {
+                InitCanvas();
+                DataGridAdd();
+            }
+            ThreadPool.SetMaxThreads(10, 10);
+            //timer1.Enabled = true;
+
+            AddForbidFromDB();
         }
 
         private void gridView1_CustomDrawRowIndicator(object sender, DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventArgs e)
         {
             if (e.RowHandle > -1)
             {
-                e.Info.DisplayText = Convert.ToString(e.RowHandle + 1);
+                GridView gv = sender as GridView;
+                if (gv != null)
+                {
+                    e.Info.Appearance.ForeColor = this.ForeColor;
+                    e.Info.DisplayText = Convert.ToString(e.RowHandle + 1);
+                }
             }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            DataGridAdd();
+            //ThreadPool.QueueUserWorkItem(new WaitCallback(DataGridAdd));
+            new Thread(new ThreadStart(DataGridAdd)) { IsBackground = true }.Start();
         }
 
         private void OnCanvasMouseDoubleClick(object sender, MouseEventArgs e)
@@ -149,193 +161,9 @@ namespace MonitorAGV_QRCode
         {
         }
 
-        public void SetPositionInfo(UnitPoint unitpos)
+        void m_canvas_MoveEvent(object sender, EventArgs e)
         {
-        }
-
-        public void SetSnapInfo(ISnapPoint snap)
-        {
-        }
-
-        public void SetHint(string text)
-        {
-        }
-
-        [DllImport("kernel32.dll")]
-        public static extern int SetProcessWorkingSetSize(IntPtr process, int minSize, int maxSize);
-
-        public static void ClearMemory()
-        {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
-                SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-            }
-        }
-
-        private void pbMain_Paint(object sender, PaintEventArgs e)
-        {
-            lock (obj)
-            {
-                Rectangle rec = e.ClipRectangle;
-                float xStart = rec.X;
-                float yStart = rec.Y;
-                float xEnd = (rec.X + rec.Width);
-                float yEnd = (rec.Y + rec.Height);
-
-                Graphics g = e.Graphics;
-                g.SmoothingMode = SmoothingMode.HighSpeed;
-                Pen pen = new Pen(Color.White);
-                float[] dashArray =
-                            {
-                                2*Zoom, //线长5个像素
-                                4*Zoom //间断2个像素
-                            };
-                pen.DashPattern = dashArray;
-                Pen pen2 = new Pen(Color.Green);
-                float[] dashArray2 =
-                            {
-                                8*Zoom, //线长5个像素
-                                32*Zoom //间断2个像素
-                            };
-                pen2.DashPattern = dashArray2;
-                Font font = new Font("Tahoma", 6 * Zoom, FontStyle.Regular);
-                GraphicsPath graphicsPath = new GraphicsPath();
-                GraphicsPath graphicsPath2 = new GraphicsPath();
-                float x1, y1, x2, y2;
-                int xC, yC, cC;
-                xC = yC = cC = 0;
-                for (int i = 0; i <= Xcount; i++)
-                {
-                    x1 = (20 + i * Distance) * Zoom;
-                    if (x1 >= xStart && x1 <= xEnd)
-                    {
-                        y1 = 20 * Zoom;
-                        y2 = (20 + Ycount * Distance) * Zoom;
-                        graphicsPath.AddLine(x1, y1, x1, y2);
-                        graphicsPath.CloseFigure();
-                        xC++;
-                    }
-                    if (i != Xcount)
-                    {
-                        x1 = (20 + i * Distance + Distance / 2) * Zoom;
-                        if (x1 >= xStart && x1 <= xEnd)
-                        {
-                            y1 = 20 * Zoom;
-                            y2 = (20 + Ycount * Distance) * Zoom;
-                            graphicsPath2.AddLine(x1, y1, x1, y2);
-                            graphicsPath2.CloseFigure();
-                        }
-                    }
-                }
-
-                for (int i = 0; i < Ycount; i++)
-                {
-                    y1 = (20 + i * Distance) * Zoom;
-                    if (y1 >= yStart && y1 <= yEnd)
-                    {
-                        x1 = 20 * Zoom;
-                        x2 = (20 + Xcount * Distance) * Zoom;
-                        graphicsPath.AddLine(x1, y1, x2, y1);
-                        graphicsPath.CloseFigure();
-                        yC++;
-                    }
-
-                    if (i != Ycount)
-                    {
-                        y1 = (20 + i * Distance + Distance / 2) * Zoom;
-                        if (y1 >= yStart && y1 <= yEnd)
-                        {
-                            x1 = 20 * Zoom;
-                            x2 = (20 + Xcount * Distance) * Zoom;
-                            graphicsPath2.AddLine(x1, y1, x2, y1);
-                            graphicsPath2.CloseFigure();
-                        }
-                    }
-                }
-
-                for (int i = 0; i <= Xcount; i++)
-                {
-                    for (int j = 0; j <= Ycount; j++)
-                    {
-                        x1 = (20 + i * Distance) * Zoom;
-                        y1 = (20 + j * Distance) * Zoom;
-                        if (i != Xcount && j != Ycount && x1 + Distance * Zoom / 2 >= xStart && x1 + Distance * Zoom / 2 <= xEnd && y1 + Distance * Zoom / 2 >= yStart && y1 + Distance * Zoom / 2 <= yEnd)
-                        {
-                            g.DrawString(i + "," + (Ycount - j - 1), font, Brushes.White, (float)(x1 + Distance * Zoom / 4), (float)(y1 + Distance * Zoom * 0.4));
-                            cC++;
-                        }
-                    }
-                }
-
-                g.DrawPath(pen, graphicsPath);
-                g.DrawPath(pen2, graphicsPath2);
-
-                //坐标
-                x1 = 20 * Zoom;
-                y1 = 0;
-                y2 = (20 + Ycount * Distance) * Zoom;
-                Pen penCoor = new Pen(Color.White);
-                AdjustableArrowCap cap = new AdjustableArrowCap(3 * Zoom, 3 * Zoom);
-                penCoor.CustomEndCap = cap;
-                Font fontCoor = new Font("Tahoma", 9 * Zoom);
-                if (x1 >= xStart && x1 <= xEnd)
-                {
-                    g.DrawLine(penCoor, x1, y2, x1, y1);
-                    g.DrawString("Y", fontCoor, Brushes.White, (float)(5 * Zoom), 5 * Zoom);
-                }
-
-                x1 = 20 * Zoom;
-                x2 = (20 + Xcount * Distance + 20) * Zoom;
-                y2 = (20 + Ycount * Distance) * Zoom;
-                if (y2 >= yStart && y2 <= yEnd)
-                {
-                    g.DrawLine(penCoor, x1, y2, x2, y2);
-                    g.DrawString("X", fontCoor, Brushes.White, x2 - 20 * Zoom, y2 + 5 * Zoom);
-                }
-            }
-        }
-
-        private void pbMain_MouseMove(object sender, MouseEventArgs e)
-        {
-            Point coordinate = new Point(MousePosition.X, MousePosition.Y);
-            double x = (coordinate.X - 80) / 80;
-            double y = (coordinate.Y - 80) / 80;
-            lblMsg.Caption = string.Format("Virtual:({0},{1}) || Real:({2}mm,{3}mm)", x, y, Math.Round(x * 600, 2), Math.Round((y) * 600, 2));
-        }
-
-        private void InitCanvas()
-        {
-            m_data = new DataModel();
-            m_data.XCount = Xcount;
-            m_data.YCount = Ycount;
-            m_data.Distance = Distance;
-            m_data.Zoom = Zoom;
-            m_canvas = new CanvasCtrller(this, m_data);
-            m_canvas.Location = new Point(0, 0);
-            //m_canvas.Dock = DockStyle.Fill;
-            pnlMain.Controls.Clear();
-            pnlMain.Controls.Add(m_canvas);
-            m_canvas.SetCenter(new UnitPoint(0.0, 0.0));
-            m_canvas.RunningSnaps = new Type[]
-				{
-					typeof(VertextSnapPoint),
-					typeof(MidpointSnapPoint),
-					typeof(IntersectSnapPoint),
-					typeof(QuadrantSnapPoint),
-					typeof(CenterSnapPoint),
-					typeof(DivisionSnapPoint)
-				};
-            m_canvas.KeyDown += new KeyEventHandler(OnCanvasKeyDown);
-            m_canvas.MouseUp += new MouseEventHandler(OnCanvasMouseUp);
-            m_canvas.MouseDoubleClick += new MouseEventHandler(OnCanvasMouseDoubleClick);
-            m_canvas.TestEvent += m_canvas_TestEvent;
-        }
-
-        void m_canvas_TestEvent(object sender, EventArgs e)
-        {
-            this.Text = sender.ToString() + "@" + Control.MousePosition.X + "," + Control.MousePosition.Y;
+            lblMsg.Caption = sender.ToString();
         }
 
         private void pnlMain_Scroll(object sender, ScrollEventArgs e)
@@ -351,231 +179,448 @@ namespace MonitorAGV_QRCode
             }
         }
 
+        private void dockPanel2_Collapsed(object sender, DevExpress.XtraBars.Docking.DockPanelEventArgs e)
+        {
+            pnlMain.SizeChanged -= pnlMain_SizeChanged;
+            if (m_canvas != null)
+            {
+                m_canvas.DoInvalidate(true);
+            }
+            pnlMain.SizeChanged += pnlMain_SizeChanged;
+        }
+
+        private void btnHand_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
+        {
+            string text = string.Empty;
+
+            if (e.Item is BarButtonItem)
+            {
+                text = ((BarButtonItem)e.Item).Tag.ToString();
+            }
+            if (text == string.Empty)
+            {
+                return;
+            }
+            if (text == "pan")
+            {
+                m_canvas.CommandPan();
+            }
+            else
+            {
+                m_canvas.CommandSelectDrawTool(text);
+            }
+        }
+        
+        #region Function
+        public void SetPositionInfo(UnitPoint unitpos)
+        {
+        }
+
+        public void SetSnapInfo(ISnapPoint snap)
+        {
+        }
+
+        public void SetHint(string text)
+        {
+        }
+
+        /// 初始画布方法
+        /// <summary>
+        /// 初始画布方法
+        /// </summary>
+        private void InitCanvas()
+        {
+            m_data = new DataModel();
+            m_data.XCount = Xcount;
+            m_data.YCount = Ycount;
+            m_data.Distance = Distance;
+            m_data.Zoom = Zoom;
+            m_data.AddDrawTool(btnLeft.Tag.ToString(), new ArrowLeft());
+            m_data.AddDrawTool(btnRight.Tag.ToString(), new ArrowRight());
+            m_data.AddDrawTool(btnUp.Tag.ToString(), new ArrowUp());
+            m_data.AddDrawTool(btnDown.Tag.ToString(), new ArrowDown());
+            m_data.AddDrawTool(btnCharge.Tag.ToString(), new ChargeTool());
+            m_data.AddDrawTool(btnForbid.Tag.ToString(), new Forbid());
+            m_canvas = new CanvasCtrller(this, m_data);
+            m_canvas.Location = new Point(0, 0);
+            //m_canvas.Dock = DockStyle.Fill;
+            pnlMain.Controls.Clear();
+            pnlMain.Controls.Add(m_canvas);
+            m_canvas.SetCenter(new UnitPoint(0.0, 0.0));
+            //m_canvas.RunningSnaps = new Type[]
+            //    {
+            //        typeof(VertextSnapPoint),
+            //        typeof(MidpointSnapPoint),
+            //        typeof(IntersectSnapPoint),
+            //        typeof(QuadrantSnapPoint),
+            //        typeof(CenterSnapPoint),
+            //        typeof(DivisionSnapPoint)
+            //    };
+            m_canvas.KeyDown += new KeyEventHandler(OnCanvasKeyDown);
+            m_canvas.MouseUp += new MouseEventHandler(OnCanvasMouseUp);
+            m_canvas.MouseDoubleClick += new MouseEventHandler(OnCanvasMouseDoubleClick);
+            m_canvas.MoveEvent += m_canvas_MoveEvent;
+        }
+
+        ///  加载AGV车辆信息方法
         /// <summary>
         ///  加载AGV车辆信息方法
         /// </summary>
-        public void DataGridAdd()
+        private void DataGridAdd()
         {
-            foreach (NavBarGroup n in navBarControl1.Groups)
+            lock (obj)
             {
-                n.Visible = false;
-            }
-            IEnumerable<IDrawObject> objects = from p in m_data.ActiveLayer.Objects
-                                               where p.Id == "AGVTool"
-                                               select p;
-            m_data.DeleteObjects(objects);
+                IEnumerable<IDrawObject> objects = from p in m_data.ActiveLayer.Objects
+                                                   where p.Id == "AGVTool"
+                                                   select p;
+                m_data.DeleteObjects(objects);
 
-            DataTable table = Function.ReadDB_tb_AGV_Info();
+                DataTable table = Function.ReadDB_tb_AGV_Info();
 
-            if (table != null && table.Rows.Count > 0)
-            {
-                //int agv_Id;
-                int agv_Ac, agv_Now_Ord_Count;
-                String agv_Ip, agv_Now_X, agv_Now_Y, agv_Skip_No, agv_From, agv_To, agv_Voltage, agv_Electricity;
-                String agv_L_Speed, agv_R_Speed, agv_LineNo, agv_LineString, agv_ErrorCord, agv_WarningCord, agv_Now_Ord;
-                String agv_Remaining_Trip, agv_Angle, agv_Skip_Angle, agv_Lifting_Speed, agv_Rotating_Speed, agv_OrderNo;
-                String coordinates;
-                double carNowX;
-                double carNowY;
-                double carAngle;
-                string carIpEnd;
-                int carID = 0;
-                double realX;
-                double realY;
-                NavBarGroup navBarGroup;
-                DataRow drNew;
-                DataTable dtTemp;
-                for (int j = 0; j < table.Rows.Count; j++)
+                if (table != null && table.Rows.Count > 0)
                 {
-                    agv_Ip = table.Rows[j][1].ToString().Trim();
-                    agv_Ac = int.Parse(table.Rows[j][2].ToString().Trim());
-                    agv_Now_X = table.Rows[j][3].ToString().Trim();
-                    agv_Now_Y = table.Rows[j][4].ToString().Trim();
-
-                    agv_Skip_No = table.Rows[j][5].ToString().Trim();
-                    agv_From = table.Rows[j][6].ToString().Trim();
-                    agv_To = table.Rows[j][7].ToString().Trim();
-                    agv_Voltage = table.Rows[j][8].ToString().Trim();
-                    agv_Electricity = table.Rows[j][9].ToString().Trim();
-                    agv_L_Speed = table.Rows[j][10].ToString().Trim();
-                    agv_R_Speed = table.Rows[j][11].ToString().Trim();
-                    agv_LineNo = table.Rows[j][12].ToString().Trim();
-                    agv_LineString = table.Rows[j][13].ToString().Trim();
-                    agv_ErrorCord = table.Rows[j][14].ToString().Trim();
-                    agv_WarningCord = table.Rows[j][15].ToString().Trim();
-                    agv_Now_Ord = table.Rows[j][16].ToString().Trim();
-                    agv_Now_Ord_Count = int.Parse(table.Rows[j][17].ToString().Trim());
-                    agv_Remaining_Trip = table.Rows[j][18].ToString().Trim();
-                    agv_Angle = table.Rows[j][19].ToString().Trim();
-                    agv_Skip_Angle = table.Rows[j][20].ToString().Trim();
-                    agv_Lifting_Speed = table.Rows[j][21].ToString().Trim();
-                    agv_Rotating_Speed = table.Rows[j][22].ToString().Trim();
-                    agv_OrderNo = table.Rows[j][23].ToString().Trim();
-
-                    //TJA2017110811:11
-                    carNowX = int.Parse(agv_Now_X) / (double)600;
-                    carNowY = int.Parse(agv_Now_Y) / (double)600;
-                    carAngle = (double)(int.Parse(table.Rows[j][19].ToString().Trim()));
-                    coordinates = "(" + carNowX.ToString() + "," + carNowY.ToString() + ")";
-                    //int carNo = int.Parse(agv_Ip.Substring(9,3))-200;
-                    carIpEnd = agv_Ip.Substring(10, 3);
-                    carID = 0;
-
-                    carID = int.Parse(carIpEnd.Substring(1));
-                    //realX = (double)(carNowX * 80 + 80) - (imageWidth) / 2;
-                    //realY = (double)((yA - carNowY) * 80 + 80) - (imageHeight) / 2;
-
-                    ////agv = new CanvasAGV();
-
-                    ////rotateTransform = new RotateTransform(((carAngle == 0) ? 0 : (360 - carAngle)), realX + (imageWidth) / 2, realY + (imageHeight) / 2); //XGS2017110522:41
-
-                    //if ((agv_Ac == 0) || (agv_ErrorCord != "0") || (agv_WarningCord != "0"))
-                    //{
-                    //    color = Brushes.Red;
-                    //}
-                    //else
-                    //{
-                    //    color = Brushes.Blue;
-                    //}
-                    ////agv.GetAGVCanvas(realX, realY, imageHeight, imageWidth, carID.ToString(), this.chartCanvas, color, rotateTransform);
-                    //agvUc = new AGV(carID.ToString(), color, ((carAngle == 0) ? 0 : (360 - carAngle)));
-                    //agvUc.Uid = "AGV" + carID;
-                    //Canvas.SetLeft(agvUc, realX);
-                    //Canvas.SetTop(agvUc, realY);
-                    //this.chartCanvas.Children.Add(agvUc);
-
-
-                    if (j < 25)
+                    //int agv_Id;
+                    int agv_Ac, agv_Now_Ord_Count;
+                    String agv_Ip, agv_Now_X, agv_Now_Y, agv_Skip_No, agv_From, agv_To, agv_Voltage, agv_Electricity;
+                    String agv_L_Speed,
+                        agv_R_Speed,
+                        agv_LineNo,
+                        agv_LineString,
+                        agv_ErrorCord,
+                        agv_WarningCord,
+                        agv_Now_Ord;
+                    String agv_Remaining_Trip,
+                        agv_Angle,
+                        agv_Skip_Angle,
+                        agv_Lifting_Speed,
+                        agv_Rotating_Speed,
+                        agv_OrderNo;
+                    String coordinates;
+                    double carNowX;
+                    double carNowY;
+                    double carAngle;
+                    string carIpEnd;
+                    int carID = 0;
+                    double realX;
+                    double realY;
+                    NavBarGroup navBarGroup;
+                    DataRow drNew;
+                    DataTable dtTemp;
+                    bool isSame;
+                    for (int j = 0; j < table.Rows.Count; j++)
                     {
-                        navBarGroup = dicNavBarGroups[j.ToString()];
-                        navBarGroup.Caption = agv_Ip;
-                        dtTemp = dtSourceProperty.Clone();
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "坐标";
-                        drNew["VAL"] = coordinates;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "AGV当前角度值";
-                        drNew["VAL"] = agv_Angle;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "料架当前角度值";
-                        drNew["VAL"] = agv_Skip_Angle;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "当前任务执行编号";
-                        drNew["VAL"] = agv_Now_Ord;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "当前任务数";
-                        drNew["VAL"] = agv_Now_Ord_Count;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "剩余行程总和";
-                        drNew["VAL"] = agv_Remaining_Trip;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "左轮转速";
-                        drNew["VAL"] = agv_L_Speed;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "右轮转速";
-                        drNew["VAL"] = agv_R_Speed;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "举升电机速度";
-                        drNew["VAL"] = agv_Lifting_Speed;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "旋转电机速度";
-                        drNew["VAL"] = agv_Rotating_Speed;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "电池电压值";
-                        drNew["VAL"] = agv_Voltage;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "系统电流值";
-                        drNew["VAL"] = agv_Electricity;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "错误代码";
-                        drNew["VAL"] = agv_ErrorCord;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "警告代码";
-                        drNew["VAL"] = agv_WarningCord;
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "当前货架编号";
-                        drNew["VAL"] = agv_LineNo;
-                        dtTemp.Rows.Add(drNew);
+                        isSame = true;
+                        if (dtSourcePropertyOld != null && dtSourcePropertyOld.Rows.Count > 0)
+                        {
+                            if (dtSourcePropertyOld.Rows.Count >= j)
+                            {
+                                foreach (DataColumn dc in table.Columns)
+                                {
+                                    if (table.Rows[j][dc.ColumnName].ToString() !=
+                                        dtSourcePropertyOld.Rows[j][dc.ColumnName].ToString())
+                                    {
+                                        isSame = false;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                isSame = false;
+                            }
+                        }
+                        else
+                        {
+                            isSame = false;
+                        }
 
-                        dicGrid["gridControl" + (j + 1)].DataSource = dtTemp;
-                        dtTemp = dtSourceProperty.Clone();
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "执行任务状态";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "顶升复位标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "转盘复位标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "陀螺仪零偏纠正标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "携带料架信息";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "位置确定标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "小车当前故障标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "小车当前警告标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "激光感应器远距离标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "激光感应器中距离标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "激光感应器近距离标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "前端料架感应器标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "后端料架感应器标志";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        drNew = dtTemp.NewRow();
-                        drNew["Property"] = "休眠状态指示";
-                        drNew["VAL"] = "";
-                        dtTemp.Rows.Add(drNew);
-                        
-                        dicGrid["gridControl" + (j + 2)].DataSource = dtTemp;
+                        if (j < 25)
+                        {
+                            navBarGroup = dicNavBarGroups[j.ToString()];
+                            if (!isSame)
+                            {
+                                agv_Ip = table.Rows[j][1].ToString().Trim();
+                                agv_Ac = int.Parse(table.Rows[j][2].ToString().Trim());
+                                agv_Now_X = table.Rows[j][3].ToString().Trim();
+                                agv_Now_Y = table.Rows[j][4].ToString().Trim();
 
-                        navBarGroup.Visible = true;
+                                agv_Skip_No = table.Rows[j][5].ToString().Trim();
+                                agv_From = table.Rows[j][6].ToString().Trim();
+                                agv_To = table.Rows[j][7].ToString().Trim();
+                                agv_Voltage = table.Rows[j][8].ToString().Trim();
+                                agv_Electricity = table.Rows[j][9].ToString().Trim();
+                                agv_L_Speed = table.Rows[j][10].ToString().Trim();
+                                agv_R_Speed = table.Rows[j][11].ToString().Trim();
+                                agv_LineNo = table.Rows[j][12].ToString().Trim();
+                                agv_LineString = table.Rows[j][13].ToString().Trim();
+                                agv_ErrorCord = table.Rows[j][14].ToString().Trim();
+                                agv_WarningCord = table.Rows[j][15].ToString().Trim();
+                                agv_Now_Ord = table.Rows[j][16].ToString().Trim();
+                                agv_Now_Ord_Count = int.Parse(table.Rows[j][17].ToString().Trim());
+                                agv_Remaining_Trip = table.Rows[j][18].ToString().Trim();
+                                agv_Angle = table.Rows[j][19].ToString().Trim();
+                                agv_Skip_Angle = table.Rows[j][20].ToString().Trim();
+                                agv_Lifting_Speed = table.Rows[j][21].ToString().Trim();
+                                agv_Rotating_Speed = table.Rows[j][22].ToString().Trim();
+                                agv_OrderNo = table.Rows[j][23].ToString().Trim();
+
+                                //TJA2017110811:11
+                                carNowX = int.Parse(agv_Now_X) / (double)600;
+                                carNowY = int.Parse(agv_Now_Y) / (double)600;
+                                carAngle = (double)(int.Parse(table.Rows[j][19].ToString().Trim()));
+                                coordinates = "(" + carNowX.ToString() + "," + carNowY.ToString() + ")";
+                                //int carNo = int.Parse(agv_Ip.Substring(9,3))-200;
+                                carIpEnd = agv_Ip.Substring(10, 3);
+                                carID = 0;
+
+                                carID = int.Parse(carIpEnd.Substring(1));
+                                //realX = (double)(carNowX * 80 + 80) - (imageWidth) / 2;
+                                //realY = (double)((yA - carNowY) * 80 + 80) - (imageHeight) / 2;
+
+                                ////agv = new CanvasAGV();
+
+                                ////rotateTransform = new RotateTransform(((carAngle == 0) ? 0 : (360 - carAngle)), realX + (imageWidth) / 2, realY + (imageHeight) / 2); //XGS2017110522:41
+
+                                //if ((agv_Ac == 0) || (agv_ErrorCord != "0") || (agv_WarningCord != "0"))
+                                //{
+                                //    color = Brushes.Red;
+                                //}
+                                //else
+                                //{
+                                //    color = Brushes.Blue;
+                                //}
+                                ////agv.GetAGVCanvas(realX, realY, imageHeight, imageWidth, carID.ToString(), this.chartCanvas, color, rotateTransform);
+                                //agvUc = new AGV(carID.ToString(), color, ((carAngle == 0) ? 0 : (360 - carAngle)));
+                                //agvUc.Uid = "AGV" + carID;
+                                //Canvas.SetLeft(agvUc, realX);
+                                //Canvas.SetTop(agvUc, realY);
+                                //this.chartCanvas.Children.Add(agvUc);
+
+                                navBarGroup.Caption = agv_Ip;
+                                dtTemp = dtSourceProperty.Clone();
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "坐标";
+                                drNew["VAL"] = coordinates;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "AGV当前角度值";
+                                drNew["VAL"] = agv_Angle;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "料架当前角度值";
+                                drNew["VAL"] = agv_Skip_Angle;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "当前任务执行编号";
+                                drNew["VAL"] = agv_Now_Ord;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "当前任务数";
+                                drNew["VAL"] = agv_Now_Ord_Count;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "剩余行程总和";
+                                drNew["VAL"] = agv_Remaining_Trip;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "左轮转速";
+                                drNew["VAL"] = agv_L_Speed;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "右轮转速";
+                                drNew["VAL"] = agv_R_Speed;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "举升电机速度";
+                                drNew["VAL"] = agv_Lifting_Speed;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "旋转电机速度";
+                                drNew["VAL"] = agv_Rotating_Speed;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "电池电压值";
+                                drNew["VAL"] = agv_Voltage;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "系统电流值";
+                                drNew["VAL"] = agv_Electricity;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "错误代码";
+                                drNew["VAL"] = agv_ErrorCord;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "警告代码";
+                                drNew["VAL"] = agv_WarningCord;
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "当前货架编号";
+                                drNew["VAL"] = agv_LineNo;
+                                dtTemp.Rows.Add(drNew);
+
+                                dicGrid["gridControl" + (j * 2 + 1)].DataSource = dtTemp;
+                                dtTemp = dtSourceProperty.Clone();
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "执行任务状态";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "顶升复位标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "转盘复位标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "陀螺仪零偏纠正标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "携带料架信息";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "位置确定标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "小车当前故障标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "小车当前警告标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "激光感应器远距离标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "激光感应器中距离标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "激光感应器近距离标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "前端料架感应器标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "后端料架感应器标志";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+                                drNew = dtTemp.NewRow();
+                                drNew["Property"] = "休眠状态指示";
+                                drNew["VAL"] = "";
+                                dtTemp.Rows.Add(drNew);
+
+                                dicGrid["gridControl" + (j * 2 + 2)].DataSource = dtTemp;
+                            }
+                            navBarGroup.Visible = true;
+                        }
+                    }
+                    foreach (string key in dicNavBarGroups.Keys)
+                    {
+                        if (int.Parse(key) >= table.Rows.Count)
+                        {
+                            dicNavBarGroups[key].Visible = false;
+                        }
+                    }
+                    dtSourcePropertyOld = table;
+                }
+            }
+        }
+
+        [DllImport("kernel32.dll")]
+        public static extern int SetProcessWorkingSetSize(IntPtr process, int minSize, int maxSize);
+
+        public static void ClearMemory()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
+                SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+            }
+        }
+
+        private void AddForbidFromDB()
+        {
+            DataTable MapTable = Function.PR_Read_Map_FQ();
+            if (MapTable != null && MapTable.Rows.Count > 0)
+            {
+                DrawingLayer lay = (DrawingLayer)m_data.ActiveLayer;
+                for (int j = 0; j < MapTable.Rows.Count; j++)
+                {
+                    int MapNo = int.Parse(MapTable.Rows[j][0].ToString().Trim());
+                    int MapUsed = int.Parse(MapTable.Rows[j][1].ToString().Trim());
+                    int Map_A = int.Parse(MapTable.Rows[j][2].ToString().Trim());
+                    int Map_B = int.Parse(MapTable.Rows[j][3].ToString().Trim());
+                    int Map_C = int.Parse(MapTable.Rows[j][4].ToString().Trim());
+                    int Map_D = int.Parse(MapTable.Rows[j][5].ToString().Trim());
+                    int Real_A = MapNo - int.Parse(txtX.Text);
+                    int Real_B = MapNo;
+                    int Real_C = MapNo + 2;
+                    int Real_D = MapNo + 2 + int.Parse(txtX.Text);
+                    if (MapUsed == 2)
+                    {
+                        Forbid forbid = new Forbid();
+                        forbid.MapNo = MapNo;
+                        forbid.X = MapNo % Xcount;
+                        forbid.Y = MapNo / Xcount;
+                        forbid.Location = new UnitPoint(20 + forbid.X * Distance, 20 + (Ycount - forbid.Y) * Distance - (float)Distance);
+                        lay.AddObject(forbid);
+                    }
+                    else
+                    {
+                        //Left
+                        if (Real_B > 0 && (Real_B == Map_A | Real_B == Map_B | Real_B == Map_C | Real_B == Map_D))
+                        {
+                            ArrowLeft arrow = new ArrowLeft();
+                            arrow.MapNo = MapNo;
+                            arrow.X = MapNo % Xcount;
+                            arrow.Y = MapNo / Xcount;
+                            arrow.Location = new UnitPoint(20 + arrow.X * Distance + (float)Distance / 2, 20 + (Ycount - arrow.Y) * Distance - (float)Distance / 2);
+                            lay.AddObject(arrow);
+                        }
+                        //right//B
+                        if (Real_C > 0 && (Real_C == Map_A | Real_C == Map_B | Real_C == Map_C | Real_C == Map_D))
+                        {
+                            ArrowRight arrow = new ArrowRight();
+                            arrow.MapNo = MapNo;
+                            arrow.X = MapNo % Xcount;
+                            arrow.Y = MapNo / Xcount;
+                            arrow.Location = new UnitPoint(20 + arrow.X * Distance + (float)Distance / 2, 20 + (Ycount - arrow.Y) * Distance - (float)Distance / 2);
+                            lay.AddObject(arrow);
+                        }
+                        //top//D
+                        if (Real_D > 0 && (Real_D == Map_A | Real_D == Map_B | Real_D == Map_C | Real_D == Map_D))
+                        {
+                            ArrowUp arrow = new ArrowUp();
+                            arrow.MapNo = MapNo;
+                            arrow.X = MapNo % Xcount;
+                            arrow.Y = MapNo / Xcount;
+                            arrow.Location = new UnitPoint(20 + arrow.X * Distance + (float)Distance / 2, 20 + (Ycount - arrow.Y) * Distance - (float)Distance / 2);
+                            lay.AddObject(arrow);
+                        }
+                        //down//A
+                        if (Real_A > 0 && (Real_A == Map_A | Real_A == Map_B | Real_A == Map_C | Real_A == Map_D))
+                        {
+                            ArrowDown arrow = new ArrowDown();
+                            arrow.MapNo = MapNo;
+                            arrow.X = MapNo % Xcount;
+                            arrow.Y = MapNo / Xcount;
+                            arrow.Location = new UnitPoint(20 + arrow.X * Distance + (float)Distance / 2, 20 + (Ycount - arrow.Y) * Distance - (float)Distance / 2);
+                            lay.AddObject(arrow);
+                        }
                     }
                 }
             }
         }
+        #endregion
     }
 }

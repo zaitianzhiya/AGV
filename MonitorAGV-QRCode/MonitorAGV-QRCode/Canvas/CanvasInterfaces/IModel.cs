@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Canvas.CanvasCtrl;
 
 namespace Canvas.CanvasInterfaces
 {
@@ -64,6 +65,8 @@ namespace Canvas.CanvasInterfaces
 		ICanvasLayer GetLayer(string id);
 
 		IDrawObject CreateObject(string type, UnitPoint point, ISnapPoint snappoint);
+
+        IDrawObject CreateObject(CanvasCtrller cc,string type, UnitPoint point, ISnapPoint snappoint);
 
 		void AddObject(ICanvasLayer layer, IDrawObject drawobject);
 

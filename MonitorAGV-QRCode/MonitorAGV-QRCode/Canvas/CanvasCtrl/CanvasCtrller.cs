@@ -18,7 +18,7 @@ namespace Canvas.CanvasCtrl
     public class CanvasCtrller : UserControl
     {
         public object obj;
-        public event EventHandler TestEvent;
+        public event EventHandler MoveEvent;
 
         private Rectangle canvasRectangle;//显示区域
 
@@ -145,13 +145,13 @@ namespace Canvas.CanvasCtrl
             Height = (int)((m_model.YCount * m_model.Distance + 100) * m_model.Zoom);
             base.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
             base.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            m_commandType = eCommandType.select;
-            m_cursors.AddCursor(eCommandType.select, Cursors.Arrow);
-            m_cursors.AddCursor(eCommandType.draw, Cursors.Cross);
-            m_cursors.AddCursor(eCommandType.pan, "hmove.cur");
-            m_cursors.AddCursor(eCommandType.move, Cursors.SizeAll);
-            m_cursors.AddCursor(eCommandType.edit, Cursors.Cross);
-            UpdateCursor();
+            //m_commandType = eCommandType.select;
+            //m_cursors.AddCursor(eCommandType.select, Cursors.Arrow);
+            //m_cursors.AddCursor(eCommandType.draw, Cursors.Cross);
+            //m_cursors.AddCursor(eCommandType.pan, "hmove.cur");
+            //m_cursors.AddCursor(eCommandType.move, Cursors.SizeAll);
+            //m_cursors.AddCursor(eCommandType.edit, Cursors.Cross);
+            //UpdateCursor();
             m_moveHelper = new MoveHelper(this);
             m_nodeMoveHelper = new NodeMoveHelper(m_canvaswrapper);
         }
@@ -194,14 +194,14 @@ namespace Canvas.CanvasCtrl
             //float num2 = (float)(base.ClientRectangle.Height / 2);
             float num2 = (float)(canvasRectangle.Height / 2);
             m_panOffset.Y = m_panOffset.Y + (num2 - screenPoint.Y);
-            //m_panOffset.X = m_panOffset.Y = 0;
+            m_panOffset.X = m_panOffset.Y = 0;
             if (setCursor)
             {
                 //Cursor.Position = base.PointToScreen(new Point((int)num, (int)num2));
                 //Point pZoom = new Point((int) screenPoint.X, (int) screenPoint.Y);
                 //Cursor.Position = base.PointToScreen(pZoom);
-                Panel plMain = (Panel)this.Parent;
-                plMain.AutoScrollPosition = new Point((int)num, (int)num2);
+                //Panel plMain = (Panel)this.Parent;
+                //plMain.AutoScrollPosition = new Point((int)num, (int)num2);
             }
             DoInvalidate(true);
         }
@@ -217,7 +217,7 @@ namespace Canvas.CanvasCtrl
             float num2 = m_panOffset.Y + m_dragOffset.Y;
             float num3 = (screenpoint.X - num) / (m_screenResolution * m_model.Zoom);
             //float num4 = ScreenHeight() - (screenpoint.Y - num2) / (m_screenResolution * m_model.Zoom);
-            float num4 =(screenpoint.Y - num2) / (m_screenResolution * m_model.Zoom);
+            float num4 = (screenpoint.Y - num2) / (m_screenResolution * m_model.Zoom);
             return new UnitPoint((double)num3, (double)num4);
         }
 
@@ -286,22 +286,22 @@ namespace Canvas.CanvasCtrl
 
         private void RepaintStatic(Rectangle r)
         {
-            if (m_staticImage!=null)
+            if (m_staticImage != null)
             {
                 Graphics graphics = Graphics.FromHwnd(base.Handle);
                 if (r.X < 0)
                 {
                     r.X = 0;
                 }
-                if ( r.X > m_staticImage.Width)
+                if (r.X > m_staticImage.Width)
                 {
                     r.X = 0;
                 }
-                if ( r.Y < 0)
+                if (r.Y < 0)
                 {
                     r.Y = 0;
                 }
-                if ( r.Y > m_staticImage.Height)
+                if (r.Y > m_staticImage.Height)
                 {
                     r.Y = 0;
                 }
@@ -309,7 +309,7 @@ namespace Canvas.CanvasCtrl
                 {
                     r.Width = m_staticImage.Width;
                 }
-                if ( r.Height > m_staticImage.Height || r.Height < 0)
+                if (r.Height > m_staticImage.Height || r.Height < 0)
                 {
                     r.Height = m_staticImage.Height;
                 }
@@ -481,83 +481,17 @@ namespace Canvas.CanvasCtrl
             m_snappoint = null;
         }
 
-        protected virtual void HandleMouseDownWhenDrawing(UnitPoint mouseunitpoint, ISnapPoint snappoint)
-        {
-            try
-            {
-                if (m_commandType == eCommandType.draw)
-                {
-                    if (m_newObject == null)
-                    {
-                        m_newObject = m_model.CreateObject(m_drawObjectId, mouseunitpoint, snappoint);
-                        DoInvalidate(false, m_newObject.GetBoundingRect(m_canvaswrapper));
-                        if (m_newObject.Id == "LandMark" || m_newObject.Id == "ImgeTool" || m_newObject.Id == "TextTool" || m_newObject.Id == "StorageTool" || m_newObject.Id == "AGVTool" || m_newObject.Id == "ButtonTool")
-                        {
-                            m_newObject = m_model.CreateObject(m_drawObjectId, mouseunitpoint, snappoint);
-                            m_newObject.OnMouseDown(m_canvaswrapper, mouseunitpoint, snappoint);
-                            m_model.AddObject(m_model.ActiveLayer, m_newObject);
-                            m_newObject = null;
-                            DoInvalidate(true);
-                        }
-                        if (m_drawObjectId == "PointBezier")
-                        {
-                            if ((m_newObject as BezierTool).CurrentPoint == BezierTool.eCurrentPoint.p1 || (m_newObject as BezierTool).CurrentPoint == BezierTool.eCurrentPoint.p2)
-                            {
-                                if (m_snappoint == null || (m_snappoint != null && ((m_snappoint.Owner != null && m_snappoint.Owner.Id != "LandMark") || m_snappoint.Owner == null)))
-                                {
-                                    m_newObject = null;
-                                    DoInvalidate(true);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (m_drawObjectId == "PointBezier")
-                        {
-                            if ((m_newObject as BezierTool).CurrentPoint == BezierTool.eCurrentPoint.p1 || (m_newObject as BezierTool).CurrentPoint == BezierTool.eCurrentPoint.p2)
-                            {
-                                if (m_snappoint == null || (m_snappoint != null && ((m_snappoint.Owner != null && m_snappoint.Owner.Id != "LandMark") || m_snappoint.Owner == null)))
-                                {
-                                    m_newObject = null;
-                                    DoInvalidate(true);
-                                    return;
-                                }
-                            }
-                        }
-                        switch (m_newObject.OnMouseDown(m_canvaswrapper, mouseunitpoint, snappoint))
-                        {
-                            case eDrawObjectMouseDownEnum.Done:
-                                m_model.AddObject(m_model.ActiveLayer, m_newObject);
-                                m_newObject = null;
-                                DoInvalidate(true);
-                                break;
-                            case eDrawObjectMouseDownEnum.DoneRepeat:
-                                m_model.AddObject(m_model.ActiveLayer, m_newObject);
-                                m_newObject = m_model.CreateObject(m_newObject.Id, m_newObject.RepeatStartingPoint, null);
-                                DoInvalidate(true);
-                                break;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             Tracing.StartTrack(Tracing.TracePaint);
             e.Graphics.SmoothingMode = m_smoothingMode;
-            //CanvasWrapper canvasWrapper = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
+            CanvasWrapper canvasWrapper = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
             Rectangle rectangle = e.ClipRectangle;
             canvasRectangle = this.Parent.ClientRectangle;
             //if (m_staticImage == null)
             //{
-                //m_staticImage = new Bitmap(rectangle.Width, rectangle.Height);
-                //m_staticDirty = true;
+            //m_staticImage = new Bitmap(rectangle.Width, rectangle.Height);
+            //m_staticDirty = true;
             //}
             if (!(float.IsNaN(rectangle.Width) || float.IsInfinity(rectangle.Width)))
             {
@@ -572,13 +506,15 @@ namespace Canvas.CanvasCtrl
                     {
                         m_model.GridLayer.Draw(canvasWrapper2, rectangle);
                     }
+                    canvasWrapper2.Dispose();
 
+                    CanvasWrapper canvasWrapper4 = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
+                    canvasWrapper4.Graphics.SmoothingMode = m_smoothingMode;
                     if (m_model.ActiveLayer != null)
                     {
-                        m_model.ActiveLayer.Draw(canvasWrapper2, rectangle);
+                        m_model.ActiveLayer.Draw(canvasWrapper4, rectangle);
                     }
-                    canvasWrapper2.Dispose();
-                    GC.Collect();
+                    canvasWrapper4.Dispose();
 
                     float xStart = rectangle.X;
                     float yStart = rectangle.Y;
@@ -600,11 +536,11 @@ namespace Canvas.CanvasCtrl
                         //y1 = 0;
                         //y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
                         y1 = yStart;
-                        if (y1 <= 10*m_model.Zoom)
+                        if (y1 <= 10 * m_model.Zoom)
                         {
                             y1 = 0;
                         }
-                        y2 = (20 + m_model.YCount*m_model.Distance)*m_model.Zoom;
+                        y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
                         if (y2 > yEnd)
                         {
                             y2 = yEnd;
@@ -612,8 +548,8 @@ namespace Canvas.CanvasCtrl
                         if (y1 == 0)
                         {
                             canvasWrapper3.Graphics.DrawLine(penCoor, x1, y2, x1, y1);
-                            canvasWrapper3.Graphics.DrawString("Y", fontCoor, Brushes.White, (float) (5*m_model.Zoom),
-                                5*m_model.Zoom);
+                            canvasWrapper3.Graphics.DrawString("Y", fontCoor, Brushes.White, (float)(5 * m_model.Zoom),
+                                5 * m_model.Zoom);
                         }
                         else
                         {
@@ -634,7 +570,7 @@ namespace Canvas.CanvasCtrl
                         x2 = (20 + m_model.XCount * m_model.Distance + 20) * m_model.Zoom;
                         if (x2 > xEnd)
                         {
-                            if (x2 - xEnd <=10*m_model.Zoom)
+                            if (x2 - xEnd <= 10 * m_model.Zoom)
                             {
                                 isEnd = true;
                             }
@@ -650,8 +586,8 @@ namespace Canvas.CanvasCtrl
                         if (isEnd)
                         {
                             canvasWrapper3.Graphics.DrawLine(penCoor, x1, y2, x2, y2);
-                            canvasWrapper3.Graphics.DrawString("X", fontCoor, Brushes.White, x2 - 20*m_model.Zoom,
-                                y2 + 5*m_model.Zoom);
+                            canvasWrapper3.Graphics.DrawString("X", fontCoor, Brushes.White, x2 - 20 * m_model.Zoom,
+                                y2 + 5 * m_model.Zoom);
                         }
                         else
                         {
@@ -669,15 +605,15 @@ namespace Canvas.CanvasCtrl
                 //m_staticImage.Save(Application.StartupPath+@"\1.bmp",ImageFormat.Bmp);
                 //obj = rectangle.X + "@" + rectangle.Y + "@" + rectangle.Width + "@" + rectangle.Height;
                 //TestEvent(null, null);
-                //foreach (IDrawObject current in m_model.SelectedObjects)
-                //{
-                //    current.Draw(canvasWrapper, rectangle);
-                //}
+                foreach (IDrawObject current in m_model.SelectedObjects)
+                {
+                    current.Draw(canvasWrapper, rectangle);
+                }
 
-                //if (m_newObject != null)
-                //{
-                //    m_newObject.Draw(canvasWrapper, rectangle);
-                //}
+                if (m_newObject != null)
+                {
+                    m_newObject.Draw(canvasWrapper, rectangle);
+                }
 
                 //if (m_snappoint != null)
                 //{
@@ -696,125 +632,59 @@ namespace Canvas.CanvasCtrl
                 //{
                 //    m_nodeMoveHelper.DrawObjects(canvasWrapper, rectangle);
                 //}
-                //canvasWrapper.Dispose();
+                canvasWrapper.Dispose();
                 Tracing.EndTrack(Tracing.TracePaint, "OnPaint complete");
+            }
+        }
+
+        protected virtual void HandleMouseDownWhenDrawing(UnitPoint mouseunitpoint, ISnapPoint snappoint)
+        {
+            if (m_commandType == eCommandType.draw)
+            {
+                int x = (int)((mouseunitpoint.X - 20) / m_model.Distance);
+                int y = m_model.YCount - (int)((mouseunitpoint.Y - 20) / m_model.Distance) - 1;
+                int mapNo = y * m_model.XCount + x + 1;
+                List<IDrawObject> lst= (from p in m_model.ActiveLayer.Objects
+                                        where p.Id == m_drawObjectId && p.MapNo == mapNo
+                select p).ToList();
+                if (lst.Any())
+                {
+                    m_model.DeleteObjects(lst);
+                    DoInvalidate(true);
+                }
+                else
+                {
+                    if (m_newObject == null)
+                    {
+                        m_newObject = m_model.CreateObject(this, m_drawObjectId, mouseunitpoint, snappoint);
+                        if (m_newObject.Id == "ArrowLeft" || m_newObject.Id == "ArrowRight" ||
+                            m_newObject.Id == "ArrowDown" || m_newObject.Id == "ArrowUp" ||
+                            m_newObject.Id == "AGVTool" || m_newObject.Id == "Charge" || m_newObject.Id == "Forbid")
+                        {
+                            m_newObject.OnMouseDown(m_canvaswrapper, mouseunitpoint, snappoint);
+                            m_model.AddObject(m_model.ActiveLayer, m_newObject);
+                            m_newObject = null;
+                            DoInvalidate(true);
+                        }
+                    }
+                }
             }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            try
+            m_mousedownPoint = new PointF((float)e.X, (float)e.Y);
+            UnitPoint unitPoint = ToUnit(m_mousedownPoint);
+            if (m_commandType == eCommandType.draw)
             {
-                if (e.Button == MouseButtons.Right)
+                if (unitPoint.X >= 20 && unitPoint.Y >= 20 && unitPoint.X <= m_model.XCount * m_model.Distance + 20 &&
+                unitPoint.Y <= m_model.YCount * m_model.Distance + 20)
                 {
-                    beforeECommandType = m_commandType;
-                    m_commandType = eCommandType.pan;
-                    UpdateCursor();
-                }
-                else
-                {
-                    beforeECommandType = null;
-                }
-                if (m_commandType == eCommandType.select && e.Button == MouseButtons.Right)
-                {
-                    m_commandType = eCommandType.pan;
-                    UpdateCursor();
-                }
-                m_mousedownPoint = new PointF((float)e.X, (float)e.Y);
-                m_dragOffset = new PointF(0f, 0f);
-                UnitPoint unitPoint = ToUnit(m_mousedownPoint);
-                if (m_snappoint != null)
-                {
-                    unitPoint = m_snappoint.SnapPoint;
-                }
-                if (m_commandType == eCommandType.editNode)
-                {
-                    bool flag4 = false;
-                    if (m_nodeMoveHelper.HandleMouseDown(unitPoint, ref flag4))
-                    {
-                        if (m_drawObjectId == "PointLine")
-                        {
-                            if (m_snappoint == null || (m_snappoint != null && ((m_snappoint.Owner != null && m_snappoint.Owner.Id != "LandMark") || m_snappoint.Owner == null)))
-                            {
-                                m_newObject = null;
-                                DoInvalidate(true);
-                                return;
-                            }
-                        }
-                        FinishNodeEdit();
-                        base.OnMouseDown(e);
-                        return;
-                    }
-                }
-                if (m_commandType == eCommandType.select && e.Button == MouseButtons.Left)
-                {
-                    bool flag9 = false;
-                    if (m_nodeMoveHelper.HandleMouseDown(unitPoint, ref flag9))
-                    {
-                        m_commandType = eCommandType.editNode;
-                        m_snappoint = null;
-                        base.OnMouseDown(e);
-                        return;
-                    }
-                    m_selection = new SelectionRectangle(m_mousedownPoint);
-                }
-                if (m_commandType == eCommandType.move)
-                {
-                    m_moveHelper.HandleMouseDownForMove(unitPoint, m_snappoint);
-                }
-                if (m_commandType == eCommandType.draw)
-                {
-                    if (e.Button == MouseButtons.Right)
-                    {
-                        m_newObject = null;
-                        DoInvalidate(true);
-                        return;
-                    }
-                    if (m_drawObjectId == "PointLine")
-                    {
-                        if (m_snappoint == null || (m_snappoint != null && ((m_snappoint.Owner != null && m_snappoint.Owner.Id != "LandMark") || m_snappoint.Owner == null)))
-                        {
-                            m_newObject = null;
-                            DoInvalidate(true);
-                            return;
-                        }
-                    }
                     HandleMouseDownWhenDrawing(unitPoint, null);
-                    DoInvalidate(true);
                 }
-                if (m_commandType == eCommandType.edit)
-                {
-                    if (m_editTool == null)
-                    {
-                        m_editTool = m_model.GetEditTool(m_editToolId);
-                    }
-                    if (m_editTool != null)
-                    {
-                        if (m_editTool.SupportSelection)
-                        {
-                            m_selection = new SelectionRectangle(m_mousedownPoint);
-                        }
-                        eDrawObjectMouseDownEnum eDrawObjectMouseDownEnum = m_editTool.OnMouseDown(m_canvaswrapper, unitPoint, m_snappoint);
-                        if (eDrawObjectMouseDownEnum == eDrawObjectMouseDownEnum.Done)
-                        {
-                            m_editTool.Finished();
-                            m_editTool = m_model.GetEditTool(m_editToolId);
-                            bool supportSelection2 = m_editTool.SupportSelection;
-                            if (supportSelection2)
-                            {
-                                m_selection = new SelectionRectangle(m_mousedownPoint);
-                            }
-                        }
-                    }
-                    DoInvalidate(true);
-                    UpdateCursor();
-                }
-                base.OnMouseDown(e);
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+
+            base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
@@ -898,106 +768,10 @@ namespace Canvas.CanvasCtrl
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            try
-            {
-                UnitPoint mousePoint = GetMousePoint();
-                string msg = string.Format("Mouse:({0},{1}),Unit:({2},{3})", MousePosition.X, MousePosition.Y,
-                      mousePoint.X, mousePoint.Y);
-                TestEvent(msg, null);
-                base.OnMouseMove(e);
-                if (m_selection != null)
-                {
-                    Graphics graphics = Graphics.FromHwnd(base.Handle);
-                    m_selection.SetMousePoint(graphics, new PointF((float)e.X, (float)e.Y));
-                    graphics.Dispose();
-                }
-                else
-                {
-                    if ((m_commandType == eCommandType.pan && e.Button == MouseButtons.Left) || e.Button == MouseButtons.Right)
-                    {
-                        m_dragOffset.X = -(m_mousedownPoint.X - (float)e.X);
-                        m_dragOffset.Y = -(m_mousedownPoint.Y - (float)e.Y);
-                        m_lastCenterPoint = CenterPointUnit();
-                        DoInvalidate(true);
-                    }
-                    UnitPoint positionInfo = ToUnit(new PointF((float)e.X, (float)e.Y));
-                    UnitPoint unitPoint;
-                    if (m_commandType == eCommandType.draw || m_commandType == eCommandType.move || !m_nodeMoveHelper.IsEmpty)
-                    {
-                        Rectangle rectangle = Rectangle.Empty;
-                        ISnapPoint snapPoint = null;
-                        unitPoint = GetMousePoint();
-                        if (RunningSnapsEnabled)
-                        {
-                            snapPoint = m_model.SnapPoint(m_canvaswrapper, unitPoint, m_runningSnapTypes, null);
-                        }
-                        if (snapPoint == null)
-                        {
-                            snapPoint = m_model.GridLayer.SnapPoint(m_canvaswrapper, unitPoint, null);
-                        }
-                        if (m_snappoint != null && (snapPoint == null || snapPoint.SnapPoint != m_snappoint.SnapPoint || m_snappoint.GetType() != snapPoint.GetType()))
-                        {
-                            rectangle = ScreenUtils.ConvertRect(ScreenUtils.ToScreenNormalized(m_canvaswrapper, m_snappoint.BoundingRect));
-                            rectangle.Inflate(2, 2);
-                            RepaintStatic(rectangle);
-                            m_snappoint = snapPoint;
-                        }
-                        if (m_commandType == eCommandType.move)
-                        {
-                            base.Invalidate(rectangle);
-                        }
-                        if (m_snappoint == null)
-                        {
-                            m_snappoint = snapPoint;
-                        }
-                    }
-                    m_owner.SetPositionInfo(positionInfo);
-                    m_owner.SetSnapInfo(m_snappoint);
-                    if (m_snappoint != null)
-                    {
-                        unitPoint = m_snappoint.SnapPoint;
-                    }
-                    else
-                    {
-                        unitPoint = GetMousePoint();
-                    }
-                    if (m_newObject != null)
-                    {
-                        Rectangle r = ScreenUtils.ConvertRect(ScreenUtils.ToScreenNormalized(m_canvaswrapper, m_newObject.GetBoundingRect(m_canvaswrapper)));
-                        r.Inflate(2, 2);
-                        RepaintStatic(r);
-                        m_newObject.OnMouseMove(m_canvaswrapper, unitPoint);
-                        RepaintObject(m_newObject);
-                    }
-                    if (m_snappoint != null)
-                    {
-                        RepaintSnappoint(m_snappoint);
-                    }
-                    if (m_moveHelper.HandleMouseMoveForMove(unitPoint))
-                    {
-                        Refresh();
-                    }
-                    RectangleF rectangleF = m_nodeMoveHelper.HandleMouseMoveForNode(unitPoint);
-                    if (rectangleF != RectangleF.Empty)
-                    {
-                        Rectangle r2 = ScreenUtils.ConvertRect(ScreenUtils.ToScreenNormalized(m_canvaswrapper, rectangleF));
-                        RepaintStatic(r2);
-                        CanvasWrapper canvasWrapper = new CanvasWrapper(this, Graphics.FromHwnd(base.Handle), base.ClientRectangle);
-                        canvasWrapper.Graphics.Clip = new Region(base.ClientRectangle);
-                        m_nodeMoveHelper.DrawObjects(canvasWrapper, rectangleF);
-                        if (m_snappoint != null)
-                        {
-                            RepaintSnappoint(m_snappoint);
-                        }
-                        canvasWrapper.Graphics.Dispose();
-                        canvasWrapper.Dispose();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            UnitPoint mousePoint = GetMousePoint();
+            string msg = string.Format("Virtual:({0},{1}) || Real:({2}mm,{3}mm)", mousePoint.X, mousePoint.Y, Math.Round(mousePoint.X * m_model.Zoom,2),Math.Round(mousePoint.Y * m_model.Zoom,2));
+            MoveEvent(msg, null);
+            base.OnMouseMove(e);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -1029,7 +803,7 @@ namespace Canvas.CanvasCtrl
                     }
                     bool flag2 = float.IsNaN(num3) || float.IsInfinity(num3) || Math.Round((double)num3, 6) <= 1E-06 ||
                                  num3 > 20000f;
-                 
+
                     if (!flag2)
                     {
                         m_model.Zoom = num3;
@@ -1457,6 +1231,46 @@ namespace Canvas.CanvasCtrl
             }
         }
 
+        public void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p)
+        {
+            try
+            {
+                if (!p.IsEmpty)
+                {
+                    if (canvas.Graphics != null)
+                    {
+                        PointF pointF = ToScreen(p);
+                        Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
+                        canvas.Graphics.DrawRectangle(pen, rect);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p)
+        {
+            try
+            {
+                if (!p.IsEmpty)
+                {
+                    if (canvas.Graphics != null)
+                    {
+                        PointF pointF = ToScreen(p);
+                        Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
+                        canvas.Graphics.DrawEllipse(pen, rect);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         private GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
         {
             GraphicsPath result;
@@ -1495,7 +1309,7 @@ namespace Canvas.CanvasCtrl
                 m_model.ClearSelectedObjects();
                 m_commandType = eCommandType.draw;
                 m_drawObjectId = drawobjectid;
-                UpdateCursor();
+                //UpdateCursor();
             }
             catch (Exception ex)
             {
@@ -1662,7 +1476,6 @@ namespace Canvas.CanvasCtrl
             this.Name = "CanvasCtrller";
             this.Size = new System.Drawing.Size(500, 500);
             this.ResumeLayout(false);
-
         }
     }
 }

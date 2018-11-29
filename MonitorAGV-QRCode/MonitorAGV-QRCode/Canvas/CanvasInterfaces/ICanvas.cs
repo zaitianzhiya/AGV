@@ -56,5 +56,9 @@ namespace Canvas.CanvasInterfaces
 		void DrawBtnBox(ICanvas canvas, float Radius, UnitPoint Point, bool Selected);
 
 		void DrawAGV(ICanvas canvas, Pen pen, UnitPoint p, string Code);
+
+	    void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p);
+
+        void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p);
 	}
 }

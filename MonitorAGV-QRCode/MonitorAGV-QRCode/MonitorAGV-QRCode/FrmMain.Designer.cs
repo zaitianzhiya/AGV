@@ -677,6 +677,8 @@
             this.btnHand.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnHand.ImageOptions.Image")));
             this.btnHand.ImageOptions.SvgImageSize = new System.Drawing.Size(16, 16);
             this.btnHand.Name = "btnHand";
+            this.btnHand.Tag = "pan";
+            this.btnHand.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnPath
             // 
@@ -684,6 +686,7 @@
             this.btnPath.Id = 19;
             this.btnPath.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnPath.ImageOptions.Image")));
             this.btnPath.Name = "btnPath";
+            this.btnPath.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnForbid
             // 
@@ -691,6 +694,8 @@
             this.btnForbid.Id = 20;
             this.btnForbid.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnForbid.ImageOptions.Image")));
             this.btnForbid.Name = "btnForbid";
+            this.btnForbid.Tag = "Forbid";
+            this.btnForbid.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnLeft
             // 
@@ -698,6 +703,8 @@
             this.btnLeft.Id = 21;
             this.btnLeft.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnLeft.ImageOptions.Image")));
             this.btnLeft.Name = "btnLeft";
+            this.btnLeft.Tag = "ArrowLeft";
+            this.btnLeft.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnUp
             // 
@@ -705,6 +712,8 @@
             this.btnUp.Id = 22;
             this.btnUp.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnUp.ImageOptions.Image")));
             this.btnUp.Name = "btnUp";
+            this.btnUp.Tag = "ArrowUp";
+            this.btnUp.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnRight
             // 
@@ -712,6 +721,8 @@
             this.btnRight.Id = 23;
             this.btnRight.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnRight.ImageOptions.Image")));
             this.btnRight.Name = "btnRight";
+            this.btnRight.Tag = "ArrowRight";
+            this.btnRight.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnDown
             // 
@@ -719,6 +730,8 @@
             this.btnDown.Id = 24;
             this.btnDown.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDown.ImageOptions.Image")));
             this.btnDown.Name = "btnDown";
+            this.btnDown.Tag = "ArrowDown";
+            this.btnDown.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnCharge
             // 
@@ -726,6 +739,8 @@
             this.btnCharge.Id = 25;
             this.btnCharge.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnCharge.ImageOptions.Image")));
             this.btnCharge.Name = "btnCharge";
+            this.btnCharge.Tag = "Charge";
+            this.btnCharge.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnShelf
             // 
@@ -733,6 +748,8 @@
             this.btnShelf.Id = 26;
             this.btnShelf.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnShelf.ImageOptions.Image")));
             this.btnShelf.Name = "btnShelf";
+            this.btnShelf.Tag = "Shelf";
+            this.btnShelf.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnDistance
             // 
@@ -740,6 +757,7 @@
             this.btnDistance.Id = 28;
             this.btnDistance.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDistance.ImageOptions.Image")));
             this.btnDistance.Name = "btnDistance";
+            this.btnDistance.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnDesignPath
             // 
@@ -747,6 +765,7 @@
             this.btnDesignPath.Id = 29;
             this.btnDesignPath.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDesignPath.ImageOptions.Image")));
             this.btnDesignPath.Name = "btnDesignPath";
+            this.btnDesignPath.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnAdvice
             // 
@@ -754,18 +773,21 @@
             this.btnAdvice.Id = 31;
             this.btnAdvice.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnAdvice.ImageOptions.Image")));
             this.btnAdvice.Name = "btnAdvice";
+            this.btnAdvice.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnLock
             // 
             this.btnLock.Caption = "Lock Direction";
             this.btnLock.Id = 34;
             this.btnLock.Name = "btnLock";
+            this.btnLock.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnOpen
             // 
             this.btnOpen.Caption = "open";
             this.btnOpen.Id = 35;
             this.btnOpen.Name = "btnOpen";
+            this.btnOpen.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // bar2
             // 
@@ -985,6 +1007,7 @@
             // dockPanel1
             // 
             this.dockPanel1.AllowBorderColorBlending = true;
+            this.dockPanel1.AllowDrop = true;
             this.dockPanel1.Controls.Add(this.dockPanel1_Container);
             this.dockPanel1.Dock = DevExpress.XtraBars.Docking.DockingStyle.Left;
             this.dockPanel1.Font = new System.Drawing.Font("Tahoma", 9F);
@@ -996,6 +1019,8 @@
             this.dockPanel1.OriginalSize = new System.Drawing.Size(200, 200);
             this.dockPanel1.Size = new System.Drawing.Size(200, 380);
             this.dockPanel1.Text = "AGV列表";
+            this.dockPanel1.Expanded += new DevExpress.XtraBars.Docking.DockPanelEventHandler(this.dockPanel2_Collapsed);
+            this.dockPanel1.Collapsed += new DevExpress.XtraBars.Docking.DockPanelEventHandler(this.dockPanel2_Collapsed);
             // 
             // dockPanel1_Container
             // 
@@ -1117,7 +1142,7 @@
             this.gridColumn1,
             this.gridColumn2});
             this.gridView1.GridControl = this.gridControl1;
-            this.gridView1.IndicatorWidth = 40;
+            this.gridView1.IndicatorWidth = 30;
             this.gridView1.Name = "gridView1";
             this.gridView1.OptionsBehavior.Editable = false;
             this.gridView1.OptionsView.ColumnAutoWidth = false;
@@ -1158,7 +1183,7 @@
             this.gridColumn3,
             this.gridColumn4});
             this.gridView2.GridControl = this.gridControl2;
-            this.gridView2.IndicatorWidth = 40;
+            this.gridView2.IndicatorWidth = 30;
             this.gridView2.Name = "gridView2";
             this.gridView2.OptionsBehavior.Editable = false;
             this.gridView2.OptionsView.ColumnAutoWidth = false;
@@ -1222,7 +1247,7 @@
             this.gridColumn9,
             this.gridColumn10});
             this.gridView5.GridControl = this.gridControl5;
-            this.gridView5.IndicatorWidth = 40;
+            this.gridView5.IndicatorWidth = 30;
             this.gridView5.Name = "gridView5";
             this.gridView5.OptionsBehavior.Editable = false;
             this.gridView5.OptionsView.ColumnAutoWidth = false;
@@ -1263,7 +1288,7 @@
             this.gridColumn11,
             this.gridColumn12});
             this.gridView6.GridControl = this.gridControl6;
-            this.gridView6.IndicatorWidth = 40;
+            this.gridView6.IndicatorWidth = 30;
             this.gridView6.Name = "gridView6";
             this.gridView6.OptionsBehavior.Editable = false;
             this.gridView6.OptionsView.ColumnAutoWidth = false;
@@ -1327,7 +1352,7 @@
             this.gridColumn13,
             this.gridColumn14});
             this.gridView7.GridControl = this.gridControl7;
-            this.gridView7.IndicatorWidth = 40;
+            this.gridView7.IndicatorWidth = 30;
             this.gridView7.Name = "gridView7";
             this.gridView7.OptionsBehavior.Editable = false;
             this.gridView7.OptionsView.ColumnAutoWidth = false;
@@ -1368,7 +1393,7 @@
             this.gridColumn15,
             this.gridColumn16});
             this.gridView8.GridControl = this.gridControl8;
-            this.gridView8.IndicatorWidth = 40;
+            this.gridView8.IndicatorWidth = 30;
             this.gridView8.Name = "gridView8";
             this.gridView8.OptionsBehavior.Editable = false;
             this.gridView8.OptionsView.ColumnAutoWidth = false;
@@ -1432,7 +1457,7 @@
             this.gridColumn17,
             this.gridColumn18});
             this.gridView9.GridControl = this.gridControl9;
-            this.gridView9.IndicatorWidth = 40;
+            this.gridView9.IndicatorWidth = 30;
             this.gridView9.Name = "gridView9";
             this.gridView9.OptionsBehavior.Editable = false;
             this.gridView9.OptionsView.ColumnAutoWidth = false;
@@ -1473,7 +1498,7 @@
             this.gridColumn19,
             this.gridColumn20});
             this.gridView10.GridControl = this.gridControl10;
-            this.gridView10.IndicatorWidth = 40;
+            this.gridView10.IndicatorWidth = 30;
             this.gridView10.Name = "gridView10";
             this.gridView10.OptionsBehavior.Editable = false;
             this.gridView10.OptionsView.ColumnAutoWidth = false;
@@ -1537,7 +1562,7 @@
             this.gridColumn21,
             this.gridColumn22});
             this.gridView11.GridControl = this.gridControl11;
-            this.gridView11.IndicatorWidth = 40;
+            this.gridView11.IndicatorWidth = 30;
             this.gridView11.Name = "gridView11";
             this.gridView11.OptionsBehavior.Editable = false;
             this.gridView11.OptionsView.ColumnAutoWidth = false;
@@ -1578,7 +1603,7 @@
             this.gridColumn23,
             this.gridColumn24});
             this.gridView12.GridControl = this.gridControl12;
-            this.gridView12.IndicatorWidth = 40;
+            this.gridView12.IndicatorWidth = 30;
             this.gridView12.Name = "gridView12";
             this.gridView12.OptionsBehavior.Editable = false;
             this.gridView12.OptionsView.ColumnAutoWidth = false;
@@ -1642,7 +1667,7 @@
             this.gridColumn25,
             this.gridColumn26});
             this.gridView13.GridControl = this.gridControl13;
-            this.gridView13.IndicatorWidth = 40;
+            this.gridView13.IndicatorWidth = 30;
             this.gridView13.Name = "gridView13";
             this.gridView13.OptionsBehavior.Editable = false;
             this.gridView13.OptionsView.ColumnAutoWidth = false;
@@ -1683,7 +1708,7 @@
             this.gridColumn27,
             this.gridColumn28});
             this.gridView14.GridControl = this.gridControl14;
-            this.gridView14.IndicatorWidth = 40;
+            this.gridView14.IndicatorWidth = 30;
             this.gridView14.Name = "gridView14";
             this.gridView14.OptionsBehavior.Editable = false;
             this.gridView14.OptionsView.ColumnAutoWidth = false;
@@ -1747,7 +1772,7 @@
             this.gridColumn29,
             this.gridColumn30});
             this.gridView15.GridControl = this.gridControl15;
-            this.gridView15.IndicatorWidth = 40;
+            this.gridView15.IndicatorWidth = 30;
             this.gridView15.Name = "gridView15";
             this.gridView15.OptionsBehavior.Editable = false;
             this.gridView15.OptionsView.ColumnAutoWidth = false;
@@ -1788,7 +1813,7 @@
             this.gridColumn31,
             this.gridColumn32});
             this.gridView16.GridControl = this.gridControl16;
-            this.gridView16.IndicatorWidth = 40;
+            this.gridView16.IndicatorWidth = 30;
             this.gridView16.Name = "gridView16";
             this.gridView16.OptionsBehavior.Editable = false;
             this.gridView16.OptionsView.ColumnAutoWidth = false;
@@ -1852,7 +1877,7 @@
             this.gridColumn33,
             this.gridColumn34});
             this.gridView17.GridControl = this.gridControl17;
-            this.gridView17.IndicatorWidth = 40;
+            this.gridView17.IndicatorWidth = 30;
             this.gridView17.Name = "gridView17";
             this.gridView17.OptionsBehavior.Editable = false;
             this.gridView17.OptionsView.ColumnAutoWidth = false;
@@ -1893,7 +1918,7 @@
             this.gridColumn35,
             this.gridColumn36});
             this.gridView18.GridControl = this.gridControl18;
-            this.gridView18.IndicatorWidth = 40;
+            this.gridView18.IndicatorWidth = 30;
             this.gridView18.Name = "gridView18";
             this.gridView18.OptionsBehavior.Editable = false;
             this.gridView18.OptionsView.ColumnAutoWidth = false;
@@ -1957,7 +1982,7 @@
             this.gridColumn37,
             this.gridColumn38});
             this.gridView19.GridControl = this.gridControl19;
-            this.gridView19.IndicatorWidth = 40;
+            this.gridView19.IndicatorWidth = 30;
             this.gridView19.Name = "gridView19";
             this.gridView19.OptionsBehavior.Editable = false;
             this.gridView19.OptionsView.ColumnAutoWidth = false;
@@ -1998,7 +2023,7 @@
             this.gridColumn39,
             this.gridColumn40});
             this.gridView20.GridControl = this.gridControl20;
-            this.gridView20.IndicatorWidth = 40;
+            this.gridView20.IndicatorWidth = 30;
             this.gridView20.Name = "gridView20";
             this.gridView20.OptionsBehavior.Editable = false;
             this.gridView20.OptionsView.ColumnAutoWidth = false;
@@ -2062,7 +2087,7 @@
             this.gridColumn41,
             this.gridColumn42});
             this.gridView21.GridControl = this.gridControl21;
-            this.gridView21.IndicatorWidth = 40;
+            this.gridView21.IndicatorWidth = 30;
             this.gridView21.Name = "gridView21";
             this.gridView21.OptionsBehavior.Editable = false;
             this.gridView21.OptionsView.ColumnAutoWidth = false;
@@ -2103,7 +2128,7 @@
             this.gridColumn43,
             this.gridColumn44});
             this.gridView22.GridControl = this.gridControl22;
-            this.gridView22.IndicatorWidth = 40;
+            this.gridView22.IndicatorWidth = 30;
             this.gridView22.Name = "gridView22";
             this.gridView22.OptionsBehavior.Editable = false;
             this.gridView22.OptionsView.ColumnAutoWidth = false;
@@ -2167,7 +2192,7 @@
             this.gridColumn45,
             this.gridColumn46});
             this.gridView23.GridControl = this.gridControl23;
-            this.gridView23.IndicatorWidth = 40;
+            this.gridView23.IndicatorWidth = 30;
             this.gridView23.Name = "gridView23";
             this.gridView23.OptionsBehavior.Editable = false;
             this.gridView23.OptionsView.ColumnAutoWidth = false;
@@ -2208,7 +2233,7 @@
             this.gridColumn47,
             this.gridColumn48});
             this.gridView24.GridControl = this.gridControl24;
-            this.gridView24.IndicatorWidth = 40;
+            this.gridView24.IndicatorWidth = 30;
             this.gridView24.Name = "gridView24";
             this.gridView24.OptionsBehavior.Editable = false;
             this.gridView24.OptionsView.ColumnAutoWidth = false;
@@ -2272,7 +2297,7 @@
             this.gridColumn49,
             this.gridColumn50});
             this.gridView25.GridControl = this.gridControl25;
-            this.gridView25.IndicatorWidth = 40;
+            this.gridView25.IndicatorWidth = 30;
             this.gridView25.Name = "gridView25";
             this.gridView25.OptionsBehavior.Editable = false;
             this.gridView25.OptionsView.ColumnAutoWidth = false;
@@ -2313,7 +2338,7 @@
             this.gridColumn51,
             this.gridColumn52});
             this.gridView26.GridControl = this.gridControl26;
-            this.gridView26.IndicatorWidth = 40;
+            this.gridView26.IndicatorWidth = 30;
             this.gridView26.Name = "gridView26";
             this.gridView26.OptionsBehavior.Editable = false;
             this.gridView26.OptionsView.ColumnAutoWidth = false;
@@ -2377,7 +2402,7 @@
             this.gridColumn53,
             this.gridColumn54});
             this.gridView27.GridControl = this.gridControl27;
-            this.gridView27.IndicatorWidth = 40;
+            this.gridView27.IndicatorWidth = 30;
             this.gridView27.Name = "gridView27";
             this.gridView27.OptionsBehavior.Editable = false;
             this.gridView27.OptionsView.ColumnAutoWidth = false;
@@ -2418,7 +2443,7 @@
             this.gridColumn55,
             this.gridColumn56});
             this.gridView28.GridControl = this.gridControl28;
-            this.gridView28.IndicatorWidth = 40;
+            this.gridView28.IndicatorWidth = 30;
             this.gridView28.Name = "gridView28";
             this.gridView28.OptionsBehavior.Editable = false;
             this.gridView28.OptionsView.ColumnAutoWidth = false;
@@ -2482,7 +2507,7 @@
             this.gridColumn57,
             this.gridColumn58});
             this.gridView29.GridControl = this.gridControl29;
-            this.gridView29.IndicatorWidth = 40;
+            this.gridView29.IndicatorWidth = 30;
             this.gridView29.Name = "gridView29";
             this.gridView29.OptionsBehavior.Editable = false;
             this.gridView29.OptionsView.ColumnAutoWidth = false;
@@ -2523,7 +2548,7 @@
             this.gridColumn59,
             this.gridColumn60});
             this.gridView30.GridControl = this.gridControl30;
-            this.gridView30.IndicatorWidth = 40;
+            this.gridView30.IndicatorWidth = 30;
             this.gridView30.Name = "gridView30";
             this.gridView30.OptionsBehavior.Editable = false;
             this.gridView30.OptionsView.ColumnAutoWidth = false;
@@ -2587,7 +2612,7 @@
             this.gridColumn61,
             this.gridColumn62});
             this.gridView31.GridControl = this.gridControl31;
-            this.gridView31.IndicatorWidth = 40;
+            this.gridView31.IndicatorWidth = 30;
             this.gridView31.Name = "gridView31";
             this.gridView31.OptionsBehavior.Editable = false;
             this.gridView31.OptionsView.ColumnAutoWidth = false;
@@ -2628,7 +2653,7 @@
             this.gridColumn63,
             this.gridColumn64});
             this.gridView32.GridControl = this.gridControl32;
-            this.gridView32.IndicatorWidth = 40;
+            this.gridView32.IndicatorWidth = 30;
             this.gridView32.Name = "gridView32";
             this.gridView32.OptionsBehavior.Editable = false;
             this.gridView32.OptionsView.ColumnAutoWidth = false;
@@ -2692,7 +2717,7 @@
             this.gridColumn65,
             this.gridColumn66});
             this.gridView33.GridControl = this.gridControl33;
-            this.gridView33.IndicatorWidth = 40;
+            this.gridView33.IndicatorWidth = 30;
             this.gridView33.Name = "gridView33";
             this.gridView33.OptionsBehavior.Editable = false;
             this.gridView33.OptionsView.ColumnAutoWidth = false;
@@ -2733,7 +2758,7 @@
             this.gridColumn67,
             this.gridColumn68});
             this.gridView34.GridControl = this.gridControl34;
-            this.gridView34.IndicatorWidth = 40;
+            this.gridView34.IndicatorWidth = 30;
             this.gridView34.Name = "gridView34";
             this.gridView34.OptionsBehavior.Editable = false;
             this.gridView34.OptionsView.ColumnAutoWidth = false;
@@ -2797,7 +2822,7 @@
             this.gridColumn69,
             this.gridColumn70});
             this.gridView35.GridControl = this.gridControl35;
-            this.gridView35.IndicatorWidth = 40;
+            this.gridView35.IndicatorWidth = 30;
             this.gridView35.Name = "gridView35";
             this.gridView35.OptionsBehavior.Editable = false;
             this.gridView35.OptionsView.ColumnAutoWidth = false;
@@ -2838,7 +2863,7 @@
             this.gridColumn71,
             this.gridColumn72});
             this.gridView36.GridControl = this.gridControl36;
-            this.gridView36.IndicatorWidth = 40;
+            this.gridView36.IndicatorWidth = 30;
             this.gridView36.Name = "gridView36";
             this.gridView36.OptionsBehavior.Editable = false;
             this.gridView36.OptionsView.ColumnAutoWidth = false;
@@ -2902,7 +2927,7 @@
             this.gridColumn73,
             this.gridColumn74});
             this.gridView37.GridControl = this.gridControl37;
-            this.gridView37.IndicatorWidth = 40;
+            this.gridView37.IndicatorWidth = 30;
             this.gridView37.Name = "gridView37";
             this.gridView37.OptionsBehavior.Editable = false;
             this.gridView37.OptionsView.ColumnAutoWidth = false;
@@ -2943,7 +2968,7 @@
             this.gridColumn75,
             this.gridColumn76});
             this.gridView38.GridControl = this.gridControl38;
-            this.gridView38.IndicatorWidth = 40;
+            this.gridView38.IndicatorWidth = 30;
             this.gridView38.Name = "gridView38";
             this.gridView38.OptionsBehavior.Editable = false;
             this.gridView38.OptionsView.ColumnAutoWidth = false;
@@ -3007,7 +3032,7 @@
             this.gridColumn77,
             this.gridColumn78});
             this.gridView39.GridControl = this.gridControl39;
-            this.gridView39.IndicatorWidth = 40;
+            this.gridView39.IndicatorWidth = 30;
             this.gridView39.Name = "gridView39";
             this.gridView39.OptionsBehavior.Editable = false;
             this.gridView39.OptionsView.ColumnAutoWidth = false;
@@ -3048,7 +3073,7 @@
             this.gridColumn79,
             this.gridColumn80});
             this.gridView40.GridControl = this.gridControl40;
-            this.gridView40.IndicatorWidth = 40;
+            this.gridView40.IndicatorWidth = 30;
             this.gridView40.Name = "gridView40";
             this.gridView40.OptionsBehavior.Editable = false;
             this.gridView40.OptionsView.ColumnAutoWidth = false;
@@ -3112,7 +3137,7 @@
             this.gridColumn81,
             this.gridColumn82});
             this.gridView41.GridControl = this.gridControl41;
-            this.gridView41.IndicatorWidth = 40;
+            this.gridView41.IndicatorWidth = 30;
             this.gridView41.Name = "gridView41";
             this.gridView41.OptionsBehavior.Editable = false;
             this.gridView41.OptionsView.ColumnAutoWidth = false;
@@ -3153,7 +3178,7 @@
             this.gridColumn83,
             this.gridColumn84});
             this.gridView42.GridControl = this.gridControl42;
-            this.gridView42.IndicatorWidth = 40;
+            this.gridView42.IndicatorWidth = 30;
             this.gridView42.Name = "gridView42";
             this.gridView42.OptionsBehavior.Editable = false;
             this.gridView42.OptionsView.ColumnAutoWidth = false;
@@ -3217,7 +3242,7 @@
             this.gridColumn93,
             this.gridColumn94});
             this.gridView47.GridControl = this.gridControl47;
-            this.gridView47.IndicatorWidth = 40;
+            this.gridView47.IndicatorWidth = 30;
             this.gridView47.Name = "gridView47";
             this.gridView47.OptionsBehavior.Editable = false;
             this.gridView47.OptionsView.ColumnAutoWidth = false;
@@ -3258,7 +3283,7 @@
             this.gridColumn95,
             this.gridColumn96});
             this.gridView48.GridControl = this.gridControl48;
-            this.gridView48.IndicatorWidth = 40;
+            this.gridView48.IndicatorWidth = 30;
             this.gridView48.Name = "gridView48";
             this.gridView48.OptionsBehavior.Editable = false;
             this.gridView48.OptionsView.ColumnAutoWidth = false;
@@ -3322,7 +3347,7 @@
             this.gridColumn89,
             this.gridColumn90});
             this.gridView45.GridControl = this.gridControl45;
-            this.gridView45.IndicatorWidth = 40;
+            this.gridView45.IndicatorWidth = 30;
             this.gridView45.Name = "gridView45";
             this.gridView45.OptionsBehavior.Editable = false;
             this.gridView45.OptionsView.ColumnAutoWidth = false;
@@ -3363,7 +3388,7 @@
             this.gridColumn91,
             this.gridColumn92});
             this.gridView46.GridControl = this.gridControl46;
-            this.gridView46.IndicatorWidth = 40;
+            this.gridView46.IndicatorWidth = 30;
             this.gridView46.Name = "gridView46";
             this.gridView46.OptionsBehavior.Editable = false;
             this.gridView46.OptionsView.ColumnAutoWidth = false;
@@ -3427,7 +3452,7 @@
             this.gridColumn85,
             this.gridColumn86});
             this.gridView43.GridControl = this.gridControl43;
-            this.gridView43.IndicatorWidth = 40;
+            this.gridView43.IndicatorWidth = 30;
             this.gridView43.Name = "gridView43";
             this.gridView43.OptionsBehavior.Editable = false;
             this.gridView43.OptionsView.ColumnAutoWidth = false;
@@ -3468,7 +3493,7 @@
             this.gridColumn87,
             this.gridColumn88});
             this.gridView44.GridControl = this.gridControl44;
-            this.gridView44.IndicatorWidth = 40;
+            this.gridView44.IndicatorWidth = 30;
             this.gridView44.Name = "gridView44";
             this.gridView44.OptionsBehavior.Editable = false;
             this.gridView44.OptionsView.ColumnAutoWidth = false;
@@ -3532,7 +3557,7 @@
             this.gridColumn97,
             this.gridColumn98});
             this.gridView49.GridControl = this.gridControl49;
-            this.gridView49.IndicatorWidth = 40;
+            this.gridView49.IndicatorWidth = 30;
             this.gridView49.Name = "gridView49";
             this.gridView49.OptionsBehavior.Editable = false;
             this.gridView49.OptionsView.ColumnAutoWidth = false;
@@ -3573,7 +3598,7 @@
             this.gridColumn99,
             this.gridColumn100});
             this.gridView50.GridControl = this.gridControl50;
-            this.gridView50.IndicatorWidth = 40;
+            this.gridView50.IndicatorWidth = 30;
             this.gridView50.Name = "gridView50";
             this.gridView50.OptionsBehavior.Editable = false;
             this.gridView50.OptionsView.ColumnAutoWidth = false;
@@ -3637,11 +3662,12 @@
             this.gridColumn5,
             this.gridColumn6});
             this.gridView3.GridControl = this.gridControl3;
-            this.gridView3.IndicatorWidth = 40;
+            this.gridView3.IndicatorWidth = 30;
             this.gridView3.Name = "gridView3";
             this.gridView3.OptionsBehavior.Editable = false;
             this.gridView3.OptionsView.ColumnAutoWidth = false;
             this.gridView3.OptionsView.ShowGroupPanel = false;
+            this.gridView3.CustomDrawRowIndicator += new DevExpress.XtraGrid.Views.Grid.RowIndicatorCustomDrawEventHandler(this.gridView1_CustomDrawRowIndicator);
             // 
             // gridColumn5
             // 
@@ -3677,7 +3703,7 @@
             this.gridColumn7,
             this.gridColumn8});
             this.gridView4.GridControl = this.gridControl4;
-            this.gridView4.IndicatorWidth = 40;
+            this.gridView4.IndicatorWidth = 30;
             this.gridView4.Name = "gridView4";
             this.gridView4.OptionsBehavior.Editable = false;
             this.gridView4.OptionsView.ColumnAutoWidth = false;
@@ -3902,6 +3928,9 @@
             this.dockPanel2.Options.ShowCloseButton = false;
             this.dockPanel2.OriginalSize = new System.Drawing.Size(150, 200);
             this.dockPanel2.Size = new System.Drawing.Size(150, 380);
+            this.dockPanel2.Text = "功能";
+            this.dockPanel2.Expanded += new DevExpress.XtraBars.Docking.DockPanelEventHandler(this.dockPanel2_Collapsed);
+            this.dockPanel2.Collapsed += new DevExpress.XtraBars.Docking.DockPanelEventHandler(this.dockPanel2_Collapsed);
             // 
             // dockPanel2_Container
             // 
@@ -4265,7 +4294,6 @@
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
