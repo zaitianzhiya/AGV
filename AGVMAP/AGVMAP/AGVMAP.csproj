@@ -1,0 +1,312 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BD5C782A-CAFE-4551-8745-B6E567451E69}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AGVMAP</RootNamespace>
+    <AssemblyName>AGVMAP</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>assist.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.BonusSkins.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\DevExpress 16.2\Components\Bin\Framework\DevExpress.BonusSkins.v16.2.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Printing.v16.2.Core, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Sparkline.v16.2.Core, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.Utils.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraBars.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraEditors.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraGrid.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraLayout.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraNavBar.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraVerticalGrid.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assemble\TransparentPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BaseForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BaseForm.Designer.cs">
+      <DependentUpon>BaseForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DB\Function.cs" />
+    <Compile Include="DB\SqlDBControl.cs" />
+    <Compile Include="Dialog\FrmAgvInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmAgvInfo.Designer.cs">
+      <DependentUpon>FrmAgvInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmCallBoxInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmCallBoxInfo.Designer.cs">
+      <DependentUpon>FrmCallBoxInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmCallDetailsInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmCallDetailsInfo.Designer.cs">
+      <DependentUpon>FrmCallDetailsInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmCoorCompare.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmCoorCompare.Designer.cs">
+      <DependentUpon>FrmCoorCompare.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmDbSetup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmDbSetup.Designer.cs">
+      <DependentUpon>FrmDbSetup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmMustPass.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmMustPass.Designer.cs">
+      <DependentUpon>FrmMustPass.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmOption.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmOption.Designer.cs">
+      <DependentUpon>FrmOption.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmSimulationCallBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmSimulationCallBox.Designer.cs">
+      <DependentUpon>FrmSimulationCallBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmSysPara.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmSysPara.Designer.cs">
+      <DependentUpon>FrmSysPara.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmAreaInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmAreaInfo.Designer.cs">
+      <DependentUpon>FrmAreaInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmAction.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmAction.Designer.cs">
+      <DependentUpon>FrmAction.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmMaterial.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmMaterial.Designer.cs">
+      <DependentUpon>FrmMaterial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmTaskDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmTaskDetail.Designer.cs">
+      <DependentUpon>FrmTaskDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialog\FrmTaskSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialog\FrmTaskSet.Designer.cs">
+      <DependentUpon>FrmTaskSet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileControl\LogFile.cs" />
+    <Compile Include="FileControl\SetFileControl.cs" />
+    <Compile Include="FrmMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMain.Designer.cs">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelpClass\DrawTool.cs" />
+    <Compile Include="HelpClass\GDIWrapper.cs" />
+    <Compile Include="HelpClass\Global.cs" />
+    <Compile Include="HelpClass\GraphicsFunction.cs" />
+    <Compile Include="HelpClass\MessageBoxShow.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FrmMain2.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmMain2.Designer.cs">
+      <DependentUpon>FrmMain2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC\UcMain.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC\UcMain.Designer.cs">
+      <DependentUpon>UcMain.cs</DependentUpon>
+    </Compile>
+    <Content Include="Image\04.png" />
+    <Content Include="Image\fsux_tubiao_fenbuquxiantu.png" />
+    <Content Include="Image\Hand_Cursor_13.725888324873px_1190796_easyicon.net.png" />
+    <Content Include="Image\Hand_Cursor_27.451776649746px_1190796_easyicon.net.png" />
+    <Content Include="Image\line.png" />
+    <Content Include="Image\vector_line_curve_16px_1093313_easyicon.net.png" />
+    <Content Include="Image\zhuashou.png" />
+    <EmbeddedResource Include="BaseForm.resx">
+      <DependentUpon>BaseForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmAgvInfo.resx">
+      <DependentUpon>FrmAgvInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmCallBoxInfo.resx">
+      <DependentUpon>FrmCallBoxInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmCallDetailsInfo.resx">
+      <DependentUpon>FrmCallDetailsInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmCoorCompare.resx">
+      <DependentUpon>FrmCoorCompare.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmDbSetup.resx">
+      <DependentUpon>FrmDbSetup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmMustPass.resx">
+      <DependentUpon>FrmMustPass.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmOption.resx">
+      <DependentUpon>FrmOption.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmSimulationCallBox.resx">
+      <DependentUpon>FrmSimulationCallBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmSysPara.resx">
+      <DependentUpon>FrmSysPara.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmAreaInfo.resx">
+      <DependentUpon>FrmAreaInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmAction.resx">
+      <DependentUpon>FrmAction.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmMaterial.resx">
+      <DependentUpon>FrmMaterial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmTaskDetail.resx">
+      <DependentUpon>FrmTaskDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialog\FrmTaskSet.resx">
+      <DependentUpon>FrmTaskSet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmMain.resx">
+      <DependentUpon>FrmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="FrmMain2.resx">
+      <DependentUpon>FrmMain2.cs</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="AGV_SET.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <EmbeddedResource Include="UC\UcMain.resx">
+      <DependentUpon>UcMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Image\btn1png.png" />
+    <None Include="Image\CallBoxClose.bmp" />
+    <Content Include="assist.ico" />
+    <Content Include="Image\draw_wave.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Canvas\Canvas.csproj">
+      <Project>{eeb3edd5-f8e8-470b-bed3-415c2baa0033}</Project>
+      <Name>Canvas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Model\Model.csproj">
+      <Project>{83fd6256-a589-4a59-a657-356228cda279}</Project>
+      <Name>Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimulationModel\SimulationModel.csproj">
+      <Project>{c02544f6-0f1b-4966-bce2-0e32c36f2c5c}</Project>
+      <Name>SimulationModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tool\Tool.csproj">
+      <Project>{3a50e771-f603-4c2e-8286-b12753f828f3}</Project>
+      <Name>Tool</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
