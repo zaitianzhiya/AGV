@@ -1,0 +1,9 @@
+﻿<Window x:Name="Direction" x:Class="WpfApplication1.Window11"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Direction Choose" Height="503.38" Width="633.6">
+    <Grid>
+        <Canvas x:Name="cvs" HorizontalAlignment="Left" Height="475" VerticalAlignment="Top" Width="627"/>
+
+    </Grid>
+</Window>

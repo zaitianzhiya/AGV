@@ -1,0 +1,56 @@
+﻿<Window x:Class="WpfApplication1.Window2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="clr-namespace:WpfApplication1"
+     xmlns:local="clr-namespace:WpfApplication1"
+        xmlns:assembly="clr-namespace:System;assembly=mscorlib"
+        Title="查询小车状态" Height="282.134" Width="557.746">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="identityEnum" MethodName="GetValues" ObjectType="{x:Type assembly:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type Type="local:mIdele"></x:Type>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    <Grid Margin="0,0,0,-4" Height="240" VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="146"/>
+            <RowDefinition Height="59"/>
+        </Grid.RowDefinitions>
+        <ComboBox HorizontalAlignment="Left" Height="28" Margin="123,3,0,0" VerticalAlignment="Top" Width="146">
+            <ComboBoxItem>1号</ComboBoxItem>
+            <ComboBoxItem IsSelected="True">2号</ComboBoxItem>
+            <ComboBoxItem>3号</ComboBoxItem>
+        </ComboBox>
+        <Label Content="发送给几号小车" HorizontalAlignment="Left" Height="43" Margin="0,3,0,0" VerticalAlignment="Top" Width="102" Grid.RowSpan="2"/>
+        <DataGrid x:Name="one" IsReadOnly="False"  SelectionUnit="Cell" SelectionMode="Single" AutoGenerateColumns="False" ItemsSource="{Binding}" HorizontalAlignment="Stretch" Margin="0,3,-6,10" Grid.Row="1" VerticalAlignment="Stretch">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="任务号" Binding="{Binding MissionNumber}"></DataGridTextColumn>
+                <DataGridComboBoxColumn Header="任务标识" SelectedItemBinding="{Binding MissionIdentity}" ItemsSource="{Binding Source={StaticResource identityEnum}}"></DataGridComboBoxColumn>
+                <DataGridTextColumn Header="任务序号" Binding="{Binding MissionOrder}"></DataGridTextColumn>
+                <DataGridTextColumn Header="目标位置X" Binding="{Binding PositionX}"></DataGridTextColumn>
+                <DataGridTextColumn Header="目标位置Y" Binding="{Binding PositionY}"></DataGridTextColumn>
+                <DataGridTextColumn Header="目标AGV角度" Binding="{Binding AGVAngle}"></DataGridTextColumn>
+                <DataGridTextColumn Header="目标料架角度" Binding="{Binding ShellAngle}"></DataGridTextColumn>
+                <DataGridTextColumn Header="预留" Binding="{Binding Obligate}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button  HorizontalAlignment="Left" Height="23" Margin="6,7,0,0" Grid.Row="2" VerticalAlignment="Top" Width="56" Click="Button_Click_1">
+            <Image Source="Images/Add.png" RenderTransformOrigin="0.824,0.647"></Image>
+        </Button>
+        <Button  HorizontalAlignment="Left" Height="23" Margin="67,7,0,0" Grid.Row="2" VerticalAlignment="Top" Width="56">
+            <Image Source="Images/Remove.png"></Image>
+        </Button>
+        <Button Content="定时发送" HorizontalAlignment="Left" Height="23" Margin="426,2,0,0" Grid.Row="2" VerticalAlignment="Top" Width="71"/>
+        <Button Content="确认" HorizontalAlignment="Left" Height="23" Margin="426,30,0,0" Grid.Row="2" VerticalAlignment="Top" Width="71"/>
+        <Grid Margin="10,0,-10,24" Grid.Row="2">
+            <Border Width="120" Margin="299,0,0,-5" HorizontalAlignment="Left">
+                <d:UserControl1 x:Name="NunberUpDown" PlusValue="0.1" Value="10" ValueChanged="NunberUpDown_ValueChanged" RenderTransformOrigin="0.804,0.668" Margin="10,0,-10,0"  />
+            </Border>
+            <Button Content="Button" Height="24" HorizontalAlignment="Left" Margin="279,62,0,-51" Name="button1" VerticalAlignment="Top" Width="114" Click="button1_Click" RenderTransformOrigin="0.474,-0.292" />
+            <TextBlock Height="41" HorizontalAlignment="Left" Margin="361,91,0,0" x:Name="textBlock1" Text="TextBlock" VerticalAlignment="Top" Width="86" />
+        </Grid>
+    </Grid>
+
+</Window>
