@@ -74,6 +74,8 @@
     <Compile Include="DrawTools\DrawObjectBase.cs" />
     <Compile Include="DrawTools\Forbid.cs" />
     <Compile Include="DrawTools\ChargeTool.cs" />
+    <Compile Include="DrawTools\Shelf.cs" />
+    <Compile Include="DrawTools\AGVTool.cs" />
     <Compile Include="EditCommandAdd.cs" />
     <Compile Include="EditCommandBase.cs" />
     <Compile Include="EditCommandEditTool.cs" />
@@ -93,7 +95,6 @@
     <Compile Include="NodeMoveHelper.cs" />
     <Compile Include="PenStyles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyUtil.cs" />
     <Compile Include="ScreenUtils.cs" />
     <Compile Include="SelectionRectangle.cs" />
     <Compile Include="SerializeUtil.cs" />
@@ -131,6 +132,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Image\goods.png" />
     <Content Include="Resources\drawtoolimages.bmp" />
     <Content Include="Resources\edittoolimages.bmp" />
     <Content Include="Resources\menuimages.bmp" />
@@ -142,6 +144,10 @@
     <ProjectReference Include="..\CommonTools\CommonTools.csproj">
       <Project>{2e8ea867-2be9-4138-974b-a44eadbc522a}</Project>
       <Name>CommonTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{af380bc0-3e17-47c5-98ec-cc3a58cd6db1}</Project>
+      <Name>DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

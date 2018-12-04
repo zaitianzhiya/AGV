@@ -47,24 +47,24 @@
             this.btnLock = new DevExpress.XtraBars.BarButtonItem();
             this.btnOpen = new DevExpress.XtraBars.BarButtonItem();
             this.bar2 = new DevExpress.XtraBars.Bar();
-            this.barSubItem2 = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
-            this.barSubItem1 = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
-            this.barSubItem3 = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem6 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem7 = new DevExpress.XtraBars.BarButtonItem();
-            this.barSubItem4 = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem8 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem9 = new DevExpress.XtraBars.BarButtonItem();
-            this.barSubItem5 = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem10 = new DevExpress.XtraBars.BarButtonItem();
-            this.barSubItem6 = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem11 = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem12 = new DevExpress.XtraBars.BarButtonItem();
+            this.bsiOpen = new DevExpress.XtraBars.BarSubItem();
+            this.bbiOpenMapByOption = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiOpenMapByInput = new DevExpress.XtraBars.BarButtonItem();
+            this.bsiFile = new DevExpress.XtraBars.BarSubItem();
+            this.bbiOpenMap = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiSaveMap = new DevExpress.XtraBars.BarButtonItem();
+            this.bsiView = new DevExpress.XtraBars.BarSubItem();
+            this.bbiDisplayAgv = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiDisplayFunc = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiDisplayAgvSta = new DevExpress.XtraBars.BarButtonItem();
+            this.bsiSetup = new DevExpress.XtraBars.BarSubItem();
+            this.bbiSetupMap = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiSaveMapInfo = new DevExpress.XtraBars.BarButtonItem();
+            this.bsiDebug = new DevExpress.XtraBars.BarSubItem();
+            this.bbiWhile = new DevExpress.XtraBars.BarButtonItem();
+            this.bsiOptionTask = new DevExpress.XtraBars.BarSubItem();
+            this.bbiFileSet = new DevExpress.XtraBars.BarButtonItem();
+            this.bbiInput = new DevExpress.XtraBars.BarButtonItem();
             this.bar3 = new DevExpress.XtraBars.Bar();
             this.lblMsg = new DevExpress.XtraBars.BarStaticItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
@@ -355,8 +355,8 @@
             this.panelControl2 = new DevExpress.XtraEditors.PanelControl();
             this.lc1 = new DevExpress.XtraLayout.LayoutControl();
             this.btnCloseCharge = new DevExpress.XtraEditors.SimpleButton();
-            this.simpleButton11 = new DevExpress.XtraEditors.SimpleButton();
-            this.simpleButton10 = new DevExpress.XtraEditors.SimpleButton();
+            this.btnCloseQRError = new DevExpress.XtraEditors.SimpleButton();
+            this.btnOpenQRError = new DevExpress.XtraEditors.SimpleButton();
             this.btnOpenCharge = new DevExpress.XtraEditors.SimpleButton();
             this.btnStopCar = new DevExpress.XtraEditors.SimpleButton();
             this.btnReadError = new DevExpress.XtraEditors.SimpleButton();
@@ -607,24 +607,24 @@
             this.barManager1.DockManager = this.dockManager1;
             this.barManager1.Form = this;
             this.barManager1.Items.AddRange(new DevExpress.XtraBars.BarItem[] {
-            this.barSubItem1,
-            this.barSubItem2,
-            this.barSubItem3,
-            this.barSubItem4,
-            this.barSubItem5,
-            this.barSubItem6,
-            this.barButtonItem1,
-            this.barButtonItem2,
-            this.barButtonItem3,
-            this.barButtonItem4,
-            this.barButtonItem5,
-            this.barButtonItem6,
-            this.barButtonItem7,
-            this.barButtonItem8,
-            this.barButtonItem9,
-            this.barButtonItem10,
-            this.barButtonItem11,
-            this.barButtonItem12,
+            this.bsiFile,
+            this.bsiOpen,
+            this.bsiView,
+            this.bsiSetup,
+            this.bsiDebug,
+            this.bsiOptionTask,
+            this.bbiOpenMapByOption,
+            this.bbiOpenMapByInput,
+            this.bbiOpenMap,
+            this.bbiSaveMap,
+            this.bbiDisplayAgv,
+            this.bbiDisplayFunc,
+            this.bbiDisplayAgvSta,
+            this.bbiSetupMap,
+            this.bbiSaveMapInfo,
+            this.bbiWhile,
+            this.bbiFileSet,
+            this.bbiInput,
             this.btnHand,
             this.btnPath,
             this.btnForbid,
@@ -686,6 +686,7 @@
             this.btnPath.Id = 19;
             this.btnPath.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnPath.ImageOptions.Image")));
             this.btnPath.Name = "btnPath";
+            this.btnPath.Tag = "Path";
             this.btnPath.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnForbid
@@ -757,6 +758,7 @@
             this.btnDistance.Id = 28;
             this.btnDistance.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDistance.ImageOptions.Image")));
             this.btnDistance.Name = "btnDistance";
+            this.btnDistance.Tag = "Distinace";
             this.btnDistance.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnDesignPath
@@ -765,6 +767,7 @@
             this.btnDesignPath.Id = 29;
             this.btnDesignPath.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnDesignPath.ImageOptions.Image")));
             this.btnDesignPath.Name = "btnDesignPath";
+            this.btnDesignPath.Tag = "DesignPath";
             this.btnDesignPath.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnAdvice
@@ -773,6 +776,7 @@
             this.btnAdvice.Id = 31;
             this.btnAdvice.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnAdvice.ImageOptions.Image")));
             this.btnAdvice.Name = "btnAdvice";
+            this.btnAdvice.Tag = "AdvicePath";
             this.btnAdvice.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnLock
@@ -780,14 +784,15 @@
             this.btnLock.Caption = "Lock Direction";
             this.btnLock.Id = 34;
             this.btnLock.Name = "btnLock";
-            this.btnLock.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
+            this.btnLock.Tag = "lockDir";
+            this.btnLock.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnLock_ItemClick);
             // 
             // btnOpen
             // 
             this.btnOpen.Caption = "open";
             this.btnOpen.Id = 35;
             this.btnOpen.Name = "btnOpen";
-            this.btnOpen.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
+            this.btnOpen.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnOpen_ItemClick);
             // 
             // bar2
             // 
@@ -796,142 +801,154 @@
             this.bar2.DockRow = 0;
             this.bar2.DockStyle = DevExpress.XtraBars.BarDockStyle.Top;
             this.bar2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem2),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem3),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem4),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem5),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barSubItem6)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.bsiOpen),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bsiFile),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bsiView),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bsiSetup),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bsiDebug),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bsiOptionTask)});
             this.bar2.OptionsBar.AllowQuickCustomization = false;
             this.bar2.OptionsBar.DrawDragBorder = false;
             this.bar2.OptionsBar.UseWholeRow = true;
             this.bar2.Text = "Main menu";
             // 
-            // barSubItem2
+            // bsiOpen
             // 
-            this.barSubItem2.Caption = "打开";
-            this.barSubItem2.Id = 1;
-            this.barSubItem2.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem1),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem2)});
-            this.barSubItem2.Name = "barSubItem2";
+            this.bsiOpen.Caption = "打开";
+            this.bsiOpen.Id = 1;
+            this.bsiOpen.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiOpenMapByOption),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiOpenMapByInput)});
+            this.bsiOpen.Name = "bsiOpen";
             // 
-            // barButtonItem1
+            // bbiOpenMapByOption
             // 
-            this.barButtonItem1.Caption = "根据配置文件打开地图";
-            this.barButtonItem1.Id = 6;
-            this.barButtonItem1.Name = "barButtonItem1";
+            this.bbiOpenMapByOption.Caption = "根据配置文件打开地图";
+            this.bbiOpenMapByOption.Id = 6;
+            this.bbiOpenMapByOption.Name = "bbiOpenMapByOption";
+            this.bbiOpenMapByOption.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiOpenMapByOption_ItemClick);
             // 
-            // barButtonItem2
+            // bbiOpenMapByInput
             // 
-            this.barButtonItem2.Caption = "输入参数打开地图";
-            this.barButtonItem2.Id = 7;
-            this.barButtonItem2.Name = "barButtonItem2";
+            this.bbiOpenMapByInput.Caption = "输入参数打开地图";
+            this.bbiOpenMapByInput.Id = 7;
+            this.bbiOpenMapByInput.Name = "bbiOpenMapByInput";
+            this.bbiOpenMapByInput.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiOpenMapByInput_ItemClick);
             // 
-            // barSubItem1
+            // bsiFile
             // 
-            this.barSubItem1.Caption = "文件";
-            this.barSubItem1.Id = 0;
-            this.barSubItem1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem3),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem4)});
-            this.barSubItem1.Name = "barSubItem1";
+            this.bsiFile.Caption = "文件";
+            this.bsiFile.Id = 0;
+            this.bsiFile.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiOpenMap),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiSaveMap)});
+            this.bsiFile.Name = "bsiFile";
             // 
-            // barButtonItem3
+            // bbiOpenMap
             // 
-            this.barButtonItem3.Caption = "打开地图文件";
-            this.barButtonItem3.Id = 8;
-            this.barButtonItem3.Name = "barButtonItem3";
+            this.bbiOpenMap.Caption = "打开地图文件";
+            this.bbiOpenMap.Id = 8;
+            this.bbiOpenMap.Name = "bbiOpenMap";
+            this.bbiOpenMap.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiOpenMap_ItemClick);
             // 
-            // barButtonItem4
+            // bbiSaveMap
             // 
-            this.barButtonItem4.Caption = "保存地图文件";
-            this.barButtonItem4.Id = 9;
-            this.barButtonItem4.Name = "barButtonItem4";
+            this.bbiSaveMap.Caption = "保存地图文件";
+            this.bbiSaveMap.Id = 9;
+            this.bbiSaveMap.Name = "bbiSaveMap";
+            this.bbiSaveMap.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiSaveMap_ItemClick);
             // 
-            // barSubItem3
+            // bsiView
             // 
-            this.barSubItem3.Caption = "视图";
-            this.barSubItem3.Id = 2;
-            this.barSubItem3.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem5),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem6),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem7)});
-            this.barSubItem3.Name = "barSubItem3";
+            this.bsiView.Caption = "视图";
+            this.bsiView.Id = 2;
+            this.bsiView.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiDisplayAgv),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiDisplayFunc),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiDisplayAgvSta)});
+            this.bsiView.Name = "bsiView";
             // 
-            // barButtonItem5
+            // bbiDisplayAgv
             // 
-            this.barButtonItem5.Caption = "显示AGV列表";
-            this.barButtonItem5.Id = 10;
-            this.barButtonItem5.Name = "barButtonItem5";
+            this.bbiDisplayAgv.Caption = "显示AGV列表";
+            this.bbiDisplayAgv.Id = 10;
+            this.bbiDisplayAgv.Name = "bbiDisplayAgv";
+            this.bbiDisplayAgv.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiDisplayAgv_ItemClick);
             // 
-            // barButtonItem6
+            // bbiDisplayFunc
             // 
-            this.barButtonItem6.Caption = "显示功能按键列表";
-            this.barButtonItem6.Id = 11;
-            this.barButtonItem6.Name = "barButtonItem6";
+            this.bbiDisplayFunc.Caption = "显示功能按键列表";
+            this.bbiDisplayFunc.Id = 11;
+            this.bbiDisplayFunc.Name = "bbiDisplayFunc";
+            this.bbiDisplayFunc.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiDisplayFunc_ItemClick);
             // 
-            // barButtonItem7
+            // bbiDisplayAgvSta
             // 
-            this.barButtonItem7.Caption = "显示AGV状态";
-            this.barButtonItem7.Id = 12;
-            this.barButtonItem7.Name = "barButtonItem7";
+            this.bbiDisplayAgvSta.Caption = "显示AGV状态";
+            this.bbiDisplayAgvSta.Id = 12;
+            this.bbiDisplayAgvSta.Name = "bbiDisplayAgvSta";
+            this.bbiDisplayAgvSta.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiDisplayAgvSta_ItemClick);
             // 
-            // barSubItem4
+            // bsiSetup
             // 
-            this.barSubItem4.Caption = "设置";
-            this.barSubItem4.Id = 3;
-            this.barSubItem4.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem8),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem9)});
-            this.barSubItem4.Name = "barSubItem4";
+            this.bsiSetup.Caption = "设置";
+            this.bsiSetup.Id = 3;
+            this.bsiSetup.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiSetupMap),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiSaveMapInfo)});
+            this.bsiSetup.Name = "bsiSetup";
             // 
-            // barButtonItem8
+            // bbiSetupMap
             // 
-            this.barButtonItem8.Caption = "设置地图";
-            this.barButtonItem8.Id = 13;
-            this.barButtonItem8.Name = "barButtonItem8";
+            this.bbiSetupMap.Caption = "设置地图";
+            this.bbiSetupMap.Id = 13;
+            this.bbiSetupMap.Name = "bbiSetupMap";
+            this.bbiSetupMap.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiSetupMap_ItemClick);
             // 
-            // barButtonItem9
+            // bbiSaveMapInfo
             // 
-            this.barButtonItem9.Caption = "保存地图信息";
-            this.barButtonItem9.Id = 14;
-            this.barButtonItem9.Name = "barButtonItem9";
+            this.bbiSaveMapInfo.Caption = "保存地图信息";
+            this.bbiSaveMapInfo.Id = 14;
+            this.bbiSaveMapInfo.Name = "bbiSaveMapInfo";
+            this.bbiSaveMapInfo.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiSaveMapInfo_ItemClick);
             // 
-            // barSubItem5
+            // bsiDebug
             // 
-            this.barSubItem5.Caption = "DEBUG";
-            this.barSubItem5.Id = 4;
-            this.barSubItem5.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem10)});
-            this.barSubItem5.Name = "barSubItem5";
+            this.bsiDebug.Caption = "DEBUG";
+            this.bsiDebug.Id = 4;
+            this.bsiDebug.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiWhile)});
+            this.bsiDebug.Name = "bsiDebug";
             // 
-            // barButtonItem10
+            // bbiWhile
             // 
-            this.barButtonItem10.Caption = "while（1）";
-            this.barButtonItem10.Id = 15;
-            this.barButtonItem10.Name = "barButtonItem10";
+            this.bbiWhile.Caption = "while（1）";
+            this.bbiWhile.Id = 15;
+            this.bbiWhile.Name = "bbiWhile";
+            this.bbiWhile.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiWhile_ItemClick);
             // 
-            // barSubItem6
+            // bsiOptionTask
             // 
-            this.barSubItem6.Caption = "配置任务";
-            this.barSubItem6.Id = 5;
-            this.barSubItem6.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem11),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem12)});
-            this.barSubItem6.Name = "barSubItem6";
+            this.bsiOptionTask.Caption = "配置任务";
+            this.bsiOptionTask.Id = 5;
+            this.bsiOptionTask.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiFileSet),
+            new DevExpress.XtraBars.LinkPersistInfo(this.bbiInput)});
+            this.bsiOptionTask.Name = "bsiOptionTask";
             // 
-            // barButtonItem11
+            // bbiFileSet
             // 
-            this.barButtonItem11.Caption = "文件配置";
-            this.barButtonItem11.Id = 16;
-            this.barButtonItem11.Name = "barButtonItem11";
+            this.bbiFileSet.Caption = "文件配置";
+            this.bbiFileSet.Id = 16;
+            this.bbiFileSet.Name = "bbiFileSet";
+            this.bbiFileSet.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiFileSet_ItemClick);
             // 
-            // barButtonItem12
+            // bbiInput
             // 
-            this.barButtonItem12.Caption = "手动输入";
-            this.barButtonItem12.Id = 17;
-            this.barButtonItem12.Name = "barButtonItem12";
+            this.bbiInput.Caption = "手动输入";
+            this.bbiInput.Id = 17;
+            this.bbiInput.Name = "bbiInput";
+            this.bbiInput.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.bbiInput_ItemClick);
             // 
             // bar3
             // 
@@ -3952,8 +3969,8 @@
             // lc1
             // 
             this.lc1.Controls.Add(this.btnCloseCharge);
-            this.lc1.Controls.Add(this.simpleButton11);
-            this.lc1.Controls.Add(this.simpleButton10);
+            this.lc1.Controls.Add(this.btnCloseQRError);
+            this.lc1.Controls.Add(this.btnOpenQRError);
             this.lc1.Controls.Add(this.btnOpenCharge);
             this.lc1.Controls.Add(this.btnStopCar);
             this.lc1.Controls.Add(this.btnReadError);
@@ -3981,24 +3998,27 @@
             this.btnCloseCharge.StyleController = this.lc1;
             this.btnCloseCharge.TabIndex = 17;
             this.btnCloseCharge.Text = "关闭充电回路";
+            this.btnCloseCharge.Click += new System.EventHandler(this.btnCloseCharge_Click);
             // 
-            // simpleButton11
+            // btnCloseQRError
             // 
-            this.simpleButton11.Location = new System.Drawing.Point(12, 402);
-            this.simpleButton11.Name = "simpleButton11";
-            this.simpleButton11.Size = new System.Drawing.Size(96, 26);
-            this.simpleButton11.StyleController = this.lc1;
-            this.simpleButton11.TabIndex = 16;
-            this.simpleButton11.Text = "关闭二维码报警";
+            this.btnCloseQRError.Location = new System.Drawing.Point(12, 402);
+            this.btnCloseQRError.Name = "btnCloseQRError";
+            this.btnCloseQRError.Size = new System.Drawing.Size(96, 26);
+            this.btnCloseQRError.StyleController = this.lc1;
+            this.btnCloseQRError.TabIndex = 16;
+            this.btnCloseQRError.Text = "关闭二维码报警";
+            this.btnCloseQRError.Click += new System.EventHandler(this.btnCloseQRError_Click);
             // 
-            // simpleButton10
+            // btnOpenQRError
             // 
-            this.simpleButton10.Location = new System.Drawing.Point(12, 372);
-            this.simpleButton10.Name = "simpleButton10";
-            this.simpleButton10.Size = new System.Drawing.Size(96, 26);
-            this.simpleButton10.StyleController = this.lc1;
-            this.simpleButton10.TabIndex = 15;
-            this.simpleButton10.Text = "打开二维码报警";
+            this.btnOpenQRError.Location = new System.Drawing.Point(12, 372);
+            this.btnOpenQRError.Name = "btnOpenQRError";
+            this.btnOpenQRError.Size = new System.Drawing.Size(96, 26);
+            this.btnOpenQRError.StyleController = this.lc1;
+            this.btnOpenQRError.TabIndex = 15;
+            this.btnOpenQRError.Text = "打开二维码报警";
+            this.btnOpenQRError.Click += new System.EventHandler(this.btnOpenQRError_Click);
             // 
             // btnOpenCharge
             // 
@@ -4008,6 +4028,7 @@
             this.btnOpenCharge.StyleController = this.lc1;
             this.btnOpenCharge.TabIndex = 14;
             this.btnOpenCharge.Text = "打开充电回路";
+            this.btnOpenCharge.Click += new System.EventHandler(this.btnOpenCharge_Click);
             // 
             // btnStopCar
             // 
@@ -4017,6 +4038,7 @@
             this.btnStopCar.StyleController = this.lc1;
             this.btnStopCar.TabIndex = 13;
             this.btnStopCar.Text = "停止小车";
+            this.btnStopCar.Click += new System.EventHandler(this.btnStopCar_Click);
             // 
             // btnReadError
             // 
@@ -4026,6 +4048,7 @@
             this.btnReadError.StyleController = this.lc1;
             this.btnReadError.TabIndex = 12;
             this.btnReadError.Text = "读取错误信息";
+            this.btnReadError.Click += new System.EventHandler(this.btnReadError_Click);
             // 
             // btnDisplaySta
             // 
@@ -4035,6 +4058,7 @@
             this.btnDisplaySta.StyleController = this.lc1;
             this.btnDisplaySta.TabIndex = 11;
             this.btnDisplaySta.Text = "显示状态";
+            this.btnDisplaySta.Click += new System.EventHandler(this.btnDisplaySta_Click);
             // 
             // btnMonitor
             // 
@@ -4044,6 +4068,7 @@
             this.btnMonitor.StyleController = this.lc1;
             this.btnMonitor.TabIndex = 10;
             this.btnMonitor.Text = "监控小车";
+            this.btnMonitor.Click += new System.EventHandler(this.btnMonitor_Click);
             // 
             // btnSearchSta
             // 
@@ -4053,6 +4078,7 @@
             this.btnSearchSta.StyleController = this.lc1;
             this.btnSearchSta.TabIndex = 9;
             this.btnSearchSta.Text = "查询小车状态";
+            this.btnSearchSta.Click += new System.EventHandler(this.btnSearchSta_Click);
             // 
             // btnSetTask
             // 
@@ -4062,24 +4088,29 @@
             this.btnSetTask.StyleController = this.lc1;
             this.btnSetTask.TabIndex = 8;
             this.btnSetTask.Text = "设置任务";
+            this.btnSetTask.Click += new System.EventHandler(this.btnSetTask_Click);
             // 
             // btnClear
             // 
+            this.btnClear.Enabled = false;
             this.btnClear.Location = new System.Drawing.Point(12, 102);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(96, 26);
             this.btnClear.StyleController = this.lc1;
             this.btnClear.TabIndex = 7;
             this.btnClear.Text = "Clear";
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // btnGenerate
             // 
+            this.btnGenerate.Enabled = false;
             this.btnGenerate.Location = new System.Drawing.Point(12, 72);
             this.btnGenerate.Name = "btnGenerate";
             this.btnGenerate.Size = new System.Drawing.Size(96, 26);
             this.btnGenerate.StyleController = this.lc1;
             this.btnGenerate.TabIndex = 6;
             this.btnGenerate.Text = "Generate";
+            this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
             // 
             // txtY
             // 
@@ -4258,7 +4289,7 @@
             // 
             // layoutControlItem12
             // 
-            this.layoutControlItem12.Control = this.simpleButton10;
+            this.layoutControlItem12.Control = this.btnOpenQRError;
             this.layoutControlItem12.Location = new System.Drawing.Point(0, 360);
             this.layoutControlItem12.MaxSize = new System.Drawing.Size(0, 30);
             this.layoutControlItem12.MinSize = new System.Drawing.Size(97, 30);
@@ -4270,7 +4301,7 @@
             // 
             // layoutControlItem13
             // 
-            this.layoutControlItem13.Control = this.simpleButton11;
+            this.layoutControlItem13.Control = this.btnCloseQRError;
             this.layoutControlItem13.Location = new System.Drawing.Point(0, 390);
             this.layoutControlItem13.MaxSize = new System.Drawing.Size(0, 30);
             this.layoutControlItem13.MinSize = new System.Drawing.Size(97, 30);
@@ -4325,6 +4356,8 @@
             this.Controls.Add(this.barDockControlTop);
             this.Name = "FrmMain";
             this.Text = "AGV模拟";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).EndInit();
@@ -4557,24 +4590,24 @@
         private DevExpress.XtraBars.BarButtonItem btnDistance;
         private DevExpress.XtraBars.BarButtonItem btnDesignPath;
         private DevExpress.XtraBars.BarButtonItem btnAdvice;
-        private DevExpress.XtraBars.BarSubItem barSubItem2;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem1;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem2;
-        private DevExpress.XtraBars.BarSubItem barSubItem1;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem3;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem4;
-        private DevExpress.XtraBars.BarSubItem barSubItem3;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem5;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem6;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem7;
-        private DevExpress.XtraBars.BarSubItem barSubItem4;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem8;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem9;
-        private DevExpress.XtraBars.BarSubItem barSubItem5;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem10;
-        private DevExpress.XtraBars.BarSubItem barSubItem6;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem11;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem12;
+        private DevExpress.XtraBars.BarSubItem bsiOpen;
+        private DevExpress.XtraBars.BarButtonItem bbiOpenMapByOption;
+        private DevExpress.XtraBars.BarButtonItem bbiOpenMapByInput;
+        private DevExpress.XtraBars.BarSubItem bsiFile;
+        private DevExpress.XtraBars.BarButtonItem bbiOpenMap;
+        private DevExpress.XtraBars.BarButtonItem bbiSaveMap;
+        private DevExpress.XtraBars.BarSubItem bsiView;
+        private DevExpress.XtraBars.BarButtonItem bbiDisplayAgv;
+        private DevExpress.XtraBars.BarButtonItem bbiDisplayFunc;
+        private DevExpress.XtraBars.BarButtonItem bbiDisplayAgvSta;
+        private DevExpress.XtraBars.BarSubItem bsiSetup;
+        private DevExpress.XtraBars.BarButtonItem bbiSetupMap;
+        private DevExpress.XtraBars.BarButtonItem bbiSaveMapInfo;
+        private DevExpress.XtraBars.BarSubItem bsiDebug;
+        private DevExpress.XtraBars.BarButtonItem bbiWhile;
+        private DevExpress.XtraBars.BarSubItem bsiOptionTask;
+        private DevExpress.XtraBars.BarButtonItem bbiFileSet;
+        private DevExpress.XtraBars.BarButtonItem bbiInput;
         private DevExpress.XtraBars.Docking.DockManager dockManager1;
         private DevExpress.XtraBars.Docking.DockPanel dockPanel2;
         private DevExpress.XtraBars.Docking.ControlContainer dockPanel2_Container;
@@ -4861,8 +4894,8 @@
         private DevExpress.XtraEditors.PanelControl panelControl2;
         private DevExpress.XtraLayout.LayoutControl lc1;
         private DevExpress.XtraEditors.SimpleButton btnCloseCharge;
-        private DevExpress.XtraEditors.SimpleButton simpleButton11;
-        private DevExpress.XtraEditors.SimpleButton simpleButton10;
+        private DevExpress.XtraEditors.SimpleButton btnCloseQRError;
+        private DevExpress.XtraEditors.SimpleButton btnOpenQRError;
         private DevExpress.XtraEditors.SimpleButton btnOpenCharge;
         private DevExpress.XtraEditors.SimpleButton btnStopCar;
         private DevExpress.XtraEditors.SimpleButton btnReadError;

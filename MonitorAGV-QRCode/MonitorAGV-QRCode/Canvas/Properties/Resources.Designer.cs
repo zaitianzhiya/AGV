@@ -73,6 +73,16 @@ namespace Canvas.Properties {
         /// <summary>
         ///   查找 System.Drawing.Bitmap 类型的本地化资源。
         /// </summary>
+        public static System.Drawing.Bitmap goods {
+            get {
+                object obj = ResourceManager.GetObject("goods", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
         public static System.Drawing.Bitmap timg {
             get {
                 object obj = ResourceManager.GetObject("timg", resourceCulture);

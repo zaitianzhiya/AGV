@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading;
 using Canvas.CanvasInterfaces;
 using Canvas.DrawTools;
-using CommonTools;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,17 +11,49 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using DAL;
 
 namespace Canvas.CanvasCtrl
 {
     public class CanvasCtrller : UserControl
     {
-        public object obj;
+        private static object lockObject = new object();
+
+        public int OffsetX, OffsetY;//滚动条坐标偏移量
+
+        private int mapNo;//右击时选中的地图编号
+
+        private int X, Y;//右击时选中的地图X,Y下标编号
+
+        private string FromPoint, EndPoint;//起点，终点
+
+        private bool IsExistFrom = false;//起点是否存在 
+
+        public event EventHandler TestEvent;
+
+        public delegate void ZoomDelegate(Point p1, UnitPoint p2);
+
+        public event ZoomDelegate ZoomEvent;
+
+        private UnitPoint? panStartPoint = null;//拖动起始点
+
+        //private int scrollPointX, scrollPointY;//拖动起始点滚动条数值
+
+        private UnitPoint? lockStartPoint = null;//单方向添加箭头起始点
+
+        private UnitPoint? recStartPoint = null;//矩形框内绘制控件起始点
+
+        private string arrowType;//单方向添加箭头箭头类型
+
+        private int x1,  y1;//单方向添加箭头起点X,Y
+
+        public Panel parentPanel;
+
         public event EventHandler MoveEvent;
 
         private Rectangle canvasRectangle;//显示区域
 
-        private float stepZoom = 2f;
+        public float stepZoom = 1f;//单次放大倍数
 
         private eCommandType? beforeECommandType = null;
 
@@ -76,6 +107,10 @@ namespace Canvas.CanvasCtrl
         private SmoothingMode m_smoothingMode = SmoothingMode.HighQuality;
 
         private Dictionary<Keys, Type> m_QuickSnap = new Dictionary<Keys, Type>();
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem tsmRemove;
+        private ToolStripMenuItem tsmAddFrom;
+        private ToolStripMenuItem tsmAddEnd;
 
         private IContainer components = null;
 
@@ -154,11 +189,6 @@ namespace Canvas.CanvasCtrl
             //UpdateCursor();
             m_moveHelper = new MoveHelper(this);
             m_nodeMoveHelper = new NodeMoveHelper(m_canvaswrapper);
-        }
-
-        private void UpdateCursor()
-        {
-            Cursor = m_cursors.GetCursor(m_commandType);
         }
 
         public UnitPoint GetMousePoint()
@@ -483,21 +513,14 @@ namespace Canvas.CanvasCtrl
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            Tracing.StartTrack(Tracing.TracePaint);
-            e.Graphics.SmoothingMode = m_smoothingMode;
-            CanvasWrapper canvasWrapper = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
-            Rectangle rectangle = e.ClipRectangle;
-            canvasRectangle = this.Parent.ClientRectangle;
-            //if (m_staticImage == null)
-            //{
-            //m_staticImage = new Bitmap(rectangle.Width, rectangle.Height);
-            //m_staticDirty = true;
-            //}
-            if (!(float.IsNaN(rectangle.Width) || float.IsInfinity(rectangle.Width)))
+            lock (lockObject)
             {
-                if (m_staticDirty)
+                e.Graphics.SmoothingMode = m_smoothingMode;
+                CanvasWrapper canvasWrapper = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
+                Rectangle rectangle = e.ClipRectangle;
+                canvasRectangle = this.Parent.ClientRectangle;
+                if (!(float.IsNaN(rectangle.Width) || float.IsInfinity(rectangle.Width)))
                 {
-                    m_staticDirty = false;
                     //CanvasWrapper canvasWrapper2 = new CanvasWrapper(this, Graphics.FromImage(m_staticImage), base.ClientRectangle);
                     CanvasWrapper canvasWrapper2 = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
                     canvasWrapper2.Graphics.SmoothingMode = m_smoothingMode;
@@ -521,26 +544,26 @@ namespace Canvas.CanvasCtrl
                     float xEnd = (rectangle.X + rectangle.Width);
                     float yEnd = (rectangle.Y + rectangle.Height);
                     float x1, y1, x2, y2;
-                    x1 = 20 * m_model.Zoom;
+                    x1 = 20*m_model.Zoom;
                     bool isEnd;
                     CanvasWrapper canvasWrapper3 = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
                     Pen penCoor = new Pen(Color.White);
-                    AdjustableArrowCap cap = new AdjustableArrowCap(6 * m_model.Zoom, 6 * m_model.Zoom);
+                    AdjustableArrowCap cap = new AdjustableArrowCap(6*m_model.Zoom, 6*m_model.Zoom);
                     penCoor.CustomEndCap = cap;
                     penCoor.Width = 2;
                     Pen penCoor2 = new Pen(Color.White);
                     penCoor2.Width = 2;
-                    Font fontCoor = new Font("Tahoma", 9 * m_model.Zoom);
+                    Font fontCoor = new Font("Tahoma", 9*m_model.Zoom);
                     if (x1 >= xStart && x1 <= xEnd)
                     {
                         //y1 = 0;
                         //y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
                         y1 = yStart;
-                        if (y1 <= 10 * m_model.Zoom)
+                        if (y1 <= 10*m_model.Zoom)
                         {
                             y1 = 0;
                         }
-                        y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
+                        y2 = (20 + m_model.YCount*m_model.Distance)*m_model.Zoom;
                         if (y2 > yEnd)
                         {
                             y2 = yEnd;
@@ -548,29 +571,29 @@ namespace Canvas.CanvasCtrl
                         if (y1 == 0)
                         {
                             canvasWrapper3.Graphics.DrawLine(penCoor, x1, y2, x1, y1);
-                            canvasWrapper3.Graphics.DrawString("Y", fontCoor, Brushes.White, (float)(5 * m_model.Zoom),
-                                5 * m_model.Zoom);
+                            canvasWrapper3.Graphics.DrawString("Y", fontCoor, Brushes.White, (float) (5*m_model.Zoom),
+                                5*m_model.Zoom);
                         }
                         else
                         {
                             canvasWrapper3.Graphics.DrawLine(penCoor2, x1, y2, x1, y1);
                         }
                     }
-                    y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
+                    y2 = (20 + m_model.YCount*m_model.Distance)*m_model.Zoom;
                     if (y2 >= yStart && y2 <= yEnd)
                     {
                         isEnd = false;
                         //x1 = 20 * m_model.Zoom;
                         //x2 = (20 + m_model.XCount * m_model.Distance + 20) * m_model.Zoom;
-                        x1 = 20 * m_model.Zoom;
+                        x1 = 20*m_model.Zoom;
                         if (xStart > x1)
                         {
                             x1 = xStart;
                         }
-                        x2 = (20 + m_model.XCount * m_model.Distance + 20) * m_model.Zoom;
+                        x2 = (20 + m_model.XCount*m_model.Distance + 20)*m_model.Zoom;
                         if (x2 > xEnd)
                         {
-                            if (x2 - xEnd <= 10 * m_model.Zoom)
+                            if (x2 - xEnd <= 10*m_model.Zoom)
                             {
                                 isEnd = true;
                             }
@@ -586,8 +609,8 @@ namespace Canvas.CanvasCtrl
                         if (isEnd)
                         {
                             canvasWrapper3.Graphics.DrawLine(penCoor, x1, y2, x2, y2);
-                            canvasWrapper3.Graphics.DrawString("X", fontCoor, Brushes.White, x2 - 20 * m_model.Zoom,
-                                y2 + 5 * m_model.Zoom);
+                            canvasWrapper3.Graphics.DrawString("X", fontCoor, Brushes.White, x2 - 20*m_model.Zoom,
+                                y2 + 5*m_model.Zoom);
                         }
                         else
                         {
@@ -595,45 +618,16 @@ namespace Canvas.CanvasCtrl
                         }
                     }
                     canvasWrapper3.Dispose();
-                }
-                //Rectangle rectangle2 = new Rectangle();
-                //rectangle2.X = 0;
-                //rectangle2.Y = 0;
-                //rectangle2.Width = rectangle.Width;
-                //rectangle2.Height = rectangle.Height;
-                //e.Graphics.DrawImage(m_staticImage, rectangle, rectangle2, GraphicsUnit.Pixel);
-                //m_staticImage.Save(Application.StartupPath+@"\1.bmp",ImageFormat.Bmp);
-                //obj = rectangle.X + "@" + rectangle.Y + "@" + rectangle.Width + "@" + rectangle.Height;
-                //TestEvent(null, null);
-                foreach (IDrawObject current in m_model.SelectedObjects)
-                {
-                    current.Draw(canvasWrapper, rectangle);
-                }
+                    if (m_selection != null)
+                    {
+                        m_selection.Reset();
+                        m_selection.SetMousePoint(e.Graphics, base.PointToClient(Control.MousePosition));
+                    }
+                    canvasWrapper.Dispose();
 
-                if (m_newObject != null)
-                {
-                    m_newObject.Draw(canvasWrapper, rectangle);
+                    parentPanel.HorizontalScroll.Value = OffsetX;
+                    parentPanel.VerticalScroll.Value = OffsetY;
                 }
-
-                //if (m_snappoint != null)
-                //{
-                //    m_snappoint.Draw(canvasWrapper);
-                //}
-                //if (m_selection != null)
-                //{
-                //    m_selection.Reset();
-                //    m_selection.SetMousePoint(e.Graphics, base.PointToClient(Control.MousePosition));
-                //}
-                //if (!m_moveHelper.IsEmpty)
-                //{
-                //    m_moveHelper.DrawObjects(canvasWrapper, rectangle);
-                //}
-                //if (!m_nodeMoveHelper.IsEmpty)
-                //{
-                //    m_nodeMoveHelper.DrawObjects(canvasWrapper, rectangle);
-                //}
-                canvasWrapper.Dispose();
-                Tracing.EndTrack(Tracing.TracePaint, "OnPaint complete");
             }
         }
 
@@ -643,10 +637,10 @@ namespace Canvas.CanvasCtrl
             {
                 int x = (int)((mouseunitpoint.X - 20) / m_model.Distance);
                 int y = m_model.YCount - (int)((mouseunitpoint.Y - 20) / m_model.Distance) - 1;
-                int mapNo = y * m_model.XCount + x + 1;
-                List<IDrawObject> lst= (from p in m_model.ActiveLayer.Objects
-                                        where p.Id == m_drawObjectId && p.MapNo == mapNo
-                select p).ToList();
+                int mapNo = y * m_model.XCount + x;
+                List<IDrawObject> lst = (from p in m_model.ActiveLayer.Objects
+                                         where p.Id == m_drawObjectId && p.MapNo == mapNo
+                                         select p).ToList();
                 if (lst.Any())
                 {
                     m_model.DeleteObjects(lst);
@@ -659,7 +653,7 @@ namespace Canvas.CanvasCtrl
                         m_newObject = m_model.CreateObject(this, m_drawObjectId, mouseunitpoint, snappoint);
                         if (m_newObject.Id == "ArrowLeft" || m_newObject.Id == "ArrowRight" ||
                             m_newObject.Id == "ArrowDown" || m_newObject.Id == "ArrowUp" ||
-                            m_newObject.Id == "AGVTool" || m_newObject.Id == "Charge" || m_newObject.Id == "Forbid")
+                            m_newObject.Id == "AGVTool" || m_newObject.Id == "Charge" || m_newObject.Id == "Forbid" || m_newObject.Id == "Shelf")
                         {
                             m_newObject.OnMouseDown(m_canvaswrapper, mouseunitpoint, snappoint);
                             m_model.AddObject(m_model.ActiveLayer, m_newObject);
@@ -675,115 +669,353 @@ namespace Canvas.CanvasCtrl
         {
             m_mousedownPoint = new PointF((float)e.X, (float)e.Y);
             UnitPoint unitPoint = ToUnit(m_mousedownPoint);
-            if (m_commandType == eCommandType.draw)
+            //int x = (int)((unitPoint.X - 20) / m_model.Distance);
+            //int y = m_model.YCount - (int)((unitPoint.Y - 20) / m_model.Distance) - 1;
+            //int mapNo = y * m_model.XCount + x;
+            //TestEvent(x + "," + y+"@"+mapNo, null);
+            if (m_commandType == eCommandType.draw && e.Button == MouseButtons.Left)
             {
-                if (unitPoint.X >= 20 && unitPoint.Y >= 20 && unitPoint.X <= m_model.XCount * m_model.Distance + 20 &&
-                unitPoint.Y <= m_model.YCount * m_model.Distance + 20)
+                m_selection = new SelectionRectangle(m_mousedownPoint);
+                recStartPoint = unitPoint;
+                x1 = (int)((unitPoint.X - 20) / m_model.Distance);
+                y1 = m_model.YCount - (int)((unitPoint.Y - 20) / m_model.Distance) - 1;
+            }
+            if (m_commandType == eCommandType.pan && e.Button == MouseButtons.Left)
+            {
+                panStartPoint = unitPoint;
+                OffsetX = parentPanel.HorizontalScroll.Value;
+                OffsetY = parentPanel.VerticalScroll.Value;
+            }
+
+            #region 单一方向绘制箭头
+            if (m_commandType == eCommandType.lockdir && e.Button == MouseButtons.Left)
+            {
+                int x = (int)((unitPoint.X - 20) / m_model.Distance);
+                int y = m_model.YCount - (int)((unitPoint.Y - 20) / m_model.Distance) - 1;
+
+                if (unitPoint.X > 20 + x * m_model.Distance && unitPoint.X < 20 + x * m_model.Distance + m_model.Distance / 4 &&
+                    unitPoint.Y > 20 + (m_model.YCount - y - 1) * m_model.Distance + m_model.Distance * 0.25 &&
+                    unitPoint.Y < 20 + (m_model.YCount - y - 1) * m_model.Distance + m_model.Distance * 0.75)
                 {
-                    HandleMouseDownWhenDrawing(unitPoint, null);
+                    lockStartPoint = unitPoint;
+                    x1 = x;
+                    y1 = y;
+                    arrowType = "L";
+                }
+                else if (unitPoint.X > 20 + x * m_model.Distance + 0.75 * m_model.Distance && unitPoint.X < 20 + x * m_model.Distance + m_model.Distance &&
+                    unitPoint.Y > 20 + (m_model.YCount - y - 1) * m_model.Distance + m_model.Distance * 0.25 &&
+                    unitPoint.Y < 20 + (m_model.YCount - y - 1) * m_model.Distance + m_model.Distance * 0.75)
+                {
+                    lockStartPoint = unitPoint;
+                    x1 = x;
+                    y1 = y;
+                    arrowType = "R";
+                }
+                else if (unitPoint.X > 20 + x * m_model.Distance + 0.25 * m_model.Distance && unitPoint.X < 20 + x * m_model.Distance + m_model.Distance * 0.75 &&
+                  unitPoint.Y > 20 + (m_model.YCount - y - 1) * m_model.Distance &&
+                  unitPoint.Y < 20 + (m_model.YCount - y - 1) * m_model.Distance + m_model.Distance * 0.25)
+                {
+                    lockStartPoint = unitPoint;
+                    x1 = x;
+                    y1 = y;
+                    arrowType = "U";
+                }
+                else if (unitPoint.X > 20 + x * m_model.Distance + 0.25 * m_model.Distance && unitPoint.X < 20 + x * m_model.Distance + m_model.Distance * 0.75 &&
+                  unitPoint.Y > 20 + (m_model.YCount - y - 1) * m_model.Distance + m_model.Distance * 0.75 &&
+                  unitPoint.Y < 20 + (m_model.YCount - y - 1) * m_model.Distance + m_model.Distance)
+                {
+                    lockStartPoint = unitPoint;
+                    x1 = x;
+                    y1 = y;
+                    arrowType = "D";
                 }
             }
+            #endregion
 
             base.OnMouseDown(e);
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            try
+            m_mousedownPoint = new PointF((float)e.X, (float)e.Y);
+            UnitPoint unitPoint = ToUnit(m_mousedownPoint);
+            if (m_commandType == eCommandType.pan && e.Button == MouseButtons.Left && panStartPoint != null)
             {
-                if (m_commandType == eCommandType.pan && e.Button == MouseButtons.Right)
+                double xDistance = (((UnitPoint)panStartPoint).X - unitPoint.X) * m_model.Zoom;
+                double yDistance = (((UnitPoint)panStartPoint).Y - unitPoint.Y) * m_model.Zoom;
+                OffsetX = (int)(OffsetX+xDistance);
+                if (OffsetX < 0)
                 {
-                    //m_commandType = eCommandType.select;
-                    if (beforeECommandType != null)
-                    {
-                        m_commandType = (eCommandType)beforeECommandType;
-                    }
-                    else
-                    {
-                        m_commandType = eCommandType.select;
-                    }
-                    UpdateCursor();
+                    OffsetX = 0;
                 }
-                if (m_commandType == eCommandType.pan || e.Button == MouseButtons.Right)
+                OffsetY = (int)(OffsetY+yDistance);
+                if (OffsetY<0)
                 {
-                    m_panOffset.X = m_panOffset.X + m_dragOffset.X;
-                    m_panOffset.Y = m_panOffset.Y + m_dragOffset.Y;
-                    m_dragOffset = new PointF(0f, 0f);
+                    OffsetY = 0;
                 }
-                List<IDrawObject> list = null;
-                Rectangle left = Rectangle.Empty;
-                if (m_selection != null)
-                {
-                    left = m_selection.ScreenRect();
-                    RectangleF rectangleF = m_selection.Selection(m_canvaswrapper);
-                    if (rectangleF != RectangleF.Empty)
-                    {
-                        list = m_model.GetHitObjects(m_canvaswrapper, rectangleF, m_selection.AnyPoint());
-                        DoInvalidate(true);
-                    }
-                    else
-                    {
-                        UnitPoint point = ToUnit(new PointF((float)e.X, (float)e.Y));
-                        list = m_model.GetHitObjects(m_canvaswrapper, point);
-                    }
-                    m_selection = null;
-                }
-                if (m_commandType == eCommandType.select && e.Button == MouseButtons.Left)
-                {
-                    bool flag6 = list != null;
-                    if (flag6)
-                    {
-                        HandleSelection(list);
-                    }
-                }
-                if (m_commandType == eCommandType.edit && m_editTool != null)
-                {
-                    UnitPoint unitPoint = ToUnit(m_mousedownPoint);
-                    if (m_snappoint != null)
-                    {
-                        unitPoint = m_snappoint.SnapPoint;
-                    }
-                    if (left != Rectangle.Empty)
-                    {
-                        m_editTool.SetHitObjects(unitPoint, list);
-                    }
-                    m_editTool.OnMouseUp(m_canvaswrapper, unitPoint, m_snappoint);
-                }
-                if (m_commandType == eCommandType.draw && m_newObject != null)
-                {
-                    UnitPoint point2 = ToUnit(m_mousedownPoint);
-                    if (m_snappoint != null)
-                    {
-                        point2 = m_snappoint.SnapPoint;
-                    }
-                    m_newObject.OnMouseUp(m_canvaswrapper, point2, m_snappoint);
-                }
-                base.OnMouseUp(e);
+                panStartPoint = null;
+                DoInvalidate(true);
             }
-            catch (Exception ex)
+
+            if (m_commandType == eCommandType.draw && e.Button == MouseButtons.Left&&recStartPoint!=null)
             {
-                throw ex;
+                int x = (int)((unitPoint.X - 20) / m_model.Distance);
+                int y = m_model.YCount - (int)((unitPoint.Y - 20) / m_model.Distance) - 1;
+                if (x == x1 && y == y1)
+                {
+                    if (unitPoint.X >= 20 && unitPoint.Y >= 20 && unitPoint.X <= m_model.XCount*m_model.Distance + 20 &&
+                        unitPoint.Y <= m_model.YCount*m_model.Distance + 20)
+                    {
+                        HandleMouseDownWhenDrawing(unitPoint, null);
+                    }
+                }
+                else
+                {
+                    int xMin = Math.Min(x, x1);
+                    int xMax = Math.Max(x, x1);
+                    int yMin = Math.Min(y, y1);
+                    int yMax = Math.Max(y, y1);
+                    if (xMin < 0)
+                    {
+                        xMin = 0;
+                    }
+                    if (yMin < 0)
+                    {
+                        yMin = 0;
+                    }
+                    if (xMax > m_model.XCount-1)
+                    {
+                        xMax = m_model.XCount-1;
+                    }
+                    if (yMax > m_model.YCount-1)
+                    {
+                        yMax = m_model.YCount-1;
+                    }
+                    for (int i = xMin; i <= xMax; i++)
+                    {
+                        for (int j = yMin; j <= yMax; j++)
+                        {
+                            HandleMouseDownWhenDrawing(new UnitPoint(20 + i * m_model.Distance + 0.5 * m_model.Distance, 20 + (m_model.YCount - j) * m_model.Distance - 0.5 * m_model.Distance), null);
+                        }
+                    }
+                    DoInvalidate(true);
+                }
             }
+
+            #region 单一方向绘制箭头
+            if (m_commandType == eCommandType.lockdir && e.Button == MouseButtons.Left && lockStartPoint != null)
+            {
+                int x = (int)((unitPoint.X - 20) / m_model.Distance);
+                int y = m_model.YCount - (int)((unitPoint.Y - 20) / m_model.Distance) - 1;
+
+                if (x1 == x || y1 == y)
+                {
+                    if ((arrowType == "L" || arrowType == "R")&&y1==y)
+                    {
+                        if (arrowType == "L")
+                        {
+                            if (unitPoint.X > 20 + x*m_model.Distance &&
+                                unitPoint.X < 20 + x*m_model.Distance + m_model.Distance/4 &&
+                                unitPoint.Y > 20 + (m_model.YCount - y - 1)*m_model.Distance + m_model.Distance*0.25 &&
+                                unitPoint.Y < 20 + (m_model.YCount - y - 1)*m_model.Distance + m_model.Distance*0.75)
+                            {
+                                int xMax = Math.Max(x1, x);
+                                int xMin = Math.Min(x1, x);
+                                int mapNo;
+                                List<IDrawObject> lst;
+                                ArrowLeft arrow;
+                                for (int i = xMin; i <= xMax; i++)
+                                {
+                                    mapNo = y*m_model.XCount + i;
+                                    lst = (from p in m_model.ActiveLayer.Objects
+                                           where p.Id == "ArrowLeft" && p.MapNo == mapNo
+                                           select p).ToList();
+                                    if (lst.Any())
+                                    {
+                                        m_model.DeleteObjects(lst);
+                                    }
+                                    else
+                                    {
+                                        arrow = new ArrowLeft();
+                                        arrow.MapNo = mapNo;
+                                        arrow.X = i;
+                                        arrow.Y =y;
+                                        arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
+                                        m_model.AddObject(m_model.ActiveLayer, arrow);
+                                    }
+                                }
+                                DoInvalidate(true);
+                            }
+                        }
+                        else
+                        {
+                            if (unitPoint.X > 20 + x*m_model.Distance + 0.75*m_model.Distance &&
+                                unitPoint.X < 20 + x*m_model.Distance + m_model.Distance &&
+                                unitPoint.Y > 20 + (m_model.YCount - y - 1)*m_model.Distance + m_model.Distance*0.25 &&
+                                unitPoint.Y < 20 + (m_model.YCount - y - 1)*m_model.Distance + m_model.Distance*0.75)
+                            {
+                                int xMax = Math.Max(x1, x);
+                                int xMin = Math.Min(x1, x);
+                                int mapNo;
+                                List<IDrawObject> lst;
+                                ArrowRight arrow;
+                                for (int i = xMin; i <= xMax; i++)
+                                {
+                                    mapNo = y * m_model.XCount + i;
+                                    lst = (from p in m_model.ActiveLayer.Objects
+                                           where p.Id == "ArrowRight" && p.MapNo == mapNo
+                                           select p).ToList();
+                                    if (lst.Any())
+                                    {
+                                        m_model.DeleteObjects(lst);
+                                    }
+                                    else
+                                    {
+                                        arrow = new ArrowRight();
+                                        arrow.MapNo = mapNo;
+                                        arrow.X = i;
+                                        arrow.Y = y;
+                                        arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
+                                        m_model.AddObject(m_model.ActiveLayer, arrow);
+                                    }
+                                }
+                                DoInvalidate(true);
+                            }
+                        }
+                    }
+                    else if ((arrowType == "U" || arrowType == "D") && x1 == x)
+                    {
+                        if (arrowType == "U")
+                        {
+                            if (unitPoint.X > 20 + x*m_model.Distance + 0.25*m_model.Distance &&
+                                unitPoint.X < 20 + x*m_model.Distance + m_model.Distance*0.75 &&
+                                unitPoint.Y > 20 + (m_model.YCount - y - 1)*m_model.Distance &&
+                                unitPoint.Y < 20 + (m_model.YCount - y - 1)*m_model.Distance + m_model.Distance*0.25)
+                            {
+                                int yMax = Math.Max(y1, y);
+                                int yMin = Math.Min(y1, y);
+                                int mapNo;
+                                List<IDrawObject> lst;
+                                ArrowUp arrow;
+                                for (int i = yMin; i <= yMax; i++)
+                                {
+                                    mapNo = i * m_model.XCount + x;
+                                    lst = (from p in m_model.ActiveLayer.Objects
+                                           where p.Id == "ArrowUp" && p.MapNo == mapNo
+                                           select p).ToList();
+                                    if (lst.Any())
+                                    {
+                                        m_model.DeleteObjects(lst);
+                                    }
+                                    else
+                                    {
+                                        arrow = new ArrowUp();
+                                        arrow.MapNo = mapNo;
+                                        arrow.X = x;
+                                        arrow.Y = i;
+                                        arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
+                                        m_model.AddObject(m_model.ActiveLayer, arrow);
+                                    }
+                                }
+                                DoInvalidate(true);
+                            }
+                        }
+                        else
+                        {
+                            if (unitPoint.X > 20 + x*m_model.Distance + 0.25*m_model.Distance &&
+                                unitPoint.X < 20 + x*m_model.Distance + m_model.Distance*0.75 &&
+                                unitPoint.Y > 20 + (m_model.YCount - y - 1)*m_model.Distance + m_model.Distance*0.75 &&
+                                unitPoint.Y < 20 + (m_model.YCount - y - 1)*m_model.Distance + m_model.Distance)
+                            {
+                                int yMax = Math.Max(y1, y);
+                                int yMin = Math.Min(y1, y);
+                                int mapNo;
+                                List<IDrawObject> lst;
+                                ArrowDown arrow;
+                                for (int i = yMin; i <= yMax; i++)
+                                {
+                                    mapNo = i * m_model.XCount + x;
+                                    lst = (from p in m_model.ActiveLayer.Objects
+                                           where p.Id == "ArrowDown" && p.MapNo == mapNo
+                                           select p).ToList();
+                                    if (lst.Any())
+                                    {
+                                        m_model.DeleteObjects(lst);
+                                    }
+                                    else
+                                    {
+                                        arrow = new ArrowDown();
+                                        arrow.MapNo = mapNo;
+                                        arrow.X = x;
+                                        arrow.Y = i;
+                                        arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
+                                        m_model.AddObject(m_model.ActiveLayer, arrow);
+                                    }
+                                }
+                                DoInvalidate(true);
+                            }
+                        }
+                    }
+                }
+
+                lockStartPoint = null;
+                arrowType = "";
+            }
+            #endregion
+
+            if (m_selection != null)
+            {
+                RectangleF rectangleF = m_selection.Selection(m_canvaswrapper);
+                if (rectangleF != RectangleF.Empty)
+                {
+                    DoInvalidate(true);
+                }
+                m_selection = null;
+            }
+            base.OnMouseUp(e);
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            UnitPoint mousePoint = GetMousePoint();
-            string msg = string.Format("Virtual:({0},{1}) || Real:({2}mm,{3}mm)", mousePoint.X, mousePoint.Y, Math.Round(mousePoint.X * m_model.Zoom,2),Math.Round(mousePoint.Y * m_model.Zoom,2));
-            MoveEvent(msg, null);
-            base.OnMouseMove(e);
+            if (m_selection != null)
+            {
+                Graphics graphics = Graphics.FromHwnd(base.Handle);
+                m_selection.SetMousePoint(graphics, new PointF((float) e.X, (float) e.Y));
+                graphics.Dispose();
+            }
+            else
+            {
+                UnitPoint mousePoint = GetMousePoint();
+                //string msg = string.Format("Virtual:({0},{1}) || Real:({2}mm,{3}mm)", (float)((mousePoint.X - 20) / m_model.Distance),  m_model.YCount - (float)((mousePoint.Y - 20) / m_model.Distance) - 1,
+                //    Math.Round(mousePoint.X*m_model.Zoom, 2), Math.Round(mousePoint.Y*m_model.Zoom, 2));
+                string msg = string.Format("Virtual:({0},{1}) || Unit:({2}mm,{3}mm)||Real:({4}mm,{5}mm)", Math.Round((float)((mousePoint.X - 20) / m_model.Distance), 2), Math.Round(m_model.YCount - (float)((mousePoint.Y - 20) / m_model.Distance), 2), Math.Round(mousePoint.X, 2), Math.Round(mousePoint.Y, 2),
+              Math.Round(mousePoint.X * m_model.Zoom, 2), Math.Round(mousePoint.Y * m_model.Zoom, 2));
+                MoveEvent(msg, null);
+                base.OnMouseMove(e);
+
+                if (m_commandType == eCommandType.pan && e.Button == MouseButtons.Left && panStartPoint != null)
+                {
+                    //m_mousedownPoint = new PointF((float)e.X, (float)e.Y);
+                    //UnitPoint panEndPoint = ToUnit(m_mousedownPoint);
+                    //double xDistance=(((UnitPoint)panStartPoint).X-panEndPoint.X)*m_model.Zoom;
+                    //double yDistance = (((UnitPoint)panStartPoint).Y-panEndPoint.Y)*m_model.Zoom;
+                    //parentPanel.AutoScrollPosition = new Point((int)(scrollPointX + xDistance), (int)(scrollPointY + yDistance));
+                    //DoInvalidate(true);
+                }
+            }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             try
             {
+                UnitPoint mousePoint = GetMousePoint();
                 if (Control.ModifierKeys == Keys.Control)
                 {
-                    UnitPoint mousePoint = GetMousePoint();
-                    //string msg = string.Format("Mouse:({0},{1}),Unit:({2},{3})", canvasRectangle.Width, canvasRectangle.Height,
-                    //    mousePoint.X, mousePoint.Y);
-                    //TestEvent(msg, null);
+                    Point p = base.PointToClient(Control.MousePosition);
+                    //string msg = string.Format("Mouse:({0},{1})",p.X, p.Y);
+                    //TestEvent(mousePoint, null);
+                    ZoomEvent(p, mousePoint);
                     //float num = 120f;
                     //float num2 = 1.5f * ((float)Math.Abs(e.Delta) / num);
                     float num3;
@@ -795,7 +1027,9 @@ namespace Canvas.CanvasCtrl
                     {
                         num3 = m_model.Zoom * stepZoom;
                     }
-                    if (num3 > 10 || num3 < 0.2)
+                    int width = (int)((m_model.XCount * m_model.Distance + 100) * num3);
+                    int height = (int)((m_model.YCount * m_model.Distance + 100) * num3);
+                    if (num3 > 10 || num3 < 0.2 || width >= 30759 || height >= 30759)
                     {
                         DoInvalidate(true);
                         base.OnMouseWheel(e);
@@ -803,16 +1037,18 @@ namespace Canvas.CanvasCtrl
                     }
                     bool flag2 = float.IsNaN(num3) || float.IsInfinity(num3) || Math.Round((double)num3, 6) <= 1E-06 ||
                                  num3 > 20000f;
-
                     if (!flag2)
                     {
                         m_model.Zoom = num3;
-                        Width = (int)((m_model.XCount * m_model.Distance + 100) * num3);
-                        Height = (int)((m_model.YCount * m_model.Distance + 100) * num3);
-                        SetCenterScreen(ToScreen(mousePoint), true);
-                        //Panel plMain = (Panel) this.Parent;
-                        //plMain.AutoScrollPosition = new Point(plMain.HorizontalScroll.Value, plMain.VerticalScroll.Value+e.Delta);
+                        Width = width;
+                        Height = height;
+                        //SetCenterScreen(ToScreen(mousePoint), true);
                     }
+                }
+                OffsetY = parentPanel.VerticalScroll.Value - e.Delta;
+                if (OffsetY < 0)
+                {
+                    OffsetY = 0;
                 }
                 DoInvalidate(true);
                 base.OnMouseWheel(e);
@@ -859,7 +1095,6 @@ namespace Canvas.CanvasCtrl
                 bool handled2 = e.Handled;
                 if (handled2)
                 {
-                    UpdateCursor();
                 }
                 else
                 {
@@ -956,7 +1191,6 @@ namespace Canvas.CanvasCtrl
                         {
                             CommandEdit("linesmeet");
                         }
-                        UpdateCursor();
                     }
                 }
             }
@@ -986,268 +1220,30 @@ namespace Canvas.CanvasCtrl
             }
         }
 
-        public void DrawLandMark(ICanvas canvas, Brush pen, string code, UnitPoint Point)
+        public void DrawImage(ICanvas canvas, UnitPoint p)
         {
-            try
+            if (!p.IsEmpty)
             {
-                bool isEmpty = Point.IsEmpty;
-                if (!isEmpty)
+                if (canvas.Graphics != null)
                 {
-                    bool flag = canvas.Graphics == null;
-                    if (!flag)
-                    {
-                        PointF pointF = ToScreen(Point);
-                        float num = ToScreen(0.2);
-                        canvas.Graphics.FillEllipse(pen, pointF.X, pointF.Y, num, num);
-                        pen = Brushes.White;
-                        float num2 = ToScreen(0.10000000149011612);
-                        float num3 = num2 * (float)(code.Length + 1);
-                        float num4 = ToScreen(0.15000000596046448);
-                        float num5 = num3 / 2f - ToScreen(0.1);
-                        StringFormat stringFormat = new StringFormat();
-                        stringFormat.Alignment = StringAlignment.Center;
-                        Rectangle r = new Rectangle((int)(pointF.X - num5), (int)(pointF.Y - num4), (int)num3, (int)num4);
-                        Font font = new Font("宋体", num2);
-                        canvas.Graphics.DrawString(code, font, pen, r, stringFormat);
-                    }
+                    PointF pointF = ToScreen(p);
+                    RectangleF rect = new RectangleF(pointF.X - m_model.Distance * m_model.Zoom / 4, pointF.Y - m_model.Distance * m_model.Zoom / 4, (float)(m_model.Distance * m_model.Zoom / 2), (float)(m_model.Distance * m_model.Zoom / 2));
+                    Image image = Properties.Resources.goods;
+                    canvas.Graphics.DrawImage(image, rect);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawImge(ICanvas canvas, Pen pen, UnitPoint Location, float Widht, float Hight, Image img, string values)
-        {
-            try
-            {
-                bool isEmpty = Location.IsEmpty;
-                if (!isEmpty)
-                {
-                    bool flag = canvas.Graphics != null;
-                    if (flag)
-                    {
-                        PointF location = ToScreen(Location);
-                        float num = ToScreen((double)(Widht / 96f));
-                        float num2 = ToScreen((double)(Hight / 96f));
-                        canvas.Graphics.DrawRectangle(pen, location.X, location.Y, num, num2);
-                        canvas.Graphics.DrawImage(img, new RectangleF(location, new Size((int)num, (int)num2)));
-                        bool flag2 = !string.IsNullOrEmpty(values);
-                        if (flag2)
-                        {
-                            StringFormat stringFormat = new StringFormat();
-                            stringFormat.Alignment = StringAlignment.Center;
-                            float num3 = 0f;
-                            bool flag3 = values.Length == 1;
-                            float emSize;
-                            float num4;
-                            if (flag3)
-                            {
-                                emSize = ToScreen(0.3125);
-                                num4 = -ToScreen(0.26041666666666669);
-                            }
-                            else
-                            {
-                                bool flag4 = values.Length == 2;
-                                if (flag4)
-                                {
-                                    emSize = ToScreen(0.3125);
-                                    num4 = -ToScreen(0.28125);
-                                }
-                                else
-                                {
-                                    emSize = ToScreen(0.20833333333333334);
-                                    num4 = -ToScreen(0.28125);
-                                    num3 = -ToScreen(0.10416666666666667);
-                                }
-                            }
-                            Font font = new Font("Arial Black", emSize, FontStyle.Regular, GraphicsUnit.Point, 0);
-                            SolidBrush brush = new SolidBrush(Color.White);
-                            canvas.Graphics.DrawString(values, font, brush, location.X - num4, location.Y - num3, stringFormat);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawTxt(ICanvas canvas, string code, UnitPoint Point, int FontSize, Color fontColor)
-        {
-            try
-            {
-                bool isEmpty = Point.IsEmpty;
-                if (!isEmpty)
-                {
-                    bool flag = canvas.Graphics != null;
-                    if (flag)
-                    {
-                        PointF pointF = ToScreen(Point);
-                        StringFormat stringFormat = new StringFormat();
-                        stringFormat.Alignment = StringAlignment.Near;
-                        float emSize = ToScreen((double)((float)FontSize / 96f));
-                        Font font = new Font("Arial Black", emSize, FontStyle.Regular, GraphicsUnit.Point, 0);
-                        SolidBrush brush = new SolidBrush(fontColor);
-                        canvas.Graphics.DrawString(code, font, brush, pointF.X, pointF.Y, stringFormat);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawBizer(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2, UnitPoint p3, UnitPoint p4)
-        {
-            try
-            {
-                PointF pt = ToScreen(p1);
-                PointF pt2 = ToScreen(p2);
-                PointF pt3 = ToScreen(p3);
-                PointF pt4 = ToScreen(p4);
-                bool flag = canvas.Graphics != null;
-                if (flag)
-                {
-                    canvas.Graphics.DrawBezier(pen, pt, pt2, pt3, pt4);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawStorage(ICanvas canvas, Brush Pen, string code, UnitPoint Point)
-        {
-            try
-            {
-                if (!Point.IsEmpty)
-                {
-                    if (canvas.Graphics != null)
-                    {
-                        PointF pointF = ToScreen(Point);
-                        float num = ToScreen(0.5);
-                        Rectangle rect = new Rectangle((int)pointF.X, (int)pointF.Y, (int)num, (int)num);
-                        canvas.Graphics.FillRectangle(Pen, rect);
-                        //float num2 = ToScreen(0.10000000149011612);
-                        float num2 = ToScreen(0.20000000149011612);
-                        float num3 = num2 * (float)code.Length + num2;
-                        //float num4 = ToScreen(0.15000000596046448);
-                        float num4 = ToScreen(0.30000000596046448);
-                        float num5 = num / 2f - num3 / 2f;
-                        StringFormat stringFormat = new StringFormat();
-                        stringFormat.Alignment = StringAlignment.Center;
-                        Font font = new Font("宋体", num2);
-                        Brush gray = Brushes.Gray;
-                        //Rectangle r = new Rectangle((int)(pointF.X + num5), (int)(pointF.Y + ToScreen(0.15000000596046448)), (int)num3, (int)num4);
-                        Rectangle r = new Rectangle((int)(pointF.X + num5), (int)(pointF.Y + ToScreen(0.10000000596046448)), (int)num3, (int)num4);
-                        //canvas.Graphics.FillRectangle(Brushes.Red,r);
-                        canvas.Graphics.DrawString(code, font, gray, r, stringFormat);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawBtnBox(ICanvas canvas, float Radius, UnitPoint Point, bool Selected)
-        {
-            try
-            {
-                if (!Point.IsEmpty)
-                {
-                    if (canvas.Graphics != null)
-                    {
-                        PointF pointF = ToScreen(Point);
-                        float num = ToScreen((double)Radius);
-                        Color color = Color.FromArgb(47, 79, 79);
-                        Brush brush = new SolidBrush(color);
-                        canvas.Graphics.FillEllipse(brush, pointF.X, pointF.Y, num, num);
-                        color = Color.FromArgb(105, 105, 105);
-                        brush = new SolidBrush(color);
-                        if (Selected)
-                        {
-                            brush = Brushes.Magenta;
-                        }
-                        num -= ToScreen(0.20000000298023224);
-                        bool flag2 = num > 0f;
-                        if (flag2)
-                        {
-                            canvas.Graphics.FillEllipse(brush, pointF.X + ToScreen(0.10000000149011612), pointF.Y + ToScreen(0.10000000149011612), num, num);
-                        }
-                        brush = Brushes.DarkGray;
-                        float emSize = ToScreen((double)(((Radius >= 1f) ? (0.2f * Radius) : 0.14f) - 0.05f));
-                        StringFormat stringFormat = new StringFormat();
-                        stringFormat.Alignment = StringAlignment.Center;
-                        Rectangle r = new Rectangle((int)(ToScreen(Point).X + ToScreen((double)(Radius / 3f))), (int)(ToScreen(Point).Y + ToScreen((double)(Radius / 3f))), (int)ToScreen((double)(Radius / 3f)), (int)ToScreen((double)(Radius / 3f * 2f)));
-                        Font font = new Font("宋体", emSize);
-                        canvas.Graphics.DrawString("呼叫", font, brush, r, stringFormat);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawAGV(ICanvas canvas, Pen pen, UnitPoint p, string Code)
-        {
-            try
-            {
-                PointF pointF = ToScreen(p);
-                SolidBrush brush = new SolidBrush(pen.Color);
-                RectangleF rect = new RectangleF(pointF.X - ToScreen(0.15), pointF.Y - ToScreen(0.15), ToScreen(0.5), ToScreen(0.5));
-                bool flag = !rect.Location.IsEmpty && !float.IsInfinity(rect.X) && !float.IsInfinity(rect.Y);
-                if (flag)
-                {
-                    using (GraphicsPath graphicsPath = CreateRoundedRectanglePath(rect, (int)ToScreen(0.06)))
-                    {
-                        bool flag2 = graphicsPath != null;
-                        if (flag2)
-                        {
-                            canvas.Graphics.FillPath(brush, graphicsPath);
-                        }
-                    }
-                    float emSize = ToScreen(0.30000001192092896);
-                    StringFormat stringFormat = new StringFormat();
-                    stringFormat.Alignment = StringAlignment.Center;
-                    Font font = new Font("宋体", emSize);
-                    Brush yellow = Brushes.Yellow;
-                    float num = ToScreen(0.05) + (float)(Code.Length - 1) * ToScreen(0.1);
-                    float num2 = ToScreen(0.1);
-                    canvas.Graphics.DrawString(Code, font, yellow, new PointF((float)((int)(pointF.X - num)), (float)((int)(pointF.Y - num2))));
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 
         public void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p)
         {
-            try
+            if (!p.IsEmpty)
             {
-                if (!p.IsEmpty)
+                if (canvas.Graphics != null)
                 {
-                    if (canvas.Graphics != null)
-                    {
-                        PointF pointF = ToScreen(p);
-                        Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
-                        canvas.Graphics.DrawRectangle(pen, rect);
-                    }
+                    PointF pointF = ToScreen(p);
+                    Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
+                    canvas.Graphics.DrawRectangle(pen, rect);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 
@@ -1268,6 +1264,57 @@ namespace Canvas.CanvasCtrl
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public void DrawAgv(ICanvas canvas, string no,Color color,float angel, UnitPoint Point)
+        {
+            if (!Point.IsEmpty)
+            {
+                if (canvas.Graphics != null)
+                {
+                    PointF pointF = this.ToScreen(Point);
+                    Pen pen=new Pen(color);
+                    pen.Width = 2;
+                    canvas.Graphics.TranslateTransform((float)(pointF.X), (float)(pointF.Y));
+                    //Rectangle rect = new Rectangle((int)(pointF.X - 0.15 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.4), (int)(m_model.Distance * m_model.Zoom * 0.3));
+                    int width = (int) (m_model.Distance*m_model.Zoom*0.4);
+                    int height = (int) (m_model.Distance*m_model.Zoom*0.3);
+                    Rectangle rect = new Rectangle((int)(-0.15 * m_model.Zoom * m_model.Distance), (int)(-0.15 * m_model.Zoom * m_model.Distance),width, height);
+                    canvas.Graphics.RotateTransform(angel);
+                    canvas.Graphics.DrawRectangle(pen, rect);
+                  
+                    //Rectangle rectEli = new Rectangle((int)(pointF.X - 0.15 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.3), (int)(m_model.Distance * m_model.Zoom * 0.3));
+                    Rectangle rectEli = new Rectangle((int)(-0.15 * m_model.Zoom * m_model.Distance), (int)(-0.15 * m_model.Zoom * m_model.Distance), height, height);
+                    canvas.Graphics.DrawEllipse(pen, rectEli);
+                  
+                    double r = Math.Sqrt(height*height*0.25 + (width - height*0.5)*(width - height*0.5));
+                    //Rectangle rectArc = new Rectangle((int)(pointF.X + 0.1 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.3), (int)(m_model.Distance * m_model.Zoom * 0.3));
+                    Rectangle rectArc = new Rectangle((int)(-r), (int)(-r), (int)(2*r), (int)(2*r));
+                    canvas.Graphics.DrawArc(pen, rectArc, -30, 60);
+                    canvas.Graphics.ResetTransform();
+
+                    float emSize = ToScreen(6);
+                    StringFormat stringFormat = new StringFormat();
+                    stringFormat.Alignment = StringAlignment.Center;
+                    Font font = new Font("宋体", emSize);
+                    canvas.Graphics.DrawString(no, font, Brushes.Yellow, new PointF((float)((int)(pointF.X - 0.13 * m_model.Zoom * m_model.Distance)), (float)((int)(pointF.Y - 0.11 * m_model.Zoom * m_model.Distance))));
+                }
+            }
+        }
+
+        public void DrawTxt(ICanvas canvas, string code, UnitPoint Point)
+        {
+            if (!Point.IsEmpty)
+            {
+                if (canvas.Graphics != null)
+                {
+                    PointF pointF = this.ToScreen(Point);
+                    StringFormat stringFormat = new StringFormat();
+                    stringFormat.Alignment = StringAlignment.Near;
+                    Font font = new Font("Arial Black", 9, FontStyle.Regular, GraphicsUnit.Point, 0);
+                    canvas.Graphics.DrawString(code, font, Brushes.Red, pointF.X, pointF.Y, stringFormat);
+                }
             }
         }
 
@@ -1303,71 +1350,44 @@ namespace Canvas.CanvasCtrl
 
         public void CommandSelectDrawTool(string drawobjectid)
         {
-            try
-            {
-                CommandEscape();
-                m_model.ClearSelectedObjects();
-                m_commandType = eCommandType.draw;
-                m_drawObjectId = drawobjectid;
-                //UpdateCursor();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            CommandEscape();
+            m_model.ClearSelectedObjects();
+            m_commandType = eCommandType.draw;
+            m_drawObjectId = drawobjectid;
         }
 
         public void CommandEscape()
         {
-            try
+            bool dostatic = m_newObject != null || m_snappoint != null;
+            m_newObject = null;
+            m_snappoint = null;
+            if (m_editTool != null)
             {
-                bool dostatic = m_newObject != null || m_snappoint != null;
-                m_newObject = null;
-                m_snappoint = null;
-                if (m_editTool != null)
-                {
-                    m_editTool.Finished();
-                }
-                m_editTool = null;
-                m_commandType = eCommandType.select;
-                m_moveHelper.HandleCancelMove();
-                m_nodeMoveHelper.HandleCancelMove();
-                DoInvalidate(dostatic);
-                UpdateCursor();
+                m_editTool.Finished();
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            m_editTool = null;
+            m_commandType = eCommandType.select;
+            m_moveHelper.HandleCancelMove();
+            m_nodeMoveHelper.HandleCancelMove();
+            DoInvalidate(dostatic);
         }
 
         public void CommandPan()
         {
-            try
-            {
-                m_commandType = eCommandType.pan;
-                UpdateCursor();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            m_commandType = eCommandType.pan;
         }
 
         public void CommandMove(bool handleImmediately)
         {
             try
             {
-                bool flag = m_model.SelectedCount > 0;
-                if (flag)
+                if (m_model.SelectedCount > 0)
                 {
-                    bool flag2 = handleImmediately && m_commandType == eCommandType.move;
-                    if (flag2)
+                    if (handleImmediately && m_commandType == eCommandType.move)
                     {
                         m_moveHelper.HandleMouseDownForMove(GetMousePoint(), m_snappoint);
                     }
                     m_commandType = eCommandType.move;
-                    UpdateCursor();
                 }
             }
             catch (Exception ex)
@@ -1378,34 +1398,18 @@ namespace Canvas.CanvasCtrl
 
         public void CommandDeleteSelected()
         {
-            try
-            {
-                m_model.DeleteObjects(m_model.SelectedObjects);
-                m_model.ClearSelectedObjects();
-                DoInvalidate(true);
-                UpdateCursor();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            m_model.DeleteObjects(m_model.SelectedObjects);
+            m_model.ClearSelectedObjects();
+            DoInvalidate(true);
         }
 
         public void CommandEdit(string editid)
         {
-            try
-            {
-                CommandEscape();
-                m_model.ClearSelectedObjects();
-                m_commandType = eCommandType.edit;
-                m_editToolId = editid;
-                m_editTool = m_model.GetEditTool(m_editToolId);
-                UpdateCursor();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            CommandEscape();
+            m_model.ClearSelectedObjects();
+            m_commandType = eCommandType.edit;
+            m_editToolId = editid;
+            m_editTool = m_model.GetEditTool(m_editToolId);
         }
 
         public void HandleQuickSnap(KeyEventArgs e)
@@ -1466,16 +1470,150 @@ namespace Canvas.CanvasCtrl
 
         private void InitializeComponent()
         {
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip();
+            this.tsmRemove = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmAddFrom = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmAddEnd = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmRemove,
+            this.tsmAddFrom,
+            this.tsmAddEnd});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(160, 92);
+            this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
+            // 
+            // tsmRemove
+            // 
+            this.tsmRemove.Name = "tsmRemove";
+            this.tsmRemove.Size = new System.Drawing.Size(159, 22);
+            this.tsmRemove.Text = "Remove";
+            this.tsmRemove.Click += new System.EventHandler(this.tsmRemove_Click);
+            // 
+            // tsmAddFrom
+            // 
+            this.tsmAddFrom.Name = "tsmAddFrom";
+            this.tsmAddFrom.Size = new System.Drawing.Size(159, 22);
+            this.tsmAddFrom.Text = "AddFromPoint";
+            this.tsmAddFrom.Click += new System.EventHandler(this.tsmAddFrom_Click);
+            // 
+            // tsmAddEnd
+            // 
+            this.tsmAddEnd.Name = "tsmAddEnd";
+            this.tsmAddEnd.Size = new System.Drawing.Size(159, 22);
+            this.tsmAddEnd.Text = "AddEndPoint";
+            this.tsmAddEnd.Click += new System.EventHandler(this.tsmAddEnd_Click);
             // 
             // CanvasCtrller
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ContextMenuStrip = this.contextMenuStrip1;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "CanvasCtrller";
             this.Size = new System.Drawing.Size(500, 500);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
+
+        }
+
+        private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
+        {
+            UnitPoint unitPoint = GetMousePoint();
+            X = (int)((unitPoint.X - 20) / m_model.Distance);
+            Y = m_model.YCount - (int)((unitPoint.Y - 20) / m_model.Distance) - 1;
+            mapNo = Y * m_model.XCount + X;
+            tsmAddFrom.Visible = !IsExistFrom;
+            tsmAddEnd.Visible = IsExistFrom;
+            IList<IDrawObject> lst = (from p in m_model.ActiveLayer.Objects
+                                      where (p.Id == "Charge" || p.Id == "Forbid" || p.Id == "Shelf") && p.MapNo == mapNo
+                select p).ToList();
+            tsmRemove.Visible = lst.Any();
+        }
+
+        private void tsmRemove_Click(object sender, EventArgs e)
+        {
+            IList<IDrawObject> lst = (from p in m_model.ActiveLayer.Objects
+                                      where (p.Id == "Charge" || p.Id == "Forbid" || p.Id == "Shelf") && p.MapNo == mapNo
+                                      select p).ToList();
+            if (lst.Any())
+            {
+                IList<IDrawObject> lstFirst = new List<IDrawObject>();
+                lstFirst.Add(lst.LastOrDefault());
+                m_model.DeleteObjects(lstFirst);
+                if (lstFirst[0].Id == "Forbid")
+                {
+                    Function.PR_Write_Map_FQ(lstFirst[0].MapNo.ToString(), 0);
+                }
+                DoInvalidate(true);
+            }
+        }
+
+        private void tsmAddFrom_Click(object sender, EventArgs e)
+        {
+            if (!Function.IsExist_Map_Info())
+            {
+                MessageBox.Show("请先保存地图信息");
+                return;
+            }
+
+            FromPoint = Function.GetMapNoByXY(X, Y);
+            if (!string.IsNullOrEmpty(FromPoint))
+            {
+                IsExistFrom = true;
+            }
+            else
+            {
+                MessageBox.Show("数据库中查无对应地图编号");
+            }
+        }
+
+        private void tsmAddEnd_Click(object sender, EventArgs e)
+        {
+            EndPoint = Function.GetMapNoByXY(X, Y);
+
+            if (string.IsNullOrEmpty(EndPoint))
+            {
+                MessageBox.Show("数据库中查无对应地图编号");
+                return;
+            }
+
+            if (int.Parse(FromPoint) == int.Parse(EndPoint))
+            {
+                MessageBox.Show("起点不能与终点相同", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                return;
+            }
+            DialogResult dialogResult = MessageBox.Show(
+                "确定创建任务：" + FromPoint + "(起点)," + EndPoint + "(终点)?", "询问",
+                MessageBoxButtons.YesNoCancel,
+                MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+            if (dialogResult == DialogResult.Yes)
+            {
+                if (Function.PR_Insert_Task(FromPoint, EndPoint) > 0)
+                {
+                    MessageBox.Show("创建任务成功");
+                    IsExistFrom = false;
+                }
+                else
+                {
+                    MessageBox.Show("创建任务失败");
+                }
+            }
+            else if (dialogResult == DialogResult.Cancel)
+            {
+                IsExistFrom = false;
+            }
+        }
+
+        public void SizeChange()
+        {
+            Width = (int)((m_model.XCount * m_model.Distance + 100) * m_model.Zoom);
+            Height = (int)((m_model.YCount * m_model.Distance + 100) * m_model.Zoom);
+            DoInvalidate(true);
         }
     }
 }

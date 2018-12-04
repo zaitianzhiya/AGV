@@ -11,7 +11,7 @@ using Canvas.Utils;
 
 namespace Canvas.DrawTools
 {
-    public class Forbid : DrawObjectBase, IDrawObject, INodePoint, ISerialize
+    public class Shelf : DrawObjectBase, IDrawObject, INodePoint, ISerialize
     {
         protected int mapNo;
 
@@ -73,7 +73,7 @@ namespace Canvas.DrawTools
         {
             get
             {
-                return "Forbid";
+                return "Shelf";
             }
         }
 
@@ -87,9 +87,9 @@ namespace Canvas.DrawTools
 
         public IDrawObject Clone()
         {
-            Forbid forbid = new Forbid();
-            forbid.Copy(this);
-            return forbid;
+            Shelf shelf = new Shelf();
+            shelf.Copy(this);
+            return shelf;
         }
 
         public bool PointInObject(ICanvas canvas, UnitPoint point)
@@ -124,9 +124,7 @@ namespace Canvas.DrawTools
         {
             CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;
             DataModel model = (DataModel)canvasWrapper.DataModel;
-            Pen pen = new Pen(Color.Red);
-            pen.Width = 4 * model.Zoom;
-
+    
             float xStart = unitrect.X;
             float yStart = unitrect.Y;
             float xEnd = (unitrect.X + unitrect.Width);
@@ -134,7 +132,7 @@ namespace Canvas.DrawTools
 
             if (location.X * model.Zoom + model.Zoom * model.Distance >= xStart && location.X * model.Zoom <= xEnd && location.Y * model.Zoom + model.Zoom * model.Distance >= yStart && location.Y * model.Zoom <= yEnd)
             {
-                canvas.DrawForbid(canvas,pen,location);
+                canvas.DrawImage(canvas, location);
             }
         }
 
@@ -147,6 +145,7 @@ namespace Canvas.DrawTools
 
         public void OnMouseMove(ICanvas canvas, UnitPoint point)
         {
+            throw new NotImplementedException();
         }
 
         public eDrawObjectMouseDownEnum OnMouseDown(ICanvas canvas, UnitPoint point, ISnapPoint snappoint)
@@ -214,7 +213,7 @@ namespace Canvas.DrawTools
 
         public void GetObjectData(System.Xml.XmlWriter wr)
         {
-            wr.WriteStartElement("ForbidTool");
+            wr.WriteStartElement("ShelfTool");
             XmlUtil.WriteProperties(this, wr);
             wr.WriteEndElement();
         }
@@ -242,7 +241,7 @@ namespace Canvas.DrawTools
             x = (int)((point.X - 20) / model.Distance);
             y = model.YCount - (int)((point.Y - 20) / model.Distance) - 1;
             mapNo = y * model.XCount + x;
-            location = new UnitPoint(20 + X * model.Distance, 20 + (model.YCount - Y) * model.Distance - (float)model.Distance);
+            location = new UnitPoint(20 + X * model.Distance + (float)model.Distance / 2, 20 + (model.YCount - Y) * model.Distance - (float)model.Distance / 2);
             base.Width = layer.Width;
             base.Color = layer.Color;
             this.Selected = true;

@@ -82,15 +82,14 @@ namespace Canvas
 
 		private Color GetColor()
 		{
-			bool flag = this.AnyPoint();
 			Color result;
-			if (flag)
+			if (AnyPoint())
 			{
 				result = Color.Blue;
 			}
 			else
 			{
-				result = Color.Green;
+				result = Color.Cyan;
 			}
 			return result;
 		}

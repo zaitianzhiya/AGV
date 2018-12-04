@@ -125,6 +125,7 @@ namespace Canvas.DrawTools
             CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;
             DataModel model = (DataModel)canvasWrapper.DataModel;
             Pen pen = new Pen(Color.Yellow);
+            pen.DashStyle = DashStyle.Dot;
             pen.Width = 4 * model.Zoom;
 
             float xStart = unitrect.X;
@@ -241,8 +242,8 @@ namespace Canvas.DrawTools
             IModel model = cc.m_model;
             x = (int)((point.X - 20) / model.Distance);
             y = model.YCount - (int)((point.Y - 20) / model.Distance) - 1;
-            mapNo = y * model.XCount + x + 1;
-            location = new UnitPoint(20 + X * model.Distance + (float)model.Distance / 2, 20 + (model.YCount - Y) * model.Distance - (float)model.Distance / 2);
+            mapNo = y * model.XCount + x;
+            location = new UnitPoint(20 + X * model.Distance, 20 + (model.YCount - Y) * model.Distance - (float)model.Distance);
             base.Width = layer.Width;
             base.Color = layer.Color;
             this.Selected = true;

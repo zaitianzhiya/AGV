@@ -9,6 +9,7 @@ namespace Canvas.CanvasCtrl
 		move,
 		draw,
 		edit,
-		editNode
+		editNode,
+        lockdir
 	}
 }

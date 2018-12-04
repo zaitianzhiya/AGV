@@ -277,7 +277,7 @@ namespace Canvas.DrawTools
             IModel model = cc.m_model;
             x = (int)((point.X - 20) / model.Distance);
             y = model.YCount - (int)((point.Y - 20) / model.Distance) - 1;
-            mapNo = y * model.XCount + x + 1;
+            mapNo = y * model.XCount + x;
             location = new UnitPoint(20 + X * model.Distance + (float)model.Distance / 2, 20 + (model.YCount - Y) * model.Distance - (float)model.Distance / 2);
             base.Width = layer.Width;
             base.Color = layer.Color;

@@ -1,6 +1,5 @@
 using Canvas.CanvasInterfaces;
 using Canvas.DrawTools;
-using CommonTools;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -195,7 +194,6 @@ namespace Canvas.Layers
 		{
 			try
 			{
-				Tracing.StartTrack(Tracing.TracePaint);
 				int num = 0;
 				foreach (IDrawObject current in m_objects)
 				{
@@ -221,12 +219,6 @@ namespace Canvas.Layers
                         num = num2 + 1;
                     }
 				}
-				Tracing.EndTrack(Tracing.TracePaint, "Draw Layer {0}, ObjCount {1}, Painted ObjCount {2}", new object[]
-				{
-					this.Id,
-					this.m_objects.Count,
-					num
-				});
 			}
 			catch (Exception ex2)
 			{

@@ -62,8 +62,6 @@
     <Compile Include="BaseForm.designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DB\Function.cs" />
-    <Compile Include="DB\SqlDBControl.cs" />
     <Compile Include="FileControl\LogFile.cs" />
     <Compile Include="FileControl\SetFileControl.cs" />
     <Compile Include="FrmMain.cs">
@@ -76,6 +74,12 @@
     <Compile Include="HelpClass\XtrMsg.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Windows\FrmSetTask.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\FrmSetTask.Designer.cs">
+      <DependentUpon>FrmSetTask.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -96,6 +100,9 @@
     <Content Include="AGV_SET.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Windows\FrmSetTask.resx">
+      <DependentUpon>FrmSetTask.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -123,12 +130,16 @@
     <Content Include="Images\7.png" />
     <Content Include="Images\8.png" />
     <Content Include="Images\9.png" />
-    <Content Include="Images\Add.png" />
+    <EmbeddedResource Include="Images\Add.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Images\down.png" />
     <Content Include="Images\forbidArea.png" />
     <Content Include="Images\goods.png" />
     <Content Include="Images\QRCode.png" />
-    <Content Include="Images\Remove.png" />
+    <EmbeddedResource Include="Images\Remove.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="Images\up.png" />
   </ItemGroup>
   <ItemGroup>
@@ -136,13 +147,9 @@
       <Project>{eeb3edd5-f8e8-470b-bed3-415c2baa0033}</Project>
       <Name>Canvas</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Model\Model.csproj">
-      <Project>{83fd6256-a589-4a59-a657-356228cda279}</Project>
-      <Name>Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SimulationModel\SimulationModel.csproj">
-      <Project>{c02544f6-0f1b-4966-bce2-0e32c36f2c5c}</Project>
-      <Name>SimulationModel</Name>
+    <ProjectReference Include="..\DAL\DAL.csproj">
+      <Project>{af380bc0-3e17-47c5-98ec-cc3a58cd6db1}</Project>
+      <Name>DAL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

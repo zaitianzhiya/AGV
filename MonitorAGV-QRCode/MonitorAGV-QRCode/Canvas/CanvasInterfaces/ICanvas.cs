@@ -43,22 +43,14 @@ namespace Canvas.CanvasInterfaces
 
 		void DrawLine(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2);
 
-		void DrawLandMark(ICanvas canvas, Brush pen, string code, UnitPoint Point);
-
-		void DrawImge(ICanvas canvas, Pen pen, UnitPoint Location, float Widht, float Hight, Image img, string values);
-
-		void DrawTxt(ICanvas canvas, string code, UnitPoint Point, int FontSize, Color fontColor);
-
-		void DrawBizer(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2, UnitPoint p3, UnitPoint p4);
-
-		void DrawStorage(ICanvas canvas, Brush Pen, string code, UnitPoint Point);
-
-		void DrawBtnBox(ICanvas canvas, float Radius, UnitPoint Point, bool Selected);
-
-		void DrawAGV(ICanvas canvas, Pen pen, UnitPoint p, string Code);
-
 	    void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p);
 
         void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p);
+
+        void DrawImage(ICanvas canvas, UnitPoint p);
+
+	    void DrawTxt(ICanvas canvas, string code, UnitPoint Point);
+
+	    void DrawAgv(ICanvas canvas, string no, Color color, float angel, UnitPoint Point);
 	}
 }

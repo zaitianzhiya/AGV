@@ -135,83 +135,6 @@ namespace Canvas.CanvasCtrl
 			}
 		}
 
-		public void DrawLandMark(ICanvas canvas, Brush pen, string code, UnitPoint Point)
-		{
-			try
-			{
-				m_canvas.DrawLandMark(canvas, pen, code, Point);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
-		public void DrawImge(ICanvas canvas, Pen pen, UnitPoint Location, float Widht, float Hight, Image img, string values)
-		{
-			try
-			{
-				m_canvas.DrawImge(canvas, pen, Location, Widht, Hight, img, values);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
-		public void DrawTxt(ICanvas canvas, string code, UnitPoint Point, int FontSize, Color fontColor)
-		{
-			try
-			{
-				m_canvas.DrawTxt(canvas, code, Point, FontSize, fontColor);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
-		public void DrawBizer(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2, UnitPoint p3, UnitPoint p4)
-		{
-			try
-			{
-				m_canvas.DrawBizer(canvas, pen, p1, p2, p3, p4);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
-		public void DrawStorage(ICanvas canvas, Brush Pen, string code, UnitPoint Point)
-		{
-			try
-			{
-				m_canvas.DrawStorage(canvas, Pen, code, Point);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
-		public void DrawBtnBox(ICanvas canvas, float Radius, UnitPoint Point, bool Selected)
-		{
-			try
-			{
-				m_canvas.DrawBtnBox(canvas, Radius, Point, Selected);
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
-		public void DrawAGV(ICanvas canvas, Pen pen, UnitPoint p, string Code)
-		{
-			m_canvas.DrawAGV(canvas, pen, p, Code);
-		}
-
         public void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p)
         {
             m_canvas.DrawForbid(canvas, pen, p);
@@ -221,5 +144,20 @@ namespace Canvas.CanvasCtrl
 	    {
             m_canvas.DrawCharge(canvas, pen, p);
 	    }
+
+        public void DrawImage(ICanvas canvas, UnitPoint p)
+        {
+            m_canvas.DrawImage(canvas, p);
+        }
+
+        public void DrawTxt(ICanvas canvas, string code, UnitPoint Point)
+        {
+            m_canvas.DrawTxt(canvas, code,Point);
+        }
+
+        public void DrawAgv(ICanvas canvas, string no, Color color, float angel, UnitPoint Point)
+        {
+            m_canvas.DrawAgv(canvas, no, color, angel, Point);
+        }
     }
 }
