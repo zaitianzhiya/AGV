@@ -1,0 +1,1 @@
+database=Simulation;server=192.168.137.1;Max Pool Size=30;Min Pool Size=1;uid=sa;pwd=123

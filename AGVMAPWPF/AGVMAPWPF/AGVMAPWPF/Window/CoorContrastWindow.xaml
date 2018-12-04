@@ -1,0 +1,48 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars" xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" x:Class="AGVMAPWPF.CoorContrastWindow"
+        Title="AGV坐标体系设置" Height="400" Width="450" WindowStyle="ToolWindow" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" Loaded="CoorContrastWindow_OnLoaded">
+    <Grid Background="Gray">
+        <DockPanel>
+            <ToolBarTray Background="DimGray" HorizontalAlignment="Stretch" Height="27" VerticalAlignment="Top" DockPanel.Dock="Top" IsLocked="True">
+                <ToolBar Loaded="ToolBar_OnLoaded" Background="DimGray" Foreground="White">
+                    <Button x:Name="btnSave" Content="保存" Foreground="White" Click="BtnSave_OnClick"/>
+                    <Button x:Name="btnExit" Content="退出" Foreground="White" Click="BtnExit_OnClick"/>
+                </ToolBar>
+            </ToolBarTray>
+
+            <StatusBar Height="25" VerticalAlignment="Bottom" DockPanel.Dock="Bottom">
+                <StatusBarItem x:Name="StatusBarItem" Content="注：对应地图上的东西南北" Foreground="Red"></StatusBarItem>
+            </StatusBar>
+            <Grid Margin="60">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition Width="40"></ColumnDefinition>
+                    <ColumnDefinition Width="70"></ColumnDefinition>
+                    <ColumnDefinition Width="40"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="cmbWest" SelectedValuePath="Angle" DisplayMemberPath="Angle" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70" Height="30">
+                </ComboBox>
+                <ComboBox x:Name="cmbNorth" SelectedValuePath="Angle" DisplayMemberPath="Angle" Grid.Column="2" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="70" Height="30">
+                </ComboBox>
+                <ComboBox x:Name="cmbEast" SelectedValuePath="Angle" DisplayMemberPath="Angle" Grid.Column="4" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Width="70" Height="30">
+                </ComboBox>
+                <ComboBox x:Name="cmbSouth" SelectedValuePath="Angle" DisplayMemberPath="Angle" Grid.Column="2" Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="top" Width="70" Height="30">
+                </ComboBox>
+                <Label Grid.Column="2" Content="北"  FontSize="25" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                <Label Grid.Column="1" Content="西"  FontSize="25" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                <Label Grid.Column="2" Content="南"  FontSize="25" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="3" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+                <Label Grid.Column="3" Content="东"  FontSize="25" FontWeight="Bold" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" HorizontalContentAlignment="Center"/>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>

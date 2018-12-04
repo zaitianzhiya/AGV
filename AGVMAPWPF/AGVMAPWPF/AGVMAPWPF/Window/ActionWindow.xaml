@@ -1,0 +1,48 @@
+﻿<Window x:Class="AGVMAPWPF.ActionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AGVMAPWPF"
+        Title="动作档案" Height="500" Width="650" WindowStartupLocation="CenterOwner" Loaded="MachineInfoWindow_OnLoaded">
+    <Grid Background="Gray">
+        <DockPanel>
+          <ToolBarTray Background="DimGray" HorizontalAlignment="Stretch" DockPanel.Dock="Top" IsLocked="True">
+                <ToolBar Loaded="ToolBar_OnLoaded" Background="DimGray">
+                    <RadioButton x:Name="rabAdd" Foreground="White" Content="增行" Click="RabAdd_OnClick"/>
+                    <RadioButton x:Name="rabDel" Foreground="White" Content="删行" Click="RabDel_OnClick"/>
+                    <RadioButton x:Name="rabSave"  Foreground="White" Content="保存" Click="RabSave_OnClick"/>
+                    <RadioButton x:Name="rabExist"  Foreground="White" Content="退出" Click="RabExist_OnClick"/>
+                </ToolBar>
+          </ToolBarTray>
+            <DataGrid x:Name="DataGrid" Background="DimGray" CanUserAddRows="False" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" PreparingCellForEdit="DataGrid_OnPreparingCellForEdit">
+              <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="动作ID" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ActionID, UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding ActionID, UpdateSourceTrigger=PropertyChanged}" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="UIElement_OnPreviewTextInput"></TextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="动作名称" Width="*" Binding="{Binding ActionName, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                    <DataGridTemplateColumn Header="等待时间(分钟)" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding WaitTime, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding WaitTime, UpdateSourceTrigger=PropertyChanged}" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="UIElement_OnPreviewTextInput2"></TextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="指令" Width="*" Binding="{Binding CommondText, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+    </Grid>
+</Window>

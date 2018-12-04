@@ -1,0 +1,70 @@
+﻿<Window x:Class="AGVMAPWPF.OptionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="选项" Height="378" Width="576" Background="#FF0C0B0B" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="ToolWindow" Loaded="OptionWindow_OnLoaded">
+    <Grid x:Name="Grid" Background="DarkGray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="97*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="183*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="120"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+        <GroupBox x:Name="gbBackgroud" Header="背景" Margin="10,0" Height="70" VerticalAlignment="Top" Grid.ColumnSpan="3" Padding="0">
+            <Grid>
+                <Label Content="背景色:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="53,11,0,11"/>
+                <Label Content="R" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="113,11,0,11"/>
+                <TextBox MaxLength="3" TextChanged="TxtR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput"  InputMethod.IsInputMethodEnabled="False" x:Name="txtR" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" Margin="134,0,0,0"/>
+                <Label Content="G" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="0" Margin="180,11,0,11"/>
+                <TextBox MaxLength="3" TextChanged="TxtR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput" InputMethod.IsInputMethodEnabled="False" x:Name="txtG" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" RenderTransformOrigin="2.583,0.676" Margin="201,12.38,0,12.38"/>
+                <Label Content="B" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="253,11.26,0,11.26"/>
+                <TextBox  MaxLength="3" TextChanged="TxtR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput" InputMethod.IsInputMethodEnabled="False" x:Name="txtB" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" Margin="273,12.38,0,12.38"/>
+                <TextBox x:Name="txtColor" IsReadOnly="True" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" Margin="357,12.38,0,12.38"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="gbCoordinate" Header="栅格" Margin="10,0" Grid.RowSpan="2" Height="120" VerticalAlignment="Top" Grid.ColumnSpan="3" Grid.Row="1">
+            <Grid Height="148.76" Width="630">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
+                </Grid.RowDefinitions>
+                <CheckBox x:Name="chkCoor" Content="启用栅格" HorizontalAlignment="Left" Margin="53,11,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="rabL" Content="直线网格" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="53,38.586,0,0" Grid.RowSpan="2"/>
+                <RadioButton x:Name="rabP" Visibility="Collapsed" Content="点阵网格" HorizontalAlignment="Left" Margin="202,38.586,0,0" VerticalAlignment="Top" Grid.RowSpan="2"/>
+                <Label Grid.Row="1" Content="栅格颜色:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="53,13.547,0,0"/>
+                <Label Grid.Row="1" Content="R" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="113,13.547,0,0"/>
+                <TextBox MaxLength="3" TextChanged="TxtCoorR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput"  InputMethod.IsInputMethodEnabled="False" Grid.Row="1" x:Name="txtCoorR" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Margin="134,13.586,0,0"/>
+                <Label Grid.Row="1" Content="G" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="0" Margin="180,13.547,0,0"/>
+                <TextBox MaxLength="3" TextChanged="TxtCoorR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput"  InputMethod.IsInputMethodEnabled="False" Grid.Row="1" x:Name="txtCoorG" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" RenderTransformOrigin="2.583,0.676" Margin="201,13.586,0,0"/>
+                <Label Grid.Row="1" Content="B" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="253,13.547,0,0"/>
+                <TextBox MaxLength="3" TextChanged="TxtCoorR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput" InputMethod.IsInputMethodEnabled="False"  Grid.Row="1" x:Name="txtCoorB" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Margin="273,13.586,0,0"/>
+                <TextBox Grid.Row="1" x:Name="txtCoorColor" IsReadOnly="True" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="40" Margin="357,13.586,0,0"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="gbCanvas" Header="画布" Margin="10,0" Grid.Row="2" Height="100" VerticalAlignment="Top" Grid.ColumnSpan="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Content="画笔颜色:" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="53,0,0,0"/>
+                <Label Content="R" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="113,0,0,0"/>
+                <TextBox MaxLength="3" TextChanged="TxtPenR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput"  InputMethod.IsInputMethodEnabled="False" x:Name="txtPenR" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" Margin="134,0,0,0"/>
+                <Label Content="G" HorizontalAlignment="Left" VerticalAlignment="Center" BorderThickness="0" Margin="180,0,0,0"/>
+                <TextBox MaxLength="3" TextChanged="TxtPenR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput" InputMethod.IsInputMethodEnabled="False" x:Name="txtPenG" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" RenderTransformOrigin="2.583,0.676" Margin="201,0,0,0"/>
+                <Label Content="B" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="253,0,0,0"/>
+                <TextBox MaxLength="3" TextChanged="TxtPenR_OnTextChanged" VerticalContentAlignment="Center" PreviewTextInput="TxtR_OnPreviewTextInput"  InputMethod.IsInputMethodEnabled="False" x:Name="txtPenB" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" Margin="273,0,0,0"/>
+                <TextBox x:Name="txtPenColor" IsReadOnly="True" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="40" Margin="357,0,0,0"/>
+                <Label Content="画笔大小:" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="53,0,0,0"/>
+                <TextBox VerticalContentAlignment="Center"  PreviewTextInput="TxtR_OnPreviewTextInput" InputMethod.IsInputMethodEnabled="False" x:Name="txtPenSize" Grid.Row="1" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Center" Width="197" Margin="116,0,0,0"/>
+            </Grid>
+        </GroupBox>
+        <Button x:Name="btnConfirm" Content="确定" HorizontalAlignment="Right" Margin="0,15.38,160,15.38" Grid.Row="3" VerticalAlignment="Center" Width="75" RenderTransformOrigin="-1.087,0.474" Grid.Column="2" Height="19.24" Click="BtnConfirm_OnClick"/>
+        <Button x:Name="btnCancel" Content="取消" HorizontalAlignment="Right" Margin="0,15.38,50,15.38" Grid.Row="3" VerticalAlignment="Center" Width="75" Grid.Column="2" Height="19.24" Click="BtnCancel_OnClick"/>
+    </Grid>
+</Window>

@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="AGVMAPWPF.StoreWindow"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             MouseDown="StoreWindow_OnMouseDown">
+    <Grid>
+    	<Rectangle x:Name="rect" Fill="White" Height="50" Width="50"/>
+    	<TextBlock x:Name="txtContent"  VerticalAlignment="Center" Margin="0" Height="20" TextAlignment="Center" FontSize="18"/>
+    </Grid>
+</UserControl>

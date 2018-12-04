@@ -1,0 +1,23 @@
+﻿<Window x:Class="AGVMAPWPF.SysParameterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AGVMAPWPF"
+        Title="系统参数设置" Height="500" Width="650" WindowStartupLocation="CenterOwner" Loaded="MachineInfoWindow_OnLoaded">
+    <Grid Background="Gray">
+        <DockPanel>
+          <ToolBarTray Background="DimGray" HorizontalAlignment="Stretch" DockPanel.Dock="Top" IsLocked="True">
+                <ToolBar Loaded="ToolBar_OnLoaded" Background="DimGray">
+                    <RadioButton x:Name="rabSave" Foreground="White" Content="保存" Click="RabSave_OnClick"/>
+                    <RadioButton x:Name="rabExist"  Foreground="White" Content="退出" Click="RabExist_OnClick"/>
+                </ToolBar>
+          </ToolBarTray>
+            <DataGrid x:Name="DataGrid" Background="DimGray" CanUserAddRows="False" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell">
+              <DataGrid.Columns>
+                    <DataGridTextColumn Header="参数名称" Visibility="Collapsed" IsReadOnly="True" Binding="{Binding ParameterCode, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="参数名称" Width="50*" IsReadOnly="True" Binding="{Binding ParameterName, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="参数值" Width="50*" Binding="{Binding ParameterValue, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,99 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AGVMAPWPF"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" x:Class="AGVMAPWPF.CallDetailsInfoWindow"
+        Title="呼叫器档案明细" Height="500" Width="750" WindowStartupLocation="CenterOwner" Loaded="MachineInfoWindow_OnLoaded">
+    <Grid Background="Gray">
+        <DockPanel>
+            <ToolBarTray Background="DimGray" HorizontalAlignment="Stretch" DockPanel.Dock="Top" IsLocked="True">
+                <ToolBar Loaded="ToolBar_OnLoaded" Background="DimGray">
+                    <RadioButton x:Name="rabAdd" Foreground="White" Content="增行" Click="RabAdd_OnClick"/>
+                    <RadioButton x:Name="rabDel"  Foreground="White" Content="删行" Click="RabDel_OnClick"/>
+                    <RadioButton x:Name="rabSave" Foreground="White" Content="保存" Click="RabSave_OnClick"/>
+                    <RadioButton x:Name="rabExist"  Foreground="White" Content="退出" Click="RabExist_OnClick"/>
+                </ToolBar>
+            </ToolBarTray>
+            <Grid DockPanel.Dock="Top" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" HorizontalAlignment="Left" Content="呼叫器ID:"/>
+                <TextBox Grid.Column="1" x:Name="TextBoxID" HorizontalAlignment="Stretch" IsReadOnly="True"/>
+                <Label Grid.Column="2" HorizontalAlignment="Right" Content="呼叫器名称:"/>
+                <TextBox Grid.Column="3" x:Name="TextBoxName" HorizontalAlignment="Stretch"/>
+                <Label Grid.Column="4" HorizontalAlignment="Right" Content="操作类型:"/>
+                <ComboBox Grid.Column="5" x:Name="ComboBoxType" HorizontalAlignment="Stretch" SelectedValuePath="value" DisplayMemberPath="display"/>
+            </Grid>
+            <DataGrid x:Name="DataGrid" Background="DimGray" CanUserAddRows="False" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" PreparingCellForEdit="DataGrid_OnPreparingCellForEdit">
+                <DataGrid.Columns>
+                    <!--<DataGridTextColumn Header="按钮号" Width="*" Binding="{Binding CallBoxID, UpdateSourceTrigger=PropertyChanged}" />-->
+                    <DataGridTemplateColumn Header="按钮号" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ButtonID, UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding ButtonID, UpdateSourceTrigger=PropertyChanged}" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="UIElement_OnPreviewTextInput"></TextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridComboBoxColumn Header="任务条件配置编号" Width="*" ItemsSource="{x:Static local:CallDetailsInfoWindow.LookUpSource}" SelectedValueBinding="{Binding TaskConditonCode, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="value" DisplayMemberPath="display"/>
+                    <!--<DataGridTemplateColumn Header="任务条件配置编号" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <dxg:LookUpEdit Name="LookUpEditTask"  
+                                                DisplayMember="display"
+                                                    ValueMember="value"
+                                                AutoPopulateColumns="True"  
+                                                 AutoComplete="True"
+                                            IncrementalFiltering="True"
+                                            ImmediatePopup="True"
+                                            IsPopupAutoWidth="True"
+                                                ItemsSource="{x:Static local:CallDetailsInfoWindow.LookUpSource}" 
+                                                IsTextEditable="False"  
+                                                HorizontalAlignment="Stretch" 
+                                                VerticalAlignment="Center">
+                                    <dxg:LookUpEdit.PopupTemplate >
+                                        <ControlTemplate>
+                                            <dxg:GridControl Name="PART_GridControl" >
+                                                <dxg:GridControl.Columns>
+                                                        <dxg:GridColumn FieldName="任务配置编号" Header="任务配置编号" ></dxg:GridColumn>
+                                                        <dxg:GridColumn FieldName="任务配置名称" Header="任务配置名称"></dxg:GridColumn>
+                                                </dxg:GridControl.Columns>
+                                            </dxg:GridControl>
+                                        </ControlTemplate>
+                                        </dxg:LookUpEdit.PopupTemplate>
+                                </dxg:LookUpEdit>
+                                    </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>-->
+                    <DataGridComboBoxColumn Header="操作类型" Width="*" ItemsSource="{x:Static local:CallDetailsInfoWindow.ObservableCollectionType2}" SelectedValueBinding="{Binding OperaType, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="value" DisplayMemberPath="display"/>
+                    <!--<DataGridTextColumn Header="监控储位ID" Width="*" Binding="{Binding LocationID, UpdateSourceTrigger=PropertyChanged}"/>-->
+                    <DataGridTemplateColumn Header="监控储位ID" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LocationID, UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding LocationID, UpdateSourceTrigger=PropertyChanged}" InputMethod.IsInputMethodEnabled="False" PreviewTextInput="UIElement_OnPreviewTextInput"></TextBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridComboBoxColumn Header="监控修改储位状态" Width="*" ItemsSource="{x:Static local:CallDetailsInfoWindow.ObservableCollectionStore}" SelectedValueBinding="{Binding LocationState, UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="value" DisplayMemberPath="display"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
+</Window>

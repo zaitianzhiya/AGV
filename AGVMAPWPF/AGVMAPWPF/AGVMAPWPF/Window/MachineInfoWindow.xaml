@@ -1,0 +1,29 @@
+﻿<Window x:Class="AGVMAPWPF.MachineInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:AGVMAPWPF"
+        Title="AGV档案信息" Height="500" Width="650" WindowStartupLocation="CenterOwner" Loaded="MachineInfoWindow_OnLoaded">
+    <Grid Background="Gray">
+        <DockPanel>
+          <ToolBarTray Background="DimGray" HorizontalAlignment="Stretch" DockPanel.Dock="Top" IsLocked="True">
+                <ToolBar Loaded="ToolBar_OnLoaded" Background="DimGray">
+                    <RadioButton x:Name="rabAdd" Foreground="White" Content="增行" Click="RabAdd_OnClick"/>
+                    <RadioButton x:Name="rabDel"  Foreground="White" Content="删行" Click="RabDel_OnClick"/>
+                    <RadioButton x:Name="rabSave" Foreground="White" Content="保存" Click="RabSave_OnClick"/>
+                    <RadioButton x:Name="rabExist"  Foreground="White" Content="退出" Click="RabExist_OnClick"/>
+                </ToolBar>
+          </ToolBarTray>
+            <DataGrid x:Name="DataGrid" Background="DimGray" CanUserAddRows="False" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="Cell" PreparingCellForEdit="DataGrid_OnPreparingCellForEdit">
+              <DataGrid.Columns>
+                    <DataGridTextColumn Header="设备编码" Width="100" IsReadOnly="True" Binding="{Binding CarCode, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="设备名称" Width="100" Binding="{Binding CarName, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="待命点" Width="100" Binding="{Binding StandbyLandMark, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                    <DataGridComboBoxColumn Header="行径类型" Width="100" ItemsSource="{x:Static local:MachineInfoWindow.SelectionList}" SelectedValueBinding="{Binding CarType,UpdateSourceTrigger=PropertyChanged}" SelectedValuePath="value" DisplayMemberPath="display">
+                    </DataGridComboBoxColumn>
+                    <DataGridTextColumn Header="IP地址" Width="100" Binding="{Binding CarIP, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="端口号" Width="*" Binding="{Binding CarPort, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                </DataGrid.Columns>
+          </DataGrid>
+        </DockPanel>
+    </Grid>
+</Window>

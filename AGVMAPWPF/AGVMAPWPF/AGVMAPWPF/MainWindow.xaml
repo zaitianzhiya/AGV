@@ -1,0 +1,181 @@
+﻿<Window xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:agvmapwpf="clr-namespace:AGVMAPWPF"
+    mc:Ignorable="d"
+        x:Class="AGVMAPWPF.MainWindow"
+        Title="AGV调度模拟系统" WindowState="Maximized" Height="500" Width="1000" Background="#FFD4CFCF" WindowStyle="ThreeDBorderWindow" Loaded="MainWindow_OnLoaded">
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="toolBarCanvas"/>
+    </Window.Triggers>
+    <Grid>
+        <DockPanel>
+            <StatusBar VerticalAlignment="Top" HorizontalContentAlignment="Stretch" DockPanel.Dock="Bottom">
+                <StatusBarItem x:Name="StatusBarItem" Content="" Margin="0"/>
+            </StatusBar>
+            <Menu x:Name="MenuMain" VerticalAlignment="Top" DockPanel.Dock="Top" Height="23">
+                <MenuItem x:Name="miFile" Header="文件">
+                    <MenuItem x:Name="MeiOpen" Header="打开地图" Click="MeiOpen_OnClick"/>
+                    <MenuItem x:Name="MeiCreate" Header="新建地图" Click="MeiCreate_OnClick"/>
+                    <MenuItem x:Name="MeiXY" Header="坐标系对照" Click="MeiXY_OnClick"/>
+                    <MenuItem x:Name="MeiImport" Header="导入路径长度" Click="MeiImport_OnClick"/>
+                    <MenuItem x:Name="MeiSave" Header="保存" Click="MeiSave_OnClick"/>
+                    <MenuItem x:Name="MeiSaveAs" Header="另存为文件..." Click="MeiSaveAs_OnClick"/>
+                    <MenuItem x:Name="MeiSaveLoad" Header="保存路径" Click="MeiSaveLoad_OnClick"/>
+                    <MenuItem x:Name="MeiSaveTask" Header="保存任务" Click="MeiSaveTask_OnClick"/>
+                    <MenuItem x:Name="MeiExist" Header="退出" Click="MeiExist_OnClick"/>
+                </MenuItem>
+                <MenuItem x:Name="MeSysSetUp" Header="系统设置">
+                    <MenuItem x:Name="MeiExchange" Header="调度通信设置" Click="MeiExchange_OnClick"/>
+                    <MenuItem x:Name="MeiFile" Header="AGV档案配置" Click="MeiFile_OnClick"/>
+                    <MenuItem x:Name="MeiSysInfo" Header="系统参数" Click="MeiSysInfo_OnClick"/>
+                </MenuItem>
+                <MenuItem x:Name="MeOutSetUp" Header="外围数据设置">
+                    <MenuItem x:Name="MeiLoud" Header="呼叫器档案" Click="MeiLoud_OnClick"/>
+                    <MenuItem x:Name="MeiTaskSetUp" Header="任务条件配置" Click="MeiTaskSetUp_OnClick"/>
+                </MenuItem>
+                <MenuItem x:Name="MeOutBasic" Header="外围基础档案">
+                    <MenuItem x:Name="MeiAreaFile" Header="区域档案" Click="MeiAreaFile_OnClick"/>
+                    <MenuItem x:Name="MeiActionFile" Header="动作档案" Click="MeiActionFile_OnClick"/>
+                    <MenuItem x:Name="MeiMaterialFile" Header="物料档案" Click="MeiMaterialFile_OnClick"/>
+                </MenuItem>
+                <MenuItem Header="模拟">
+                    <MenuItem x:Name="MeiStart" Header="启动" Click="MeiStart_OnClick"/>
+                    <MenuItem x:Name="MeiStop" Header="停止" Click="MeiStop_OnClick"/>
+                </MenuItem>
+                <!--<MenuItem Header="皮肤设置"/>-->
+                <MenuItem Header="选项" x:Name="miOption" Click="MiOption_OnClick"/>
+                <MenuItem Header="退出">
+                    <MenuItem x:Name="MeiExist1" Header="退出系统" Click="MeiExist1_OnClick"/>
+                </MenuItem>
+                <Grid Height="100" Width="100"/>
+            </Menu>
+            <Grid x:Name="GridLeft" Width="130" Background="#FFEEF5FD" DockPanel.Dock="Left" Margin="0" HorizontalAlignment="Left">
+                <GroupBox Header="工具箱" Margin="5,0">
+                    <DockPanel LastChildFill="True" Margin="0">
+                        <Expander IsExpanded="True" Header="绘制工具" DockPanel.Dock="Top" FontWeight="Bold">
+                            <ToolBarTray Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type DockPanel}}}">
+                                <ToolBar x:Name="toolBarCanvas" Loaded="ToolBar_OnLoaded" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type DockPanel}}}">
+                                    <RadioButton x:Name="rabPoint" Content="地标" VerticalAlignment="Top" Click="RabPoint_OnClick" Tag="A"/>
+                                    <RadioButton x:Name="rabLine" Content="地标直线"  Click="RabPoint_OnClick" Tag="B"/>
+                                    <RadioButton x:Name="rabCurve" Content="地标曲线"  Click="RabPoint_OnClick" Tag="C"/>
+                                    <RadioButton x:Name="rabLine2" Content="直线"  Click="RabPoint_OnClick" Tag="D"/>
+                                    <RadioButton x:Name="rabCurve2" Content="曲线"  Click="RabPoint_OnClick" Tag="E"/>
+                                    <RadioButton x:Name="rabBin" Content="储位"  Click="RabPoint_OnClick" Tag="F"/>
+                                    <RadioButton x:Name="rabFont" Content="文字"  Click="RabPoint_OnClick" Tag="G"/>
+                                    <RadioButton x:Name="rabPic" Content="图片"  Click="RabPoint_OnClick" Tag="H"/>
+                                    <RadioButton x:Name="rabLoud" Content="呼叫器"  Click="RabPoint_OnClick" Tag="I"/>
+                                </ToolBar>
+                            </ToolBarTray>
+                        </Expander>
+                        <Expander IsExpanded="True" Header="编辑工具"  DockPanel.Dock="Top" FontWeight="Bold">
+                            <ToolBarTray Orientation="Vertical" Background="#FFEEF5FD" VerticalAlignment="Top" HorizontalAlignment="Center" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type DockPanel}}}">
+                                <ToolBar x:Name="toolBarEdit" Loaded="ToolBar_OnLoaded" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type DockPanel}}}">
+                                    <RadioButton Content="使两条直线相交"  Click="RabPoint_OnClick" Tag="J"/>
+                                    <RadioButton Content="打断直线"  Click="RabPoint_OnClick" Tag="K"/>
+                                    <RadioButton Content="选择"  Click="RabPoint_OnClick" Tag="L"/>
+                                    <RadioButton Content="抓手"  Click="RabPoint_OnClick" Tag="M"/>
+                                    <RadioButton Content="移动"  Click="RabPoint_OnClick" Tag="N"/>
+                                </ToolBar>
+                            </ToolBarTray>
+                        </Expander>
+                    </DockPanel>
+                </GroupBox>
+            </Grid>
+            <Grid x:Name="GridRight" Width="200" DockPanel.Dock="Right" Margin="0" HorizontalAlignment="Left">
+                <TabControl>
+                    <TabItem Header="属性">
+                        <Grid Background="#FFE5E5E5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition x:Name="gridRow1" Height="26" MaxHeight="0"></RowDefinition>
+                                <RowDefinition x:Name="gridRow2" Height="Auto" MaxHeight="0"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Label Content="所属区域:" VerticalAlignment="Bottom"/>
+                            <ComboBox DisplayMemberPath="AreaName" SelectedValuePath="OwnArea" x:Name="cmbArea"  HorizontalAlignment="Left" VerticalAlignment="Top" Width="120" Margin="62.5,2,0,0" PreviewMouseLeftButtonDown="CmbArea_OnPreviewMouseLeftButtonDown" MaxDropDownHeight="0"/>
+                            <DataGrid AutoGenerateColumns="False" CanUserSortColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" x:Name="dataGridArea" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Row="1" MouseDown="DataGridArea_OnMouseDown" SelectionChanged="DataGridArea_OnSelectionChanged" SelectedValuePath="OwnArea">
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="CornflowerBlue"></Setter>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="CornflowerBlue"></Setter>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="区域编码" Binding="{Binding OwnArea}" />
+                                    <DataGridTextColumn Header="区域名称" Binding="{Binding AreaName}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <DataGrid x:Name="dataGrid" Grid.Row="2" CanUserSortColumns="False" AutoGenerateColumns="False" SelectionUnit="CellOrRowHeader" HeadersVisibility="All" LoadingRow="DataGrid_OnLoadingRow" HorizontalAlignment="Left" VerticalContentAlignment="Top" CellEditEnding="DataGrid_OnCellEditEnding">
+                                <DataGrid.CellStyle>
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Mode=Self},Path=Content.Text}"></Setter>
+                                    </Style>
+                                </DataGrid.CellStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="属性" Binding="{Binding property}" IsReadOnly="True" MinWidth="60"/>
+                                    <!--<DataGridTextColumn Header="值" Binding="{Binding val, UpdateSourceTrigger=PropertyChanged}" MinWidth="60"/>-->
+                                    <DataGridTemplateColumn Width="120" Header="值">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <dxe:PopupColorEdit Visibility="{Binding viscolor}" Color="{Binding val,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ColorChanged="PopupColorEdit_OnColorChanged"/>
+                                                    <TextBox Visibility="{Binding vistxt}" x:Name="TxtBoxVal" Text="{Binding Path=val, UpdateSourceTrigger=PropertyChanged}" KeyDown="TxtBoxVal_OnKeyDown" TextChanged="TxtBoxVal_OnTextChanged"/>
+                                                    <dxe:ButtonEdit Visibility="{Binding visbtn}" x:Name="BtnEditImage" HorizontalAlignment="Left" VerticalAlignment="Top" IsReadOnly="True" Text="System.Drawing.Bitmap" DefaultButtonClick="BtnEditImage_OnDefaultButtonClick"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            <!--<TextBox x:Name="txtX" Margin="0,0,0,363" Height="30" VerticalAlignment="Top"/>
+                            <TextBox x:Name="txtY" Margin="0,40,0,292.5" Height="30" VerticalAlignment="Top"/>
+                            <Button Click="ButtonBase_OnClick" Margin="0,100,0,190.5" Content="Click" VerticalAlignment="Top"/>-->
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+            <Grid x:Name="GridMain" Margin="0">
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <agvmapwpf:DrawingCanvas x:Name="CanvasCoordinate" ClipToBounds="True" RenderTransformOrigin="0,0"  VerticalAlignment="Stretch"  Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" >
+                        <agvmapwpf:DrawingCanvas.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </agvmapwpf:DrawingCanvas.RenderTransform>
+                    </agvmapwpf:DrawingCanvas>
+                </Border>
+                <Border BorderBrush="Black" BorderThickness="1">
+                    <!--<ScrollViewer x:Name="scrollViewer" VerticalScrollBarVisibility="Disabled" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Border}}}">
+                        <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Border}}}">
+                            <Grid.LayoutTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="scaleTransform"/>
+                                    <TranslateTransform x:Name="translateTransform"></TranslateTransform>
+                                </TransformGroup>
+                            </Grid.LayoutTransform>
+                            <Viewbox Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Border}}}">-->
+                    <Canvas x:Name="CanvasMain" ClipToBounds="True" RenderTransformOrigin="0,0"  VerticalAlignment="Stretch"  MouseEnter="CanvasMain_OnMouseEnter" MouseLeave="CanvasMain_OnMouseLeave" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Border}}}" >
+                        <Canvas.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <TranslateTransform/>
+                            </TransformGroup>
+                        </Canvas.RenderTransform>
+                        <!--<Path Stroke="Black" Data="M 100,240 C 510,300 80,100 300,160" />-->
+                    </Canvas>
+                    <!--</Viewbox>
+                    	</Grid>
+                    </ScrollViewer>-->
+                </Border>
+            </Grid>
+        </DockPanel>
+    </Grid>
+</Window>
