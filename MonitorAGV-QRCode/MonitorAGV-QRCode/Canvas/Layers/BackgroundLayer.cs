@@ -83,6 +83,11 @@ namespace Canvas.Layers
 			}
 		}
 
+        public void Draw(ICanvas canvas, RectangleF unitrect, BufferedGraphics myBuffer, Rectangle rect, Graphics g)
+        {
+
+        }
+
 		public PointF SnapPoint(PointF unitmousepoint)
 		{
 			return PointF.Empty;
@@ -103,5 +108,8 @@ namespace Canvas.Layers
 		public void AfterSerializedIn()
 		{
 		}
-	}
+
+
+      
+    }
 }

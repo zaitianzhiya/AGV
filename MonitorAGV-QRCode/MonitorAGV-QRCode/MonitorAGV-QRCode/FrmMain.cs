@@ -37,6 +37,7 @@ namespace MonitorAGV_QRCode
         private CanvasCtrller m_canvas;
         private int Distance = 40;
         private float Zoom = 1;
+        private float OldZoom = 1f;
         private float StepZoom = 2f;
         private DataTable dtSourceProperty;
         private DataTable dtSourcePropertyOld;
@@ -54,8 +55,8 @@ namespace MonitorAGV_QRCode
         {
             InitializeComponent();
             Control.CheckForIllegalCrossThreadCalls = false;
-            SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            //SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+            //SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             foreach (NavBarGroup g in navBarControl1.Groups)
             {
                 dicNavBarGroups[g.Caption] = g;
@@ -136,8 +137,19 @@ namespace MonitorAGV_QRCode
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (isMonitor)
+            {
+                btnMonitor_Click(null, null);
+            }
+            Thread.Sleep(1000);
+            if (XtrMsg.Show("确定退出程式?", MessageBoxIcon.Question) == DialogResult.No)
+            {
+                e.Cancel = true;
+                return;
+            }
             Application.ExitThread();
-            Application.Exit();
+            this.Close();
+            //Application.Exit();
         }
 
         void pnlMain_MouseWheel(object sender, MouseEventArgs e)
@@ -146,8 +158,23 @@ namespace MonitorAGV_QRCode
             {
                 UnitPoint oldUnitPoint = p2Before;
                 UnitPoint nowUnitPoint = m_canvas.ToUnit(p1Before);
-                m_canvas.OffsetX += (int)(Math.Abs(nowUnitPoint.X - oldUnitPoint.X)*m_data.Zoom);
-                m_canvas.OffsetY += (int)(Math.Abs(nowUnitPoint.Y - oldUnitPoint.Y) * m_data.Zoom);
+
+                if (OldZoom != m_data.Zoom)
+                {
+                    m_canvas.OffsetX += (int) ((-nowUnitPoint.X + oldUnitPoint.X)*m_data.Zoom);
+                    m_canvas.OffsetY += (int) ((-nowUnitPoint.Y + oldUnitPoint.Y)*m_data.Zoom);
+                   
+                    if (m_canvas.OffsetX < 0)
+                    {
+                        m_canvas.OffsetX = 0;
+                    }
+                    if (m_canvas.OffsetY < 0)
+                    {
+                        m_canvas.OffsetY = 0;
+                    }
+                }
+               
+                OldZoom = m_data.Zoom;
                 m_canvas.DoInvalidate(true);
                 return;
             }
@@ -213,7 +240,8 @@ namespace MonitorAGV_QRCode
             //pBefore = (UnitPoint)sender;
             //pnlMain.Scroll -= pnlMain_Scroll;
             //pnlMain.MouseWheel -= pnlMain_MouseWheel;
-            //this.Text = sender.ToString();
+            if(sender!=null)
+            this.Text = sender.ToString();
             //m_canvas.OffsetX = (int)(int.Parse(sender.ToString().Split('@')[0])*m_data.Zoom);
             //m_canvas.OffsetY = (int)(int.Parse(sender.ToString().Split('@')[1]) * m_data.Zoom);
             //m_canvas.DoInvalidate(true);
@@ -241,9 +269,11 @@ namespace MonitorAGV_QRCode
         private void btnHand_ItemClick(object sender, ItemClickEventArgs e)
         {
             string text = string.Empty;
-
+            
             if (e.Item is BarButtonItem)
             {
+                DrawButtonStaChange();
+                ((BarButtonItem)e.Item).ItemAppearance.Hovered.BackColor = ((BarButtonItem)e.Item).ItemAppearance.Normal.BackColor = Color.Green;
                 text = ((BarButtonItem)e.Item).Tag.ToString();
             }
             if (text == string.Empty)
@@ -267,6 +297,7 @@ namespace MonitorAGV_QRCode
             lockDirection = !lockDirection;
             if (lockDirection)
             {
+                DrawButtonStaChange();
                 btnLock.ItemAppearance.Hovered.BackColor = btnLock.ItemAppearance.Normal.BackColor = Color.Green;
             }
             else
@@ -294,7 +325,7 @@ namespace MonitorAGV_QRCode
             {
                 if (int.Parse(txtX.Text.Trim()) <= 0)
                 {
-                    Msg.Show("X不能小于等于0", MessageBoxIcon.Exclamation);
+                    XtrMsg.Show("X不能小于等于0", MessageBoxIcon.Exclamation);
                     txtX.Focus();
                     txtX.SelectAll();
                     return;
@@ -302,7 +333,7 @@ namespace MonitorAGV_QRCode
             }
             catch (Exception ex)
             {
-                Msg.Show("X格式不正确", MessageBoxIcon.Exclamation);
+                XtrMsg.Show("X格式不正确", MessageBoxIcon.Exclamation);
                 txtX.Focus();
                 txtX.SelectAll();
                 return;
@@ -311,7 +342,7 @@ namespace MonitorAGV_QRCode
             {
                 if (int.Parse(txtY.Text.Trim()) <= 0)
                 {
-                    Msg.Show("Y不能小于等于0", MessageBoxIcon.Exclamation);
+                    XtrMsg.Show("Y不能小于等于0", MessageBoxIcon.Exclamation);
                     txtY.Focus();
                     txtY.SelectAll();
                     return;
@@ -319,7 +350,7 @@ namespace MonitorAGV_QRCode
             }
             catch (Exception ex)
             {
-                Msg.Show("Y格式不正确", MessageBoxIcon.Exclamation);
+                XtrMsg.Show("Y格式不正确", MessageBoxIcon.Exclamation);
                 txtY.Focus();
                 txtY.SelectAll();
                 return;
@@ -384,6 +415,7 @@ namespace MonitorAGV_QRCode
         private void btnMonitor_Click(object sender, EventArgs e)
         {
             isMonitor = !isMonitor;
+            m_canvas.isMonitor = isMonitor;
             if (isMonitor)
             {
                 timer1.Enabled = true;
@@ -583,12 +615,12 @@ namespace MonitorAGV_QRCode
         /// <param name="e"></param>
         private void bbiSaveMapInfo_ItemClick(object sender, ItemClickEventArgs e)
         {
-            if (Msg.Show("是否确定要保存此地图信息？", MessageBoxIcon.Question) != DialogResult.Yes)
+            if (XtrMsg.Show("是否确定要保存此地图信息？", MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
             }
             Function.PR_Update_Map_Info(Xcount, Ycount, 0);
-            Msg.Show("地图信息保存成功",MessageBoxIcon.Asterisk);
+            XtrMsg.Show("地图信息保存成功", MessageBoxIcon.Asterisk);
         }
 
         /// while
@@ -1125,6 +1157,25 @@ namespace MonitorAGV_QRCode
                                 btnLeft.Enabled =
                                     btnRight.Enabled = btnUp.Enabled = btnDown.Enabled = btnLock.Enabled = btnAdvice.Enabled
                                         = btnDistance.Enabled = btnDesignPath.Enabled = btnOpen.Enabled = !isMonitor;
+        }
+
+        /// 绘图按键前景色初始化方法
+        /// <summary>
+        /// 绘图按键前景色初始化方法
+        /// </summary>
+        private void DrawButtonStaChange()
+        {
+            DevExpress.XtraBars.Controls.CustomBarControl barControl = bar1.GetBarControl();
+            BarButtonItemLink barButtonItem;
+            foreach (var c in barControl.VisibleLinks)
+            {
+                barButtonItem = c as BarButtonItemLink;
+                if (barButtonItem != null)
+                {
+                    barButtonItem.Item.ItemAppearance.Hovered.BackColor =
+                        barButtonItem.Item.ItemAppearance.Normal.BackColor = lockColor;
+                }
+            }
         }
         #endregion
     }

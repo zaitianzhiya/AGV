@@ -4354,6 +4354,7 @@
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
+            this.DoubleBuffered = true;
             this.Name = "FrmMain";
             this.Text = "AGV模拟";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

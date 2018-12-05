@@ -159,5 +159,36 @@ namespace Canvas.CanvasCtrl
         {
             m_canvas.DrawAgv(canvas, no, color, angel, Point);
         }
+
+
+        public void DrawLine(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2, Graphics g)
+        {
+            m_canvas.DrawLine(canvas, pen, p1, p2, g);
+        }
+
+        public void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p, Graphics g)
+        {
+            m_canvas.DrawForbid(canvas,pen,p,g);
+        }
+
+        public void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p, Graphics g)
+        {
+            m_canvas.DrawCharge(canvas,pen,p,g);
+        }
+
+        public void DrawImage(ICanvas canvas, UnitPoint p, Graphics g)
+        {
+            m_canvas.DrawImage(canvas,p,g);
+        }
+
+        public void DrawTxt(ICanvas canvas, string code, UnitPoint Point, Graphics g)
+        {
+            m_canvas.DrawTxt(canvas,code,Point,g);
+        }
+
+        public void DrawAgv(ICanvas canvas, string no, Color color, float angel, UnitPoint Point, Graphics g)
+        {
+            m_canvas.DrawAgv(canvas,no,color,angel,Point,g);
+        }
     }
 }

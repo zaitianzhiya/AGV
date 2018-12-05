@@ -226,6 +226,18 @@ namespace Canvas.Layers
 			}
 		}
 
+        public void Draw(ICanvas canvas, RectangleF unitrect, BufferedGraphics myBuffer, Rectangle rect, Graphics g)
+        {
+            foreach (IDrawObject current in m_objects)
+            {
+                DrawObjectBase drawObjectBase = current as DrawObjectBase;
+                if (drawObjectBase is IDrawObject)
+                {
+                    current.Draw(canvas, unitrect,g);
+                }
+            }
+        }
+
 		public PointF SnapPoint(PointF unitmousepoint)
 		{
 			return PointF.Empty;
@@ -319,5 +331,5 @@ namespace Canvas.Layers
 			}
 			return drawingLayer;
 		}
-	}
+    }
 }

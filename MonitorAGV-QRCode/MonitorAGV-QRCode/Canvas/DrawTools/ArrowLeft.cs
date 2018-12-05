@@ -179,6 +179,29 @@ namespace Canvas.DrawTools
             }
         }
 
+        public void Draw(ICanvas canvas, RectangleF unitrect, Graphics g)
+        {
+            CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;
+            DataModel model = (DataModel)canvasWrapper.DataModel;
+            Pen pen = new Pen(Color.Green);
+            AdjustableArrowCap cap = new AdjustableArrowCap(2f, 2f);
+            pen.CustomEndCap = cap;
+            pen.Width = 4 * model.Zoom;
+
+            float xStart = unitrect.X;
+            float yStart = unitrect.Y;
+            float xEnd = (unitrect.X + unitrect.Width);
+            float yEnd = (unitrect.Y + unitrect.Height);
+
+            if (location.X * model.Zoom + model.Zoom * (float)model.Distance / 2 >= xStart && location.X * model.Zoom - model.Zoom * (float)model.Distance / 2 <= xEnd && location.Y * model.Zoom + model.Zoom * (float)model.Distance / 2 >= yStart && location.Y * model.Zoom - model.Zoom * (float)model.Distance / 2 <= yEnd)
+            {
+                P1 = new UnitPoint(location.X - 10, location.Y);
+                P2 = new UnitPoint(location.X - 20, location.Y);
+                canvas.DrawLine(canvas, pen, P1, P2,g);
+                //canvas.DrawTxt(canvas,mapNo.ToString(),location);
+            }
+        }
+
         public RectangleF GetBoundingRect(ICanvas canvas)
         {
             CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;

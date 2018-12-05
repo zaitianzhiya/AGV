@@ -29,6 +29,8 @@ namespace Canvas.CanvasInterfaces
 
 		void Draw(ICanvas canvas, RectangleF unitrect);
 
+	    void Draw(ICanvas canvas, RectangleF unitrect, BufferedGraphics myBuffer, Rectangle rect, Graphics g);
+
 		ISnapPoint SnapPoint(ICanvas canvas, UnitPoint point, List<IDrawObject> otherobj);
 	}
 }
