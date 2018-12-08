@@ -52,17 +52,5 @@ namespace Canvas.CanvasInterfaces
 	    void DrawTxt(ICanvas canvas, string code, UnitPoint Point);
 
 	    void DrawAgv(ICanvas canvas, string no, Color color, float angel, UnitPoint Point);
-
-        void DrawLine(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2,Graphics g);
-
-        void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p, Graphics g);
-
-        void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p, Graphics g);
-
-        void DrawImage(ICanvas canvas, UnitPoint p, Graphics g);
-
-        void DrawTxt(ICanvas canvas, string code, UnitPoint Point, Graphics g);
-
-        void DrawAgv(ICanvas canvas, string no, Color color, float angel, UnitPoint Point, Graphics g);
 	}
 }

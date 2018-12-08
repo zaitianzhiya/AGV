@@ -38,7 +38,7 @@ namespace MonitorAGV_QRCode
         private int Distance = 40;
         private float Zoom = 1;
         private float OldZoom = 1f;
-        private float StepZoom = 2f;
+        private float StepZoom = 1.1f;
         private DataTable dtSourceProperty;
         private DataTable dtSourcePropertyOld;
         private Dictionary<string, NavBarGroup> dicNavBarGroups = new Dictionary<string, NavBarGroup>();
@@ -48,13 +48,15 @@ namespace MonitorAGV_QRCode
         private bool isMonitor = false;
         private UnitPoint p2Before;
         private Point p1Before;
+        private int hsValBefor;
+        private int vsValBefor;
 
         private DataModel m_data;
 
         public FrmMain()
         {
             InitializeComponent();
-            Control.CheckForIllegalCrossThreadCalls = false;
+            //Control.CheckForIllegalCrossThreadCalls = false;
             //SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
             //SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             foreach (NavBarGroup g in navBarControl1.Groups)
@@ -130,7 +132,8 @@ namespace MonitorAGV_QRCode
                 InitCanvas();
                 //DataGridAdd();
             }
-            //timer1.Enabled = true;
+
+            //btnMonitor_Click(null, null);
 
             pnlMain.MouseWheel += pnlMain_MouseWheel;
         }
@@ -161,37 +164,25 @@ namespace MonitorAGV_QRCode
 
                 if (OldZoom != m_data.Zoom)
                 {
-                    m_canvas.OffsetX += (int) ((-nowUnitPoint.X + oldUnitPoint.X)*m_data.Zoom);
-                    m_canvas.OffsetY += (int) ((-nowUnitPoint.Y + oldUnitPoint.Y)*m_data.Zoom);
-                   
-                    if (m_canvas.OffsetX < 0)
-                    {
-                        m_canvas.OffsetX = 0;
-                    }
-                    if (m_canvas.OffsetY < 0)
-                    {
-                        m_canvas.OffsetY = 0;
-                    }
+                    hScrollBar1.Value =hsValBefor+ (int)((-nowUnitPoint.X + oldUnitPoint.X) * m_data.Zoom);
+                    vScrollBar1.Value =vsValBefor+ (int)((-nowUnitPoint.Y + oldUnitPoint.Y) * m_data.Zoom);
                 }
-               
+
                 OldZoom = m_data.Zoom;
                 m_canvas.DoInvalidate(true);
                 return;
             }
-            pnlMain_Scroll(null, null);
-        }
-
-        private void pnlMain_Scroll(object sender, ScrollEventArgs e)
-        {
-            m_canvas.OffsetX = pnlMain.HorizontalScroll.Value;
-            m_canvas.OffsetY = pnlMain.VerticalScroll.Value;
-            m_canvas.DoInvalidate(true);
+            if (vScrollBar1.Visible)
+            {
+                vScrollBar1.Value -= e.Delta;
+            }
         }
 
         private void pnlMain_SizeChanged(object sender, EventArgs e)
         {
             if (m_canvas != null)
             {
+                m_canvas.SizeChange();
                 m_canvas.DoInvalidate(true);
             }
         }
@@ -213,6 +204,7 @@ namespace MonitorAGV_QRCode
         {
             Task t= Task.Run(() => { DataGridAdd(); });
             //t.Wait();
+            //ClearMemory();
         }
 
         private void OnCanvasMouseDoubleClick(object sender, MouseEventArgs e)
@@ -240,8 +232,7 @@ namespace MonitorAGV_QRCode
             //pBefore = (UnitPoint)sender;
             //pnlMain.Scroll -= pnlMain_Scroll;
             //pnlMain.MouseWheel -= pnlMain_MouseWheel;
-            if(sender!=null)
-            this.Text = sender.ToString();
+            //this.Text = sender.ToString();
             //m_canvas.OffsetX = (int)(int.Parse(sender.ToString().Split('@')[0])*m_data.Zoom);
             //m_canvas.OffsetY = (int)(int.Parse(sender.ToString().Split('@')[1]) * m_data.Zoom);
             //m_canvas.DoInvalidate(true);
@@ -249,10 +240,12 @@ namespace MonitorAGV_QRCode
             //pnlMain.MouseWheel += pnlMain_MouseWheel;
         }
 
-        void m_canvas_ZoomEvent(Point p1, UnitPoint p2)
+        void m_canvas_ZoomEvent(Point p1, UnitPoint p2,int hsVal,int vsVal)
         {
             p2Before=p2;
             p1Before = p1;
+            hsValBefor = hsVal;
+            vsValBefor = vsVal;
         }
 
         private void dockPanel2_Collapsed(object sender, DevExpress.XtraBars.Docking.DockPanelEventArgs e)
@@ -263,6 +256,14 @@ namespace MonitorAGV_QRCode
                 m_canvas.DoInvalidate(true);
             }
             pnlMain.SizeChanged += pnlMain_SizeChanged;
+        }
+
+        private void hScrollBar1_ValueChanged(object sender, EventArgs e)
+        {
+            if (m_canvas != null)
+            {
+                m_canvas.DoInvalidate(true);
+            }
         }
 
         #region 绘图事件
@@ -362,7 +363,6 @@ namespace MonitorAGV_QRCode
             m_data.YCount = Ycount = int.Parse(txtY.Text.Trim());
             m_data.Zoom = 1;
 
-            m_canvas.OffsetX=m_canvas.OffsetY = 0;
             m_data.DeleteObjects((from p in m_data.ActiveLayer.Objects select p).ToList());
             m_canvas.SizeChange();
         }
@@ -423,10 +423,11 @@ namespace MonitorAGV_QRCode
             }
             else
             {
+                DrawingLayer agvLayer = (DrawingLayer)m_data.AgvLayer;
                 timer1.Enabled = false;
                 btnMonitor.Text = "监控小车";
-                Thread.Sleep(500);
-                m_data.DeleteObjects((from p in m_data.ActiveLayer.Objects where p.Id=="AGVTool" select p).ToList());
+                //Thread.Sleep(2000);
+                agvLayer.Objects = new List<IDrawObject>().AsEnumerable();
                 m_canvas.DoInvalidate(true);
             }
             MonitorStaChange();
@@ -692,11 +693,14 @@ namespace MonitorAGV_QRCode
             m_canvas.stepZoom = StepZoom;
             m_canvas.Location = new Point(0, 0);
             m_canvas.parentPanel = pnlMain;
+            m_canvas.hScrollBar = hScrollBar1;
+            m_canvas.vScrollBar = vScrollBar1;
             AddForbidFromDB();
-            //m_canvas.Dock = DockStyle.Fill;
-            pnlMain.Controls.Clear();
+            m_canvas.Dock = DockStyle.Fill;
+            //pnlMain.Controls.Clear();
             pnlMain.Controls.Add(m_canvas);
             m_canvas.SetCenter(new UnitPoint(0.0, 0.0));
+          
             //m_canvas.RunningSnaps = new Type[]
             //    {
             //        typeof(VertextSnapPoint),
@@ -714,6 +718,8 @@ namespace MonitorAGV_QRCode
             m_canvas.TestEvent += m_canvas_TestEvent;
 
             m_canvas.ZoomEvent += m_canvas_ZoomEvent;
+
+            m_canvas.ScrollSetUp(0, 0,true);
         }
 
         ///  加载AGV车辆信息方法
@@ -724,18 +730,11 @@ namespace MonitorAGV_QRCode
         {
             //try
             //{
-                Thread.Sleep(500);
                 lock (obj)
                 {
-                    List<AGVTool> lstAgv = (from p in m_data.ActiveLayer.Objects
-                                            where p.Id == "AGVTool"
-                                            select (AGVTool)p).ToList<AGVTool>();
+                    DrawingLayer agvLayer = (DrawingLayer) m_data.AgvLayer;
 
-                    List<string> lstAgvNo = (from p in m_data.ActiveLayer.Objects
-                                             where p.Id == "AGVTool"
-                                             select ((AGVTool)p).AgvNo).ToList();
-
-                    //m_data.DeleteObjects(objects);
+                    List<IDrawObject> lstAgv = new List<IDrawObject>();
 
                     DataTable table = Function.ReadDB_tb_AGV_Info();
 
@@ -769,9 +768,7 @@ namespace MonitorAGV_QRCode
                         DataRow drNew;
                         DataTable dtTemp;
                         bool isSame;
-                        bool isSameAgv = true;
 
-                        DrawingLayer lay = (DrawingLayer)m_data.ActiveLayer;
                         AGVTool agv;
                         for (int j = 0; j < table.Rows.Count; j++)
                         {
@@ -816,55 +813,20 @@ namespace MonitorAGV_QRCode
                                 carNowX = int.Parse(agv_Now_X) / (double)600;
                                 carNowY = int.Parse(agv_Now_Y) / (double)600;
                                 carAngle = (double)(int.Parse(table.Rows[j][19].ToString().Trim()));
-
-                                if (lstAgvNo.Contains(carID.ToString()))
+                              
+                                agv = new AGVTool();
+                                agv.AgvNo = carID.ToString();
+                                agv.Location = new UnitPoint(20 + carNowX * Distance, 20 + (Ycount - carNowY) * Distance);
+                                if ((agv_Ac == 0) || (agv_ErrorCord != "0") || (agv_WarningCord != "0"))
                                 {
-                                    agv = lstAgv.AsEnumerable().Where(p => p.AgvNo == carID.ToString()).Single();
-                                    UnitPoint location = new UnitPoint(20 + carNowX * Distance, 20 + (Ycount - carNowY) * Distance);
-                                    if (location != agv.Location)
-                                    {
-                                        isSameAgv = false;
-                                        agv.Location = location;
-                                    }
-                                    Color color;
-                                    if ((agv_Ac == 0) || (agv_ErrorCord != "0") || (agv_WarningCord != "0"))
-                                    {
-                                        color = Color.Red;
-                                    }
-                                    else
-                                    {
-                                        color = Color.Blue;
-                                    }
-                                    if (agv.AgvColor != color)
-                                    {
-                                        isSameAgv = false;
-                                        agv.AgvColor = color;
-                                    }
-                                    float angle = carAngle == 0 ? 0f : (float)(360 - carAngle);
-                                    if (angle != agv.Angle)
-                                    {
-                                        isSameAgv = false;
-                                        agv.Angle = angle;
-                                    }
-                                    lstAgvNo.Remove(carID.ToString());
+                                    agv.AgvColor = Color.Red;
                                 }
                                 else
                                 {
-                                    agv = new AGVTool();
-                                    agv.AgvNo = carID.ToString();
-                                    agv.Location = new UnitPoint(20 + carNowX * Distance, 20 + (Ycount - carNowY) * Distance);
-                                    if ((agv_Ac == 0) || (agv_ErrorCord != "0") || (agv_WarningCord != "0"))
-                                    {
-                                        agv.AgvColor = Color.Red;
-                                    }
-                                    else
-                                    {
-                                        agv.AgvColor = Color.Blue;
-                                    }
-                                    agv.Angle = carAngle == 0 ? 0f : (float)(360 - carAngle);
-                                    lay.AddObject(agv);
-                                    isSameAgv = false;
+                                    agv.AgvColor = Color.Blue;
                                 }
+                                agv.Angle = carAngle == 0 ? 0f : (float)(360 - carAngle);
+                                lstAgv.Add(agv);
 
                                 if (!isSame)
                                 {
@@ -1017,11 +979,7 @@ namespace MonitorAGV_QRCode
                                 this.Invoke(new Action(() => { navBarGroup.Visible = true; }));
                             }
                         }
-                        if (lstAgvNo.Count > 0)
-                        {
-                            m_data.DeleteObjects(lstAgv.AsEnumerable().Where(p => lstAgvNo.Contains(p.AgvNo)).ToList());
-                        }
-
+                    
                         foreach (string key in dicNavBarGroups.Keys)
                         {
                             if (int.Parse(key) >= table.Rows.Count)
@@ -1030,8 +988,10 @@ namespace MonitorAGV_QRCode
                             }
                         }
                         dtSourcePropertyOld = table;
-                        if (!isSameAgv)
+
+                        if (isMonitor)
                         {
+                            agvLayer.Objects = lstAgv.AsEnumerable();
                             m_canvas.DoInvalidate(true);
                         }
                     }
@@ -1062,6 +1022,7 @@ namespace MonitorAGV_QRCode
             if (MapTable != null && MapTable.Rows.Count > 0)
             {
                 DrawingLayer lay = (DrawingLayer)m_data.ActiveLayer;
+                lay.DeleteObjects((from p in lay.Objects select p).ToList());
                 for (int j = 0; j < MapTable.Rows.Count; j++)
                 {
                     int MapNo = int.Parse(MapTable.Rows[j][0].ToString().Trim());

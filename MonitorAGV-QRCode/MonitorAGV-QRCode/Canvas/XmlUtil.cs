@@ -1,7 +1,7 @@
-using CommonTools;
 using System;
 using System.Reflection;
 using System.Xml;
+using CommonTools;
 
 namespace Canvas
 {
@@ -46,7 +46,7 @@ namespace Canvas
 				bool flag2 = attribute.Length == 0 || attribute2.Length == 0;
 				if (!flag2)
 				{
-                    PropertyInfo property = CommonTools.PropertyUtil.GetProperty(dataobject, attribute);
+                    PropertyInfo property = PropertyUtil.GetProperty(dataobject, attribute);
 					bool flag3 = property == null || !property.CanWrite;
 					if (!flag3)
 					{

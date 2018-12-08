@@ -385,6 +385,8 @@
             this.layoutControlItem14 = new DevExpress.XtraLayout.LayoutControlItem();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.pnlMain = new System.Windows.Forms.Panel();
+            this.hScrollBar1 = new DevExpress.XtraEditors.HScrollBar();
+            this.vScrollBar1 = new DevExpress.XtraEditors.VScrollBar();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dockManager1)).BeginInit();
             this.dockPanel1.SuspendLayout();
@@ -589,6 +591,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem12)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem13)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem14)).BeginInit();
+            this.pnlMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // barManager1
@@ -792,6 +795,7 @@
             this.btnOpen.Caption = "open";
             this.btnOpen.Id = 35;
             this.btnOpen.Name = "btnOpen";
+            this.btnOpen.Tag = "open";
             this.btnOpen.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnOpen_ItemClick);
             // 
             // bar2
@@ -4330,26 +4334,45 @@
             // 
             // pnlMain
             // 
-            this.pnlMain.AutoScroll = true;
             this.pnlMain.BackColor = System.Drawing.Color.Black;
-            this.pnlMain.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pnlMain.Controls.Add(this.hScrollBar1);
+            this.pnlMain.Controls.Add(this.vScrollBar1);
             this.pnlMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMain.Location = new System.Drawing.Point(0, 55);
+            this.pnlMain.Location = new System.Drawing.Point(200, 55);
             this.pnlMain.Margin = new System.Windows.Forms.Padding(0);
             this.pnlMain.Name = "pnlMain";
-            this.pnlMain.Size = new System.Drawing.Size(768, 380);
+            this.pnlMain.Size = new System.Drawing.Size(418, 380);
             this.pnlMain.TabIndex = 13;
-            this.pnlMain.Scroll += new System.Windows.Forms.ScrollEventHandler(this.pnlMain_Scroll);
             this.pnlMain.SizeChanged += new System.EventHandler(this.pnlMain_SizeChanged);
+            // 
+            // hScrollBar1
+            // 
+            this.hScrollBar1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.hScrollBar1.Location = new System.Drawing.Point(0, 363);
+            this.hScrollBar1.Name = "hScrollBar1";
+            this.hScrollBar1.Opacity = 1F;
+            this.hScrollBar1.Size = new System.Drawing.Size(401, 17);
+            this.hScrollBar1.TabIndex = 1;
+            this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
+            // 
+            // vScrollBar1
+            // 
+            this.vScrollBar1.Dock = System.Windows.Forms.DockStyle.Right;
+            this.vScrollBar1.Location = new System.Drawing.Point(401, 0);
+            this.vScrollBar1.Name = "vScrollBar1";
+            this.vScrollBar1.Opacity = 1F;
+            this.vScrollBar1.Size = new System.Drawing.Size(17, 380);
+            this.vScrollBar1.TabIndex = 0;
+            this.vScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(768, 462);
+            this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.dockPanel2);
             this.Controls.Add(this.dockPanel1);
-            this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.barDockControlLeft);
             this.Controls.Add(this.barDockControlRight);
             this.Controls.Add(this.barDockControlBottom);
@@ -4564,6 +4587,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem12)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem13)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.layoutControlItem14)).EndInit();
+            this.pnlMain.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4926,5 +4950,7 @@
         private DevExpress.XtraBars.BarStaticItem lblMsg;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Panel pnlMain;
+        private DevExpress.XtraEditors.HScrollBar hScrollBar1;
+        private DevExpress.XtraEditors.VScrollBar vScrollBar1;
     }
 }

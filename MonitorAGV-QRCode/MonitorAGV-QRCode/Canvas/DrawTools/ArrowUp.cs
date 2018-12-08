@@ -170,33 +170,11 @@ namespace Canvas.DrawTools
             float xEnd = (unitrect.X + unitrect.Width);
             float yEnd = (unitrect.Y + unitrect.Height);
 
-            if (location.X * model.Zoom + model.Zoom * (float)model.Distance / 2 >= xStart && location.X * model.Zoom - model.Zoom * (float)model.Distance / 2 <= xEnd && location.Y * model.Zoom + model.Zoom * (float)model.Distance / 2 >= yStart && location.Y * model.Zoom - model.Zoom * (float)model.Distance / 2 <= yEnd)
+            if (location.X > 20 && location.Y > 20 && location.X * model.Zoom + model.Zoom * (float)model.Distance / 2 >= xStart && location.X * model.Zoom - model.Zoom * (float)model.Distance / 2 <= xEnd && location.Y * model.Zoom + model.Zoom * (float)model.Distance / 2 >= yStart && location.Y * model.Zoom - model.Zoom * (float)model.Distance / 2 <= yEnd)
             {
                 P1 = new UnitPoint(location.X, location.Y - 10);
                 P2 = new UnitPoint(location.X, location.Y - 20);
                 canvas.DrawLine(canvas, pen, P1, P2);
-            }
-        }
-
-        public void Draw(ICanvas canvas, RectangleF unitrect, Graphics g)
-        {
-            CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;
-            DataModel model = (DataModel)canvasWrapper.DataModel;
-            Pen pen = new Pen(Color.Green);
-            AdjustableArrowCap cap = new AdjustableArrowCap(2f, 2f);
-            pen.CustomEndCap = cap;
-            pen.Width = 4 * model.Zoom;
-
-            float xStart = unitrect.X;
-            float yStart = unitrect.Y;
-            float xEnd = (unitrect.X + unitrect.Width);
-            float yEnd = (unitrect.Y + unitrect.Height);
-
-            if (location.X * model.Zoom + model.Zoom * (float)model.Distance / 2 >= xStart && location.X * model.Zoom - model.Zoom * (float)model.Distance / 2 <= xEnd && location.Y * model.Zoom + model.Zoom * (float)model.Distance / 2 >= yStart && location.Y * model.Zoom - model.Zoom * (float)model.Distance / 2 <= yEnd)
-            {
-                P1 = new UnitPoint(location.X, location.Y - 10);
-                P2 = new UnitPoint(location.X, location.Y - 20);
-                canvas.DrawLine(canvas, pen, P1, P2,g);
             }
         }
 

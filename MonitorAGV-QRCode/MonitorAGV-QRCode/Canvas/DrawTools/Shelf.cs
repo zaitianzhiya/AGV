@@ -85,6 +85,11 @@ namespace Canvas.DrawTools
             }
         }
 
+        public UnitPoint RepeatStartingPoint
+        {
+            get { return location; }
+        }
+
         public IDrawObject Clone()
         {
             Shelf shelf = new Shelf();
@@ -130,25 +135,9 @@ namespace Canvas.DrawTools
             float xEnd = (unitrect.X + unitrect.Width);
             float yEnd = (unitrect.Y + unitrect.Height);
 
-            if (location.X * model.Zoom + model.Zoom * model.Distance >= xStart && location.X * model.Zoom <= xEnd && location.Y * model.Zoom + model.Zoom * model.Distance >= yStart && location.Y * model.Zoom <= yEnd)
+            if (location.X > 20 && location.Y > 20 && location.X * model.Zoom + model.Zoom * model.Distance >= xStart && location.X * model.Zoom <= xEnd && location.Y * model.Zoom + model.Zoom * model.Distance >= yStart && location.Y * model.Zoom <= yEnd)
             {
                 canvas.DrawImage(canvas, location);
-            }
-        }
-
-        public void Draw(ICanvas canvas, RectangleF unitrect,Graphics g)
-        {
-            CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;
-            DataModel model = (DataModel)canvasWrapper.DataModel;
-
-            float xStart = unitrect.X;
-            float yStart = unitrect.Y;
-            float xEnd = (unitrect.X + unitrect.Width);
-            float yEnd = (unitrect.Y + unitrect.Height);
-
-            if (location.X * model.Zoom + model.Zoom * model.Distance >= xStart && location.X * model.Zoom <= xEnd && location.Y * model.Zoom + model.Zoom * model.Distance >= yStart && location.Y * model.Zoom <= yEnd)
-            {
-                canvas.DrawImage(canvas, location,g);
             }
         }
 
@@ -245,12 +234,7 @@ namespace Canvas.DrawTools
             base.Color = layer.Color;
             this.Selected = true;
         }
-
-        public UnitPoint RepeatStartingPoint
-        {
-            get { throw new NotImplementedException(); }
-        }
-
+        
         public override void InitializeFromModel(CanvasCtrller cc, Canvas.UnitPoint point, Canvas.Layers.DrawingLayer layer, Canvas.CanvasInterfaces.ISnapPoint snap)
         {
             IModel model = cc.m_model;

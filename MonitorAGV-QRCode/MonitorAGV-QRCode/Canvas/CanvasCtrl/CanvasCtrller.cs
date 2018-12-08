@@ -17,6 +17,10 @@ namespace Canvas.CanvasCtrl
 {
     public class CanvasCtrller : UserControl
     {
+        public DevExpress.XtraEditors.HScrollBar hScrollBar;
+
+        public DevExpress.XtraEditors.VScrollBar vScrollBar;
+
         public bool isMonitor;//是否监控中
 
         public int OffsetX, OffsetY;//滚动条坐标偏移量
@@ -31,7 +35,7 @@ namespace Canvas.CanvasCtrl
 
         public event EventHandler TestEvent;
 
-        public delegate void ZoomDelegate(Point p1, UnitPoint p2);
+        public delegate void ZoomDelegate(Point p1, UnitPoint p2,int hsVal,int vsVal);
 
         public event ZoomDelegate ZoomEvent;
 
@@ -176,8 +180,10 @@ namespace Canvas.CanvasCtrl
             m_owner = owner;
             m_model = datamodel;
             InitializeComponent();
-            Width = (int)((m_model.XCount * m_model.Distance + 100) * m_model.Zoom);
-            Height = (int)((m_model.YCount * m_model.Distance + 100) * m_model.Zoom);
+            //Width = (int)((m_model.XCount * m_model.Distance + 100) * m_model.Zoom);
+            //Height = (int)((m_model.YCount * m_model.Distance + 100) * m_model.Zoom);
+            //int width = (int)((m_model.XCount * m_model.Distance + 100) * m_model.Zoom);
+            //int height = (int)((m_model.YCount * m_model.Distance + 100) * m_model.Zoom);
             base.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
             base.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             //m_commandType = eCommandType.select;
@@ -293,8 +299,8 @@ namespace Canvas.CanvasCtrl
             //pointF.Y = ScreenHeight() - pointF.Y;
             pointF.Y *= m_screenResolution * m_model.Zoom;
             pointF.X *= m_screenResolution * m_model.Zoom;
-            pointF.X += m_panOffset.X + m_dragOffset.X;
-            pointF.Y += m_panOffset.Y + m_dragOffset.Y;
+            //pointF.X += m_panOffset.X + m_dragOffset.X;
+            //pointF.Y += m_panOffset.Y + m_dragOffset.Y;
             return pointF;
         }
 
@@ -334,158 +340,35 @@ namespace Canvas.CanvasCtrl
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            #region Memory
-            //e.Graphics.SmoothingMode = m_smoothingMode;
-            //CanvasWrapper canvasWrapper = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
-            //Rectangle rectangle = e.ClipRectangle;
-            //canvasRectangle = this.Parent.ClientRectangle;
-            //if (!(float.IsNaN(rectangle.Width) || float.IsInfinity(rectangle.Width)))
-            //{
-            //    BufferedGraphicsContext currentContext = BufferedGraphicsManager.Current;
-            //    BufferedGraphics myBuffer = currentContext.Allocate(canvasWrapper.Graphics, rectangle);
-            //    Graphics g = myBuffer.Graphics;
-            //    g.SmoothingMode = SmoothingMode.HighQuality;
-            //    g.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-            //    g.Clear(this.BackColor);
-            //    if (m_model.GridLayer.Enabled)
-            //    {
-            //        //m_model.GridLayer.Draw(canvasWrapper2, rectangle);
-            //        m_model.GridLayer.Draw(canvasWrapper, rectangle, myBuffer, rectangle, g);
-            //    }
-
-            //    if (m_model.ActiveLayer != null)
-            //    {
-            //        //m_model.ActiveLayer.Draw(canvasWrapper, rectangle);
-            //        m_model.ActiveLayer.Draw(canvasWrapper, rectangle, myBuffer, rectangle, g);
-            //    }
-
-            //    float xStart = rectangle.X;
-            //    float yStart = rectangle.Y;
-            //    float xEnd = (rectangle.X + rectangle.Width);
-            //    float yEnd = (rectangle.Y + rectangle.Height);
-            //    float x1, y1, x2, y2;
-            //    x1 = 20 * m_model.Zoom;
-            //    bool isEnd;
-            //    Pen penCoor = new Pen(Color.White);
-            //    AdjustableArrowCap cap = new AdjustableArrowCap(6 * m_model.Zoom, 6 * m_model.Zoom);
-            //    penCoor.CustomEndCap = cap;
-            //    penCoor.Width = 2;
-            //    Pen penCoor2 = new Pen(Color.White);
-            //    penCoor2.Width = 2;
-            //    Font fontCoor = new Font("Tahoma", 9 * m_model.Zoom);
-
-            //    if (x1 >= xStart && x1 <= xEnd)
-            //    {
-            //        //y1 = 0;
-            //        //y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
-            //        y1 = yStart;
-            //        if (y1 <= 10 * m_model.Zoom)
-            //        {
-            //            y1 = 0;
-            //        }
-            //        y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
-            //        if (y2 > yEnd)
-            //        {
-            //            y2 = yEnd;
-            //        }
-            //        if (y1 == 0)
-            //        {
-            //            //canvasWrapper3.Graphics.DrawLine(penCoor, x1, y2, x1, y1);
-            //            //canvasWrapper3.Graphics.DrawString("Y", fontCoor, Brushes.White, (float) (5*m_model.Zoom),
-            //            //    5*m_model.Zoom);
-            //            g.DrawLine(penCoor, x1, y2, x1, y1);
-            //            g.DrawString("Y", fontCoor, Brushes.White, (float)(5 * m_model.Zoom),
-            //                5 * m_model.Zoom);
-            //        }
-            //        else
-            //        {
-            //            //canvasWrapper3.Graphics.DrawLine(penCoor2, x1, y2, x1, y1);
-            //            g.DrawLine(penCoor2, x1, y2, x1, y1);
-            //        }
-            //    }
-            //    y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
-            //    if (y2 >= yStart && y2 <= yEnd)
-            //    {
-            //        isEnd = false;
-            //        //x1 = 20 * m_model.Zoom;
-            //        //x2 = (20 + m_model.XCount * m_model.Distance + 20) * m_model.Zoom;
-            //        x1 = 20 * m_model.Zoom;
-            //        if (xStart > x1)
-            //        {
-            //            x1 = xStart;
-            //        }
-            //        x2 = (20 + m_model.XCount * m_model.Distance + 20) * m_model.Zoom;
-            //        if (x2 > xEnd)
-            //        {
-            //            if (x2 - xEnd <= 10 * m_model.Zoom)
-            //            {
-            //                isEnd = true;
-            //            }
-            //            else
-            //            {
-            //                x2 = xEnd;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            isEnd = true;
-            //        }
-            //        if (isEnd)
-            //        {
-            //            //canvasWrapper3.Graphics.DrawLine(penCoor, x1, y2, x2, y2);
-            //            //canvasWrapper3.Graphics.DrawString("X", fontCoor, Brushes.White, x2 - 20*m_model.Zoom,
-            //            //    y2 + 5*m_model.Zoom);
-            //            g.DrawLine(penCoor, x1, y2, x2, y2);
-            //            g.DrawString("X", fontCoor, Brushes.White, x2 - 20 * m_model.Zoom,
-            //                y2 + 5 * m_model.Zoom);
-            //        }
-            //        else
-            //        {
-            //            //canvasWrapper3.Graphics.DrawLine(penCoor2, x1, y2, x2, y2);
-            //            g.DrawLine(penCoor2, x1, y2, x2, y2);
-            //        }
-            //    }
-
-            //    if (m_selection != null)
-            //    {
-            //        m_selection.Reset();
-            //        m_selection.SetMousePoint(e.Graphics, base.PointToClient(Control.MousePosition));
-            //    }
-
-            //    parentPanel.HorizontalScroll.Value = OffsetX;
-            //    parentPanel.VerticalScroll.Value = OffsetY;
-
-            //    myBuffer.Render(canvasWrapper.Graphics);
-            //    g.Dispose();
-            //    myBuffer.Dispose();//释放资源
-            //    canvasWrapper.Dispose();
-            //}
-            #endregion
-
-            #region Normal
             e.Graphics.SmoothingMode = m_smoothingMode;
             CanvasWrapper canvasWrapper = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
             Rectangle rectangle = e.ClipRectangle;
+            rectangle.Location = new Point(hScrollBar.Value, vScrollBar.Value);
+            m_dragOffset = new PointF(-hScrollBar.Value, -vScrollBar.Value);
             canvasRectangle = this.Parent.ClientRectangle;
             if (!(float.IsNaN(rectangle.Width) || float.IsInfinity(rectangle.Width)))
             {
                 //CanvasWrapper canvasWrapper2 = new CanvasWrapper(this, Graphics.FromImage(m_staticImage), base.ClientRectangle);
-                CanvasWrapper canvasWrapper2 = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
-                canvasWrapper2.Graphics.SmoothingMode = m_smoothingMode;
+                canvasWrapper.Graphics.SmoothingMode = m_smoothingMode;
 
                 if (m_model.GridLayer.Enabled)
                 {
-                    m_model.GridLayer.Draw(canvasWrapper2, rectangle);
+                    m_model.GridLayer.Draw(canvasWrapper, rectangle);
                 }
-                canvasWrapper2.Dispose();
 
-                CanvasWrapper canvasWrapper4 = new CanvasWrapper(this, e.Graphics, base.ClientRectangle);
-                canvasWrapper4.Graphics.SmoothingMode = m_smoothingMode;
                 if (m_model.ActiveLayer != null)
                 {
-                    m_model.ActiveLayer.Draw(canvasWrapper4, rectangle);
+                    m_model.ActiveLayer.Draw(canvasWrapper, rectangle);
                 }
-                canvasWrapper4.Dispose();
+
+                ICanvasLayer[] layers = m_model.Layers;
+                for (int i = layers.Length - 1; i >= 0; i--)
+                {
+                    if (layers[i] != m_model.ActiveLayer && layers[i].Visible)
+                    {
+                        layers[i].Draw(canvasWrapper, rectangle);
+                    }
+                }
 
                 float xStart = rectangle.X;
                 float yStart = rectangle.Y;
@@ -504,8 +387,6 @@ namespace Canvas.CanvasCtrl
                 Font fontCoor = new Font("Tahoma", 9 * m_model.Zoom);
                 if (x1 >= xStart && x1 <= xEnd)
                 {
-                    //y1 = 0;
-                    //y2 = (20 + m_model.YCount * m_model.Distance) * m_model.Zoom;
                     y1 = yStart;
                     if (y1 <= 10 * m_model.Zoom)
                     {
@@ -531,8 +412,6 @@ namespace Canvas.CanvasCtrl
                 if (y2 >= yStart && y2 <= yEnd)
                 {
                     isEnd = false;
-                    //x1 = 20 * m_model.Zoom;
-                    //x2 = (20 + m_model.XCount * m_model.Distance + 20) * m_model.Zoom;
                     x1 = 20 * m_model.Zoom;
                     if (xStart > x1)
                     {
@@ -572,11 +451,7 @@ namespace Canvas.CanvasCtrl
                     m_selection.SetMousePoint(e.Graphics, base.PointToClient(Control.MousePosition));
                 }
                 canvasWrapper.Dispose();
-
-                parentPanel.HorizontalScroll.Value = OffsetX;
-                parentPanel.VerticalScroll.Value = OffsetY;
             }
-            #endregion
         }
 
         protected virtual void HandleMouseDownWhenDrawing(UnitPoint mouseunitpoint, ISnapPoint snappoint)
@@ -599,9 +474,9 @@ namespace Canvas.CanvasCtrl
                     if (m_newObject == null)
                     {
                         m_newObject = m_model.CreateObject(this, m_drawObjectId, mouseunitpoint, snappoint);
-                        if (m_newObject.Id == "ArrowLeft" || m_newObject.Id == "ArrowRight" ||
+                        if (m_newObject!=null&&(m_newObject.Id == "ArrowLeft" || m_newObject.Id == "ArrowRight" ||
                             m_newObject.Id == "ArrowDown" || m_newObject.Id == "ArrowUp" ||
-                            m_newObject.Id == "AGVTool" || m_newObject.Id == "Charge" || m_newObject.Id == "Forbid" || m_newObject.Id == "Shelf")
+                            m_newObject.Id == "AGVTool" || m_newObject.Id == "Charge" || m_newObject.Id == "Forbid" || m_newObject.Id == "Shelf"))
                         {
                             m_newObject.OnMouseDown(m_canvaswrapper, mouseunitpoint, snappoint);
                             m_model.AddObject(m_model.ActiveLayer, m_newObject);
@@ -631,8 +506,8 @@ namespace Canvas.CanvasCtrl
             if (m_commandType == eCommandType.pan && e.Button == MouseButtons.Left)
             {
                 panStartPoint = unitPoint;
-                OffsetX = parentPanel.HorizontalScroll.Value;
-                OffsetY = parentPanel.VerticalScroll.Value;
+                OffsetX = hScrollBar.Value;
+                OffsetY = vScrollBar.Value;
                 Cursor.Current = Cursors.Hand;
             }
 
@@ -692,16 +567,8 @@ namespace Canvas.CanvasCtrl
             {
                 double xDistance = (((UnitPoint)panStartPoint).X - unitPoint.X) * m_model.Zoom;
                 double yDistance = (((UnitPoint)panStartPoint).Y - unitPoint.Y) * m_model.Zoom;
-                OffsetX = (int)(OffsetX + xDistance);
-                if (OffsetX < 0)
-                {
-                    OffsetX = 0;
-                }
-                OffsetY = (int)(OffsetY + yDistance);
-                if (OffsetY < 0)
-                {
-                    OffsetY = 0;
-                }
+                hScrollBar.Value = (int)(OffsetX + xDistance);
+                vScrollBar.Value = (int)(OffsetY + yDistance);
                 panStartPoint = null;
                 DoInvalidate(true);
                 Cursor.Current = Cursors.Default;
@@ -945,21 +812,15 @@ namespace Canvas.CanvasCtrl
 
                 if (m_commandType == eCommandType.pan && e.Button == MouseButtons.Left && panStartPoint != null)
                 {
-                    //m_mousedownPoint = new PointF((float)e.X, (float)e.Y);
-                    //UnitPoint panEndPoint = ToUnit(m_mousedownPoint);
-                    //double xDistance = (((UnitPoint)panStartPoint).X - panEndPoint.X) * m_model.Zoom;
-                    //double yDistance = (((UnitPoint)panStartPoint).Y - panEndPoint.Y) * m_model.Zoom;
-                    //OffsetX = (int)(OffsetX + xDistance);
-                    //if (OffsetX < 0)
-                    //{
-                    //    OffsetX = 0;
-                    //}
-                    //OffsetY = (int)(OffsetY + yDistance);
-                    //if (OffsetY < 0)
-                    //{
-                    //    OffsetY = 0;
-                    //}
-                    //DoInvalidate(true);
+                    m_mousedownPoint = new PointF((float)e.X, (float)e.Y);
+                    UnitPoint panEndPoint = ToUnit(m_mousedownPoint);
+                    double xDistance = (((UnitPoint)panStartPoint).X - panEndPoint.X) * m_model.Zoom;
+                    double yDistance = (((UnitPoint)panStartPoint).Y - panEndPoint.Y) * m_model.Zoom;
+                    hScrollBar.Value = (int)(OffsetX + xDistance);
+                    vScrollBar.Value = (int)(OffsetY + yDistance);
+                    OffsetX = hScrollBar.Value;
+                    OffsetY = vScrollBar.Value;
+                    DoInvalidate(true);
                 }
             }
         }
@@ -974,7 +835,7 @@ namespace Canvas.CanvasCtrl
                     Point p = base.PointToClient(Control.MousePosition);
                     //string msg = string.Format("Mouse:({0},{1})",p.X, p.Y);
                     //TestEvent(mousePoint, null);
-                    ZoomEvent(p, mousePoint);
+                    ZoomEvent(p, mousePoint,hScrollBar.Value,vScrollBar.Value);
                     //float num = 120f;
                     //float num2 = 1.5f * ((float)Math.Abs(e.Delta) / num);
                     float num3;
@@ -988,7 +849,9 @@ namespace Canvas.CanvasCtrl
                     }
                     int width = (int)((m_model.XCount * m_model.Distance + 100) * num3);
                     int height = (int)((m_model.YCount * m_model.Distance + 100) * num3);
-                    if (num3 > 10 || num3 < 0.2 || width >= 30759 || height >= 30759)
+
+                    //if (num3 > 10 || num3 < 0.2 || width >= 30759 || height >= 30759)
+                    if (40 / num3 < 5 || 40 / num3 > 100)
                     {
                         DoInvalidate(true);
                         base.OnMouseWheel(e);
@@ -999,8 +862,10 @@ namespace Canvas.CanvasCtrl
                     if (!flag2)
                     {
                         m_model.Zoom = num3;
-                        Width = width;
-                        Height = height;
+                        //Width = width;
+                        //Height = height;
+                        ScrollSetUp(height, width,false);
+
                         //SetCenterScreen(ToScreen(mousePoint), true);
                     }
                 }
@@ -1046,16 +911,9 @@ namespace Canvas.CanvasCtrl
 
         public void DrawLine(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2)
         {
-            try
-            {
-                PointF pt = ToScreen(p1);
-                PointF pt2 = ToScreen(p2);
-                canvas.Graphics.DrawLine(pen, pt, pt2);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            PointF pt = ToScreen(p1);
+            PointF pt2 = ToScreen(p2);
+            canvas.Graphics.DrawLine(pen, pt, pt2);
         }
 
         public void DrawImage(ICanvas canvas, UnitPoint p)
@@ -1079,7 +937,7 @@ namespace Canvas.CanvasCtrl
                 if (canvas.Graphics != null)
                 {
                     PointF pointF = ToScreen(p);
-                    Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
+                    Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2 + m_model.Zoom), (int)(pointF.Y + pen.Width / 2 + m_model.Zoom), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2 * m_model.Zoom), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2 * m_model.Zoom));
                     canvas.Graphics.DrawRectangle(pen, rect);
                 }
             }
@@ -1087,21 +945,14 @@ namespace Canvas.CanvasCtrl
 
         public void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p)
         {
-            try
+            if (!p.IsEmpty)
             {
-                if (!p.IsEmpty)
+                if (canvas.Graphics != null)
                 {
-                    if (canvas.Graphics != null)
-                    {
-                        PointF pointF = ToScreen(p);
-                        Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
-                        canvas.Graphics.DrawEllipse(pen, rect);
-                    }
+                    PointF pointF = ToScreen(p);
+                    Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2 + m_model.Zoom), (int)(pointF.Y + pen.Width / 2 + m_model.Zoom), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2 * m_model.Zoom), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2 * m_model.Zoom));
+                    canvas.Graphics.DrawEllipse(pen, rect);
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
 
@@ -1114,29 +965,35 @@ namespace Canvas.CanvasCtrl
                     PointF pointF = this.ToScreen(Point);
                     Pen pen = new Pen(color);
                     pen.Width = 2;
-                    canvas.Graphics.TranslateTransform((float)(pointF.X), (float)(pointF.Y));
-                    //Rectangle rect = new Rectangle((int)(pointF.X - 0.15 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.4), (int)(m_model.Distance * m_model.Zoom * 0.3));
+
+                    Rectangle rect = new Rectangle((int)(pointF.X - m_model.Distance * m_model.Zoom / 2),(int) (pointF.Y - m_model.Distance * m_model.Zoom / 2), (int)(m_model.Distance * m_model.Zoom), (int)(m_model.Distance * m_model.Zoom));
+                    
+                    Bitmap image = new Bitmap(rect.Width,rect.Height);
+                    Graphics imageGraphics = Graphics.FromImage(image);
+                    imageGraphics.TranslateTransform((float)(rect.Width * 0.5), (float)(rect.Height * 0.5));
+
                     int width = (int)(m_model.Distance * m_model.Zoom * 0.4);
                     int height = (int)(m_model.Distance * m_model.Zoom * 0.3);
-                    Rectangle rect = new Rectangle((int)(-0.15 * m_model.Zoom * m_model.Distance), (int)(-0.15 * m_model.Zoom * m_model.Distance), width, height);
-                    canvas.Graphics.RotateTransform(angel);
-                    canvas.Graphics.DrawRectangle(pen, rect);
-
-                    //Rectangle rectEli = new Rectangle((int)(pointF.X - 0.15 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.3), (int)(m_model.Distance * m_model.Zoom * 0.3));
-                    Rectangle rectEli = new Rectangle((int)(-0.15 * m_model.Zoom * m_model.Distance), (int)(-0.15 * m_model.Zoom * m_model.Distance), height, height);
-                    canvas.Graphics.DrawEllipse(pen, rectEli);
-
-                    double r = Math.Sqrt(height * height * 0.25 + (width - height * 0.5) * (width - height * 0.5));
-                    //Rectangle rectArc = new Rectangle((int)(pointF.X + 0.1 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.3), (int)(m_model.Distance * m_model.Zoom * 0.3));
-                    Rectangle rectArc = new Rectangle((int)(-r), (int)(-r), (int)(2 * r), (int)(2 * r));
-                    canvas.Graphics.DrawArc(pen, rectArc, -30, 60);
-                    canvas.Graphics.ResetTransform();
 
                     float emSize = ToScreen(6);
                     StringFormat stringFormat = new StringFormat();
                     stringFormat.Alignment = StringAlignment.Center;
                     Font font = new Font("宋体", emSize);
-                    canvas.Graphics.DrawString(no, font, Brushes.Yellow, new PointF((float)((int)(pointF.X - 0.13 * m_model.Zoom * m_model.Distance)), (float)((int)(pointF.Y - 0.11 * m_model.Zoom * m_model.Distance))));
+                    imageGraphics.DrawString(no, font, Brushes.Yellow, new PointF((float)(-emSize*0.9),(float) (-emSize*0.7)));
+
+                    Rectangle rectEli = new Rectangle((int)(-height * 0.5), (int)(-height * 0.5), height, height);
+                    imageGraphics.DrawEllipse(pen, rectEli);
+
+                    Rectangle rect1 = new Rectangle((int)(-height * 0.5), (int)(-height * 0.5), width, height);
+                    imageGraphics.RotateTransform(angel);
+                    imageGraphics.DrawRectangle(pen, rect1);
+
+                    double r = Math.Sqrt(height * height * 0.25 + (width - height * 0.5) * (width - height * 0.5));
+                    Rectangle rectArc = new Rectangle((int)(-r), (int)(-r), (int)(2 * r), (int)(2 * r));
+                    imageGraphics.DrawArc(pen, rectArc, -30, 60);
+                    imageGraphics.ResetTransform();
+                    
+                    canvas.Graphics.DrawImage(image, rect);
                 }
             }
         }
@@ -1152,118 +1009,6 @@ namespace Canvas.CanvasCtrl
                     stringFormat.Alignment = StringAlignment.Near;
                     Font font = new Font("Arial Black", 9, FontStyle.Regular, GraphicsUnit.Point, 0);
                     canvas.Graphics.DrawString(code, font, Brushes.Red, pointF.X, pointF.Y, stringFormat);
-                }
-            }
-        }
-
-        public void DrawLine(ICanvas canvas, Pen pen, UnitPoint p1, UnitPoint p2, Graphics g)
-        {
-            try
-            {
-                PointF pt = ToScreen(p1);
-                PointF pt2 = ToScreen(p2);
-                g.DrawLine(pen, pt, pt2);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawImage(ICanvas canvas, UnitPoint p, Graphics g)
-        {
-            if (!p.IsEmpty)
-            {
-                if (canvas.Graphics != null)
-                {
-                    PointF pointF = ToScreen(p);
-                    RectangleF rect = new RectangleF(pointF.X - m_model.Distance * m_model.Zoom / 4, pointF.Y - m_model.Distance * m_model.Zoom / 4, (float)(m_model.Distance * m_model.Zoom / 2), (float)(m_model.Distance * m_model.Zoom / 2));
-                    Image image = Properties.Resources.goods;
-                    g.DrawImage(image, rect);
-                }
-            }
-        }
-
-        public void DrawForbid(ICanvas canvas, Pen pen, UnitPoint p, Graphics g)
-        {
-            if (!p.IsEmpty)
-            {
-                if (canvas.Graphics != null)
-                {
-                    PointF pointF = ToScreen(p);
-                    Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
-                    g.DrawRectangle(pen, rect);
-                }
-            }
-        }
-
-        public void DrawCharge(ICanvas canvas, Pen pen, UnitPoint p, Graphics g)
-        {
-            try
-            {
-                if (!p.IsEmpty)
-                {
-                    if (canvas.Graphics != null)
-                    {
-                        PointF pointF = ToScreen(p);
-                        Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2), (int)(pointF.Y + pen.Width / 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2));
-                        g.DrawEllipse(pen, rect);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public void DrawAgv(ICanvas canvas, string no, Color color, float angel, UnitPoint Point, Graphics g)
-        {
-            if (!Point.IsEmpty)
-            {
-                if (canvas.Graphics != null)
-                {
-                    PointF pointF = this.ToScreen(Point);
-                    Pen pen = new Pen(color);
-                    pen.Width = 2;
-                    g.TranslateTransform((float)(pointF.X), (float)(pointF.Y));
-                    //Rectangle rect = new Rectangle((int)(pointF.X - 0.15 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.4), (int)(m_model.Distance * m_model.Zoom * 0.3));
-                    int width = (int)(m_model.Distance * m_model.Zoom * 0.4);
-                    int height = (int)(m_model.Distance * m_model.Zoom * 0.3);
-                    Rectangle rect = new Rectangle((int)(-0.15 * m_model.Zoom * m_model.Distance), (int)(-0.15 * m_model.Zoom * m_model.Distance), width, height);
-                    g.RotateTransform(angel);
-                    g.DrawRectangle(pen, rect);
-
-                    //Rectangle rectEli = new Rectangle((int)(pointF.X - 0.15 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.3), (int)(m_model.Distance * m_model.Zoom * 0.3));
-                    Rectangle rectEli = new Rectangle((int)(-0.15 * m_model.Zoom * m_model.Distance), (int)(-0.15 * m_model.Zoom * m_model.Distance), height, height);
-                    g.DrawEllipse(pen, rectEli);
-
-                    double r = Math.Sqrt(height * height * 0.25 + (width - height * 0.5) * (width - height * 0.5));
-                    //Rectangle rectArc = new Rectangle((int)(pointF.X + 0.1 * m_model.Zoom * m_model.Distance), (int)(pointF.Y - 0.15 * m_model.Zoom * m_model.Distance), (int)(m_model.Distance * m_model.Zoom * 0.3), (int)(m_model.Distance * m_model.Zoom * 0.3));
-                    Rectangle rectArc = new Rectangle((int)(-r), (int)(-r), (int)(2 * r), (int)(2 * r));
-                    g.DrawArc(pen, rectArc, -30, 60);
-                    g.ResetTransform();
-
-                    float emSize = ToScreen(6);
-                    StringFormat stringFormat = new StringFormat();
-                    stringFormat.Alignment = StringAlignment.Center;
-                    Font font = new Font("宋体", emSize);
-                    g.DrawString(no, font, Brushes.Yellow, new PointF((float)((int)(pointF.X - 0.13 * m_model.Zoom * m_model.Distance)), (float)((int)(pointF.Y - 0.11 * m_model.Zoom * m_model.Distance))));
-                }
-            }
-        }
-
-        public void DrawTxt(ICanvas canvas, string code, UnitPoint Point, Graphics g)
-        {
-            if (!Point.IsEmpty)
-            {
-                if (canvas.Graphics != null)
-                {
-                    PointF pointF = this.ToScreen(Point);
-                    StringFormat stringFormat = new StringFormat();
-                    stringFormat.Alignment = StringAlignment.Near;
-                    Font font = new Font("Arial Black", 9, FontStyle.Regular, GraphicsUnit.Point, 0);
-                    g.DrawString(code, font, Brushes.Red, pointF.X, pointF.Y, stringFormat);
                 }
             }
         }
@@ -1480,9 +1225,51 @@ namespace Canvas.CanvasCtrl
 
         public void SizeChange()
         {
-            Width = (int)((m_model.XCount * m_model.Distance + 100) * m_model.Zoom);
-            Height = (int)((m_model.YCount * m_model.Distance + 100) * m_model.Zoom);
+            int width = (int)((m_model.XCount * m_model.Distance + 100) * m_model.Zoom);
+            int height = (int)((m_model.YCount * m_model.Distance + 100) * m_model.Zoom);
+            ScrollSetUp(height,width,false);
             DoInvalidate(true);
+        }
+
+        /// 设置滚动条最大值
+        /// <summary>
+        /// 设置滚动条最大值
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="width"></param>
+        public void ScrollSetUp(int height, int width,bool isInitial)
+        {
+            if (isInitial)
+            {
+                width = (int) ((m_model.XCount*m_model.Distance + 100)*m_model.Zoom);
+                height = (int) ((m_model.YCount*m_model.Distance + 100)*m_model.Zoom);
+            }
+
+            hScrollBar.Maximum = width;
+            vScrollBar.Maximum =height;
+
+            if (hScrollBar.Maximum <= parentPanel.Width)
+            {
+                hScrollBar.Visible = false;
+                hScrollBar.Maximum = 0;
+                hScrollBar.Value = 0;
+            }
+            else
+            {
+                hScrollBar.Maximum = hScrollBar.Maximum - parentPanel.Width;
+                hScrollBar.Visible = true;
+            }
+            if (vScrollBar.Maximum <= parentPanel.Height)
+            {
+                vScrollBar.Visible = false;
+                vScrollBar.Maximum = 0;
+                vScrollBar.Value = 0;
+            }
+            else
+            {
+                vScrollBar.Maximum = vScrollBar.Maximum - parentPanel.Height;
+                vScrollBar.Visible = true;
+            }
         }
     }
 }

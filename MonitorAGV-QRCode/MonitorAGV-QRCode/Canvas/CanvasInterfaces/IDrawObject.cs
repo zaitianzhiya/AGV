@@ -27,8 +27,6 @@ namespace Canvas.CanvasInterfaces
 
 		void Draw(ICanvas canvas, RectangleF unitrect);
 
-        void Draw(ICanvas canvas, RectangleF unitrect, Graphics g);
-
 		RectangleF GetBoundingRect(ICanvas canvas);
 
 		void OnMouseMove(ICanvas canvas, UnitPoint point);

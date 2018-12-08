@@ -1,3 +1,4 @@
+using System.Linq;
 using Canvas.CanvasCtrl;
 using Canvas.CanvasInterfaces;
 using Canvas.DrawTools;
@@ -32,6 +33,8 @@ namespace Canvas
 		private List<ICanvasLayer> m_layers = new List<ICanvasLayer>();
 
 		private ICanvasLayer m_activeLayer;
+
+        private ICanvasLayer m_agvLayer;
 
 		private Dictionary<IDrawObject, bool> m_selection = new Dictionary<IDrawObject, bool>();
 
@@ -110,6 +113,22 @@ namespace Canvas
 				m_activeLayer = value;
 			}
 		}
+
+        public ICanvasLayer AgvLayer
+        {
+            get
+            {
+                if (m_agvLayer == null)
+                {
+                    m_agvLayer =(from p in m_layers where p.Id=="agv" select p).FirstOrDefault();
+                }
+                return m_agvLayer;
+            }
+            set
+            {
+                m_agvLayer = value;
+            }
+        }
 
 		public IEnumerable<IDrawObject> SelectedObjects
 		{
@@ -277,6 +296,7 @@ namespace Canvas
 		{
 			m_layers.Clear();
 			m_layers.Add(new DrawingLayer("1", Color.Green, 0.1f));
+            m_layers.Add(new DrawingLayer("agv", Color.Green, 0.1f));
 		}
 
 		public IDrawObject GetFirstSelected()

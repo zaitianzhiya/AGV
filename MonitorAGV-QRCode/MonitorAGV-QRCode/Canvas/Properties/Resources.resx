@@ -127,4 +127,22 @@
   <data name="goods" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\image\goods.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="QRCode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\image\qrcode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="QRCode1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\image\qrcode1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="erweima2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\image\erweima2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="barcode_2d" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\image\barcode-2d.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="qr" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\image\qr.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="qrBluee" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\image\qrbluee.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

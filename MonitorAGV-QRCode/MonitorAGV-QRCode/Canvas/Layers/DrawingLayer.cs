@@ -1,3 +1,4 @@
+using System.Linq;
 using Canvas.CanvasInterfaces;
 using Canvas.DrawTools;
 using System;
@@ -37,6 +38,7 @@ namespace Canvas.Layers
 			{
 				return this.m_objects;
 			}
+            set { m_objects = (List<IDrawObject>)value; }
 		}
 
 		[XmlSerializable]
@@ -192,51 +194,15 @@ namespace Canvas.Layers
 
 		public void Draw(ICanvas canvas, RectangleF unitrect)
 		{
-			try
+			foreach (IDrawObject current in m_objects)
 			{
-				int num = 0;
-				foreach (IDrawObject current in m_objects)
-				{
-                    DrawObjectBase drawObjectBase = current as DrawObjectBase;
-                    //bool flag = drawObjectBase is IDrawObject && !((IDrawObject)drawObjectBase).ObjectInRectangle(canvas, unitrect, true);
-                    //if (!flag)
-                    if (drawObjectBase is IDrawObject)
-                    {
-                        //bool selected = drawObjectBase.Selected;
-                        //bool highlighted = drawObjectBase.Highlighted;
-                        //drawObjectBase.Selected = false;
-                        //try
-                        //{
-                            current.Draw(canvas, unitrect);
-                        //}
-                        //catch (Exception ex)
-                        //{
-                        //    throw ex;
-                        //}
-                        //drawObjectBase.Selected = selected;
-                        //drawObjectBase.Highlighted = highlighted;
-                        int num2 = num;
-                        num = num2 + 1;
-                    }
-				}
-			}
-			catch (Exception ex2)
-			{
-				throw ex2;
-			}
-		}
-
-        public void Draw(ICanvas canvas, RectangleF unitrect, BufferedGraphics myBuffer, Rectangle rect, Graphics g)
-        {
-            foreach (IDrawObject current in m_objects)
-            {
                 DrawObjectBase drawObjectBase = current as DrawObjectBase;
                 if (drawObjectBase is IDrawObject)
                 {
-                    current.Draw(canvas, unitrect,g);
+                    current.Draw(canvas, unitrect);
                 }
-            }
-        }
+			}
+		}
 
 		public PointF SnapPoint(PointF unitmousepoint)
 		{
