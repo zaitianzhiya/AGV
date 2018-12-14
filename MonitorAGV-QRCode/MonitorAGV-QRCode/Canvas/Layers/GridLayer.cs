@@ -238,23 +238,7 @@ namespace Canvas.Layers
                         }
 
                         g.TranslateTransform(-unitrect.X, -unitrect.Y);
-                        //for (int i = startIndexX; i <= endIndexX; i++)
-                        //{
-                        //    for (int j = startIndexY; j <= endIndexY; j++)
-                        //    {
-                        //        x1 = (20 + i * dataModel.Distance) * dataModel.Zoom;
-                        //        y1 = (20 + j * dataModel.Distance) * dataModel.Zoom;
-                        //        if (i != dataModel.XCount && j != dataModel.YCount && x1 + dataModel.Distance * dataModel.Zoom * 0.75 >= xStart && x1 + dataModel.Distance * dataModel.Zoom * 0.25 <= xEnd && y1 + dataModel.Distance * dataModel.Zoom * 0.75 >= yStart && y1 + dataModel.Distance * dataModel.Zoom * 0.25 <= yEnd)
-                        //        {
-                        //            g.DrawString(i.ToString().PadLeft(3, ' ') + "," + (dataModel.YCount - j - 1), font, Brushes.White, (float)(x1 + dataModel.Distance * dataModel.Zoom / 8), (float)(y1 + dataModel.Distance * dataModel.Zoom * 0.38));
-                        //            cC++;
-                        //        }
-                        //    }
-                        //}
-
-                        RectangleF rect,rectStr;
-                        //Image image = Properties.Resources.erweima2;
-                        Image image = Properties.Resources.qrBluee;
+                        RectangleF rectStr;
                         StringFormat stringFormat = new StringFormat();
                         stringFormat.Alignment = StringAlignment.Center;
                         stringFormat.LineAlignment = StringAlignment.Center;
@@ -266,8 +250,6 @@ namespace Canvas.Layers
                                 y1 = (20 + j * dataModel.Distance) * dataModel.Zoom;
                                 if (i != dataModel.XCount && j != dataModel.YCount && x1 + dataModel.Distance * dataModel.Zoom * 0.75 >= xStart && x1 + dataModel.Distance * dataModel.Zoom * 0.25 <= xEnd && y1 + dataModel.Distance * dataModel.Zoom * 0.75 >= yStart && y1 + dataModel.Distance * dataModel.Zoom * 0.25 <= yEnd)
                                 {
-                                    rect = new RectangleF((float)(x1 + dataModel.Distance * dataModel.Zoom * 0.25), (float)(y1 + dataModel.Distance * dataModel.Zoom * 0.25), (float)(dataModel.Distance * dataModel.Zoom * 0.5), (float)(dataModel.Distance * dataModel.Zoom * 0.5));
-                                    g.DrawImage(image, rect);
                                     rectStr = new RectangleF((float)(x1), (float)(y1 + dataModel.Distance * dataModel.Zoom * 0.25), (float)(dataModel.Distance * dataModel.Zoom), (float)(dataModel.Distance * dataModel.Zoom * 0.5));
                                     g.DrawString(i + "," + (dataModel.YCount - j - 1), font, Brushes.White, rectStr, stringFormat);
                                     //g.DrawString(i.ToString().PadLeft(3, ' ') + "," + (dataModel.YCount - j - 1), font, Brushes.White, (float)(x1 + dataModel.Distance * dataModel.Zoom / 8), (float)(y1 + dataModel.Distance * dataModel.Zoom * 0.38));
@@ -275,6 +257,28 @@ namespace Canvas.Layers
                                 }
                             }
                         }
+
+                        //RectangleF rect, rectStr;
+                        ////Image image = Properties.Resources.erweima2;
+                        //Image image = Properties.Resources.qrBluee;
+                     
+                        //for (int i = startIndexX; i <= endIndexX; i++)
+                        //{
+                        //    for (int j = startIndexY; j <= endIndexY; j++)
+                        //    {
+                        //        x1 = (20 + i * dataModel.Distance) * dataModel.Zoom;
+                        //        y1 = (20 + j * dataModel.Distance) * dataModel.Zoom;
+                        //        if (i != dataModel.XCount && j != dataModel.YCount && x1 + dataModel.Distance * dataModel.Zoom * 0.75 >= xStart && x1 + dataModel.Distance * dataModel.Zoom * 0.25 <= xEnd && y1 + dataModel.Distance * dataModel.Zoom * 0.75 >= yStart && y1 + dataModel.Distance * dataModel.Zoom * 0.25 <= yEnd)
+                        //        {
+                        //            rect = new RectangleF((float)(x1 + dataModel.Distance * dataModel.Zoom * 0.25), (float)(y1 + dataModel.Distance * dataModel.Zoom * 0.25), (float)(dataModel.Distance * dataModel.Zoom * 0.5), (float)(dataModel.Distance * dataModel.Zoom * 0.5));
+                        //            g.DrawImage(image, rect);
+                        //            rectStr = new RectangleF((float)(x1), (float)(y1 + dataModel.Distance * dataModel.Zoom * 0.25), (float)(dataModel.Distance * dataModel.Zoom), (float)(dataModel.Distance * dataModel.Zoom * 0.5));
+                        //            g.DrawString(i + "," + (dataModel.YCount - j - 1), font, Brushes.White, rectStr, stringFormat);
+                        //            //g.DrawString(i.ToString().PadLeft(3, ' ') + "," + (dataModel.YCount - j - 1), font, Brushes.White, (float)(x1 + dataModel.Distance * dataModel.Zoom / 8), (float)(y1 + dataModel.Distance * dataModel.Zoom * 0.38));
+                        //            cC++;
+                        //        }
+                        //    }
+                        //}
                       
                         g.DrawPath(pen, graphicsPath);
                         g.DrawPath(pen2, graphicsPath2);

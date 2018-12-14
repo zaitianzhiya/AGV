@@ -136,6 +136,9 @@ namespace MonitorAGV_QRCode
             //btnMonitor_Click(null, null);
 
             pnlMain.MouseWheel += pnlMain_MouseWheel;
+
+            m_canvas.CommandPan();
+            btnHand.ItemAppearance.Hovered.BackColor = btnHand.ItemAppearance.Normal.BackColor = Color.Green;
         }
 
         private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -294,16 +297,19 @@ namespace MonitorAGV_QRCode
 
         private void btnLock_ItemClick(object sender, ItemClickEventArgs e)
         {
-            m_canvas.m_commandType = eCommandType.lockdir;
             lockDirection = !lockDirection;
             if (lockDirection)
             {
+                m_canvas.m_commandType = eCommandType.lockdir;
                 DrawButtonStaChange();
                 btnLock.ItemAppearance.Hovered.BackColor = btnLock.ItemAppearance.Normal.BackColor = Color.Green;
             }
             else
             {
+                m_canvas.CommandPan();
+                DrawButtonStaChange();
                 btnLock.ItemAppearance.Hovered.BackColor = btnLock.ItemAppearance.Normal.BackColor = lockColor;
+                btnHand.ItemAppearance.Hovered.BackColor = btnHand.ItemAppearance.Normal.BackColor = Color.Green;
             }
         }
 
