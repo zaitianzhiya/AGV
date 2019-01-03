@@ -160,8 +160,8 @@ namespace Canvas.DrawTools
         {
             CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;
             DataModel model = (DataModel)canvasWrapper.DataModel;
-            Pen pen = new Pen(Color.Green);
-            AdjustableArrowCap cap = new AdjustableArrowCap(2f, 2f);
+            Pen pen = new Pen(Color.Gold);
+            AdjustableArrowCap cap = new AdjustableArrowCap(3f, 1.5f);
             pen.CustomEndCap = cap;
             pen.Width = 4 * model.Zoom;
 

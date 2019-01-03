@@ -52,5 +52,7 @@ namespace Canvas.CanvasInterfaces
 	    void DrawTxt(ICanvas canvas, string code, UnitPoint Point);
 
 	    void DrawAgv(ICanvas canvas, string no, Color color, float angel, UnitPoint Point);
+
+        void DrawEledvator(ICanvas canvas, Pen pen, UnitPoint p);
 	}
 }

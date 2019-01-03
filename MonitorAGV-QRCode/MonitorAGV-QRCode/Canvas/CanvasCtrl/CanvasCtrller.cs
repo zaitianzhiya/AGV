@@ -12,6 +12,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 using DAL;
+using HelpClass;
 
 namespace Canvas.CanvasCtrl
 {
@@ -454,19 +455,49 @@ namespace Canvas.CanvasCtrl
             }
         }
 
-        protected virtual void HandleMouseDownWhenDrawing(UnitPoint mouseunitpoint, ISnapPoint snappoint)
+        protected virtual void HandleMouseDownWhenDrawing(UnitPoint mouseunitpoint, ISnapPoint snappoint) 
         {
             if (m_commandType == eCommandType.draw)
             {
                 int x = (int)((mouseunitpoint.X - 20) / m_model.Distance);
                 int y = m_model.YCount - (int)((mouseunitpoint.Y - 20) / m_model.Distance) - 1;
                 int mapNo = y * m_model.XCount + x;
+                int RealNo=0;
+                switch (m_drawObjectId)
+                {
+                    case "ArrowUp":
+                        RealNo = mapNo + 1 + m_model.YCount;
+                        break;
+                    case "ArrowDown":
+                        RealNo = mapNo - m_model.YCount+1;
+                        break;
+                    case "ArrowLeft":
+                        RealNo = mapNo;
+                        break;
+                    case "ArrowRight":
+                        RealNo = mapNo + 2;
+                        break;
+                }
                 List<IDrawObject> lst = (from p in m_model.ActiveLayer.Objects
                                          where p.Id == m_drawObjectId && p.MapNo == mapNo
                                          select p).ToList();
                 if (lst.Any())
                 {
                     m_model.DeleteObjects(lst);
+                    switch (m_drawObjectId)
+                    {
+                        case "Forbid":
+                        case "Charge":
+                        case "Elevator":
+                            Function.PR_Write_Map_FQ(mapNo.ToString(), 0);
+                            break;
+                        case "ArrowUp":
+                        case "ArrowDown":
+                        case "ArrowLeft":
+                        case "ArrowRight":
+                            Function.PR_UPDATE_Map_Info_Real(mapNo, 0 - RealNo);
+                            break;
+                    }
                     DoInvalidate(true);
                 }
                 else
@@ -476,11 +507,41 @@ namespace Canvas.CanvasCtrl
                         m_newObject = m_model.CreateObject(this, m_drawObjectId, mouseunitpoint, snappoint);
                         if (m_newObject!=null&&(m_newObject.Id == "ArrowLeft" || m_newObject.Id == "ArrowRight" ||
                             m_newObject.Id == "ArrowDown" || m_newObject.Id == "ArrowUp" ||
-                            m_newObject.Id == "AGVTool" || m_newObject.Id == "Charge" || m_newObject.Id == "Forbid" || m_newObject.Id == "Shelf"))
+                            m_newObject.Id == "AGVTool" || m_newObject.Id == "Charge" || m_newObject.Id == "Forbid" || m_newObject.Id == "Shelf" || m_newObject.Id == "Elevator"))
                         {
+                            if (m_newObject.Id == "Charge" || m_newObject.Id == "Forbid" || m_newObject.Id == "Shelf" || m_newObject.Id == "Elevator")
+                            {
+                                if ((from p in m_model.ActiveLayer.Objects
+                                     where (p.Id == "Charge" || p.Id == "Forbid" || p.Id == "Shelf" || p.Id == "Elevator") && p.MapNo == mapNo
+                                    select p).Any())
+                                {
+                                    XtrMsg.Show("单一地图编号只能是充电桩，禁止区域，货架，电梯其中一种类型", MessageBoxIcon.Exclamation);
+                                    m_newObject = null;
+                                    return;
+                                }
+                            }
                             m_newObject.OnMouseDown(m_canvaswrapper, mouseunitpoint, snappoint);
                             m_model.AddObject(m_model.ActiveLayer, m_newObject);
                             m_newObject = null;
+
+                            switch (m_drawObjectId)
+                            {
+                                case "Forbid":
+                                    Function.PR_Write_Map_FQ(mapNo.ToString(), 2);
+                                    break;
+                                case "Charge":
+                                    Function.PR_Write_Map_FQ(mapNo.ToString(), 10);
+                                    break;
+                                case "Elevator":
+                                    Function.PR_Write_Map_FQ(mapNo.ToString(), 11);
+                                    break;
+                                case "ArrowUp":
+                                case "ArrowDown":
+                                case "ArrowLeft":
+                                case "ArrowRight":
+                                    Function.PR_UPDATE_Map_Info_Real(mapNo, RealNo);
+                                    break;
+                            }
                             DoInvalidate(true);
                         }
                     }
@@ -638,18 +699,19 @@ namespace Canvas.CanvasCtrl
                             {
                                 int xMax = Math.Max(x1, x);
                                 int xMin = Math.Min(x1, x);
-                                int mapNo;
+                                int mapNo, RealNo;
                                 List<IDrawObject> lst;
                                 ArrowLeft arrow;
                                 for (int i = xMin; i <= xMax; i++)
                                 {
-                                    mapNo = y * m_model.XCount + i;
+                                    RealNo=mapNo = y * m_model.XCount + i;
                                     lst = (from p in m_model.ActiveLayer.Objects
                                            where p.Id == "ArrowLeft" && p.MapNo == mapNo
                                            select p).ToList();
                                     if (lst.Any())
                                     {
                                         m_model.DeleteObjects(lst);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, 0 - RealNo);
                                     }
                                     else
                                     {
@@ -659,6 +721,7 @@ namespace Canvas.CanvasCtrl
                                         arrow.Y = y;
                                         arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
                                         m_model.AddObject(m_model.ActiveLayer, arrow);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, RealNo);
                                     }
                                 }
                                 DoInvalidate(true);
@@ -673,18 +736,20 @@ namespace Canvas.CanvasCtrl
                             {
                                 int xMax = Math.Max(x1, x);
                                 int xMin = Math.Min(x1, x);
-                                int mapNo;
+                                int mapNo, RealNo;
                                 List<IDrawObject> lst;
                                 ArrowRight arrow;
                                 for (int i = xMin; i <= xMax; i++)
                                 {
                                     mapNo = y * m_model.XCount + i;
+                                    RealNo = mapNo + 2;
                                     lst = (from p in m_model.ActiveLayer.Objects
                                            where p.Id == "ArrowRight" && p.MapNo == mapNo
                                            select p).ToList();
                                     if (lst.Any())
                                     {
                                         m_model.DeleteObjects(lst);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, 0 - RealNo);
                                     }
                                     else
                                     {
@@ -694,6 +759,7 @@ namespace Canvas.CanvasCtrl
                                         arrow.Y = y;
                                         arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
                                         m_model.AddObject(m_model.ActiveLayer, arrow);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, RealNo);
                                     }
                                 }
                                 DoInvalidate(true);
@@ -711,18 +777,20 @@ namespace Canvas.CanvasCtrl
                             {
                                 int yMax = Math.Max(y1, y);
                                 int yMin = Math.Min(y1, y);
-                                int mapNo;
+                                int mapNo, RealNo;
                                 List<IDrawObject> lst;
                                 ArrowUp arrow;
                                 for (int i = yMin; i <= yMax; i++)
                                 {
                                     mapNo = i * m_model.XCount + x;
+                                    RealNo = mapNo + 2 + m_model.YCount;
                                     lst = (from p in m_model.ActiveLayer.Objects
                                            where p.Id == "ArrowUp" && p.MapNo == mapNo
                                            select p).ToList();
                                     if (lst.Any())
                                     {
                                         m_model.DeleteObjects(lst);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, 0 - RealNo);
                                     }
                                     else
                                     {
@@ -732,6 +800,7 @@ namespace Canvas.CanvasCtrl
                                         arrow.Y = i;
                                         arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
                                         m_model.AddObject(m_model.ActiveLayer, arrow);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, RealNo);
                                     }
                                 }
                                 DoInvalidate(true);
@@ -746,18 +815,20 @@ namespace Canvas.CanvasCtrl
                             {
                                 int yMax = Math.Max(y1, y);
                                 int yMin = Math.Min(y1, y);
-                                int mapNo;
+                                int mapNo, RealNo;
                                 List<IDrawObject> lst;
                                 ArrowDown arrow;
                                 for (int i = yMin; i <= yMax; i++)
                                 {
                                     mapNo = i * m_model.XCount + x;
+                                    RealNo = mapNo - m_model.YCount;
                                     lst = (from p in m_model.ActiveLayer.Objects
                                            where p.Id == "ArrowDown" && p.MapNo == mapNo
                                            select p).ToList();
                                     if (lst.Any())
                                     {
                                         m_model.DeleteObjects(lst);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, 0 - RealNo);
                                     }
                                     else
                                     {
@@ -767,6 +838,7 @@ namespace Canvas.CanvasCtrl
                                         arrow.Y = i;
                                         arrow.Location = new UnitPoint(20 + arrow.X * m_model.Distance + (float)m_model.Distance / 2, 20 + (m_model.YCount - arrow.Y) * m_model.Distance - (float)m_model.Distance / 2);
                                         m_model.AddObject(m_model.ActiveLayer, arrow);
+                                        Function.PR_UPDATE_Map_Info_Real(mapNo, RealNo);
                                     }
                                 }
                                 DoInvalidate(true);
@@ -967,8 +1039,8 @@ namespace Canvas.CanvasCtrl
                     pen.Width = 2;
 
                     Rectangle rect = new Rectangle((int)(pointF.X - m_model.Distance * m_model.Zoom / 2),(int) (pointF.Y - m_model.Distance * m_model.Zoom / 2), (int)(m_model.Distance * m_model.Zoom), (int)(m_model.Distance * m_model.Zoom));
-                    
-                    Bitmap image = new Bitmap(rect.Width,rect.Height);
+
+                    Bitmap image = new Bitmap(rect.Width, rect.Height);
                     Graphics imageGraphics = Graphics.FromImage(image);
                     imageGraphics.TranslateTransform((float)(rect.Width * 0.5), (float)(rect.Height * 0.5));
 
@@ -979,8 +1051,16 @@ namespace Canvas.CanvasCtrl
                     StringFormat stringFormat = new StringFormat();
                     stringFormat.Alignment = StringAlignment.Center;
                     Font font = new Font("宋体", emSize);
-                    imageGraphics.DrawString(no, font, Brushes.Yellow, new PointF((float)(-emSize*0.9),(float) (-emSize*0.7)));
-
+                    if (no.Length > 1)
+                    {
+                        imageGraphics.DrawString(no, font, Brushes.Yellow,
+                            new PointF((float) (-emSize*0.9), (float) (-emSize*0.7)));
+                    }
+                    else
+                    {
+                        imageGraphics.DrawString(no, font, Brushes.Yellow,
+                            new PointF((float)(-emSize * 0.4), (float)(-emSize * 0.7)));
+                    }
                     Rectangle rectEli = new Rectangle((int)(-height * 0.5), (int)(-height * 0.5), height, height);
                     imageGraphics.DrawEllipse(pen, rectEli);
 
@@ -992,7 +1072,7 @@ namespace Canvas.CanvasCtrl
                     Rectangle rectArc = new Rectangle((int)(-r), (int)(-r), (int)(2 * r), (int)(2 * r));
                     imageGraphics.DrawArc(pen, rectArc, -30, 60);
                     imageGraphics.ResetTransform();
-                    
+
                     canvas.Graphics.DrawImage(image, rect);
                 }
             }
@@ -1009,6 +1089,26 @@ namespace Canvas.CanvasCtrl
                     stringFormat.Alignment = StringAlignment.Near;
                     Font font = new Font("Arial Black", 9, FontStyle.Regular, GraphicsUnit.Point, 0);
                     canvas.Graphics.DrawString(code, font, Brushes.Red, pointF.X, pointF.Y, stringFormat);
+                }
+            }
+        }
+
+        public void DrawElevator(ICanvas canvas, Pen pen, UnitPoint p)
+        {
+            if (!p.IsEmpty)
+            {
+                if (canvas.Graphics != null)
+                {
+                    PointF pointF = ToScreen(p);
+                    Rectangle rect = new Rectangle((int)(pointF.X + pen.Width / 2 + m_model.Zoom), (int)(pointF.Y + pen.Width / 2 + m_model.Zoom), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2 * m_model.Zoom), (int)(m_model.Distance * m_model.Zoom - pen.Width - 2 * m_model.Zoom));
+                    canvas.Graphics.DrawRectangle(pen, rect);
+                    canvas.Graphics.DrawLine(pen, new Point((int)(pointF.X + pen.Width / 2 + m_model.Zoom), (int)(pointF.Y + 20 * m_model.Zoom)), new Point((int)(pointF.X - pen.Width / 2 - m_model.Zoom + m_model.Distance * m_model.Zoom), (int)(pointF.Y + 20 * m_model.Zoom)));
+                    Pen pen2 = new Pen(pen.Color);
+                    AdjustableArrowCap cap = new AdjustableArrowCap(3f, 1.5f);
+                    pen2.CustomEndCap = cap;
+                    pen2.Width = pen.Width;
+                    canvas.Graphics.DrawLine(pen2, new Point((int)(pointF.X + 20 * m_model.Zoom), (int)(pointF.Y + 20 * m_model.Zoom)), new Point((int)(pointF.X + 20 * m_model.Zoom), (int)(pointF.Y + pen.Width / 2 + m_model.Zoom)));
+                    canvas.Graphics.DrawLine(pen2, new Point((int)(pointF.X + 20 * m_model.Zoom), (int)(pointF.Y + 20 * m_model.Zoom)), new Point((int)(pointF.X + 20 * m_model.Zoom), (int)(pointF.Y - pen.Width / 2 - m_model.Zoom + m_model.Distance * m_model.Zoom)));
                 }
             }
         }
@@ -1144,7 +1244,7 @@ namespace Canvas.CanvasCtrl
             tsmAddFrom.Visible = !IsExistFrom;
             tsmAddEnd.Visible = IsExistFrom;
             IList<IDrawObject> lst = (from p in m_model.ActiveLayer.Objects
-                                      where (p.Id == "Charge" || p.Id == "Forbid" || p.Id == "Shelf") && p.MapNo == mapNo
+                                      where (p.Id == "Charge" || p.Id == "Forbid" || p.Id == "Shelf" || p.Id == "Elevator") && p.MapNo == mapNo
                                       select p).ToList();
             tsmRemove.Visible = lst.Any();
         }
@@ -1152,7 +1252,7 @@ namespace Canvas.CanvasCtrl
         private void tsmRemove_Click(object sender, EventArgs e)
         {
             IList<IDrawObject> lst = (from p in m_model.ActiveLayer.Objects
-                                      where (p.Id == "Charge" || p.Id == "Forbid" || p.Id == "Shelf") && p.MapNo == mapNo
+                                      where (p.Id == "Charge" || p.Id == "Forbid" || p.Id == "Shelf" || p.Id == "Elevator") && p.MapNo == mapNo
                                       select p).ToList();
             if (lst.Any())
             {
@@ -1171,7 +1271,7 @@ namespace Canvas.CanvasCtrl
         {
             if (!Function.IsExist_Map_Info())
             {
-                MessageBox.Show("请先保存地图信息");
+                HelpClass.XtrMsg.Show("请先保存地图信息", MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -1182,7 +1282,7 @@ namespace Canvas.CanvasCtrl
             }
             else
             {
-                MessageBox.Show("数据库中查无对应地图编号");
+                HelpClass.XtrMsg.Show("数据库中查无对应地图编号", MessageBoxIcon.Exclamation);
             }
         }
 
@@ -1192,29 +1292,26 @@ namespace Canvas.CanvasCtrl
 
             if (string.IsNullOrEmpty(EndPoint))
             {
-                MessageBox.Show("数据库中查无对应地图编号");
+                HelpClass.XtrMsg.Show("数据库中查无对应地图编号", MessageBoxIcon.Exclamation);
                 return;
             }
 
             if (int.Parse(FromPoint) == int.Parse(EndPoint))
             {
-                MessageBox.Show("起点不能与终点相同", "提示", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                HelpClass.XtrMsg.Show("起点不能与终点相同", MessageBoxIcon.Exclamation);
                 return;
             }
-            DialogResult dialogResult = MessageBox.Show(
-                "确定创建任务：" + FromPoint + "(起点)," + EndPoint + "(终点)?", "询问",
-                MessageBoxButtons.YesNoCancel,
-                MessageBoxIcon.Question, MessageBoxDefaultButton.Button1);
+            DialogResult dialogResult = HelpClass.XtrMsg.Show("确定创建任务：" + FromPoint + "(起点)," + EndPoint + "(终点)?", MessageBoxIcon.Question); 
             if (dialogResult == DialogResult.Yes)
             {
                 if (Function.PR_Insert_Task(FromPoint, EndPoint) > 0)
                 {
-                    MessageBox.Show("创建任务成功");
+                    HelpClass.XtrMsg.Show("创建任务成功", MessageBoxIcon.Asterisk);
                     IsExistFrom = false;
                 }
                 else
                 {
-                    MessageBox.Show("创建任务失败");
+                    HelpClass.XtrMsg.Show("创建任务失败", MessageBoxIcon.Asterisk);
                 }
             }
             else if (dialogResult == DialogResult.Cancel)

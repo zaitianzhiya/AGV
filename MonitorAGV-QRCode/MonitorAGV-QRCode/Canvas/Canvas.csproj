@@ -37,6 +37,9 @@
   <ItemGroup>
     <Reference Include="DevExpress.Utils.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="DevExpress.XtraEditors.v16.2, Version=16.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="HelpClass">
+      <HintPath>..\MonitorAGV-QRCode\DLL\HelpClass.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -78,6 +81,7 @@
     <Compile Include="DrawTools\ChargeTool.cs" />
     <Compile Include="DrawTools\Shelf.cs" />
     <Compile Include="DrawTools\AGVTool.cs" />
+    <Compile Include="DrawTools\Elevator.cs" />
     <Compile Include="EditCommandAdd.cs" />
     <Compile Include="EditCommandBase.cs" />
     <Compile Include="EditCommandEditTool.cs" />

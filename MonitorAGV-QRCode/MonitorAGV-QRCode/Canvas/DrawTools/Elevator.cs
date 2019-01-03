@@ -11,7 +11,7 @@ using Canvas.Utils;
 
 namespace Canvas.DrawTools
 {
-    public class ArrowUp : DrawObjectBase, IDrawObject, INodePoint, ISerialize
+    public class Elevator : DrawObjectBase, IDrawObject, INodePoint, ISerialize
     {
         protected int mapNo;
 
@@ -19,35 +19,7 @@ namespace Canvas.DrawTools
 
         protected int y;
 
-        protected UnitPoint m_p1;
-
-        protected UnitPoint m_p2;
-
         protected UnitPoint location = UnitPoint.Empty;
-
-        public UnitPoint P1
-        {
-            get
-            {
-                return m_p1;
-            }
-            set
-            {
-                m_p1 = value;
-            }
-        }
-
-        public UnitPoint P2
-        {
-            get
-            {
-                return m_p2;
-            }
-            set
-            {
-                m_p2 = value;
-            }
-        }
 
         public int MapNo
         {
@@ -101,7 +73,7 @@ namespace Canvas.DrawTools
         {
             get
             {
-                return "ArrowUp";
+                return "Elevator";
             }
         }
 
@@ -115,17 +87,15 @@ namespace Canvas.DrawTools
 
         public UnitPoint RepeatStartingPoint
         {
-            get
-            {
-                return m_p1;
-            }
+            get { return location; }
         }
+
 
         public IDrawObject Clone()
         {
-            ArrowUp arrow = new ArrowUp();
-            arrow.Copy(this);
-            return arrow;
+            Elevator elevator = new Elevator();
+            elevator.Copy(this);
+            return elevator;
         }
 
         public bool PointInObject(ICanvas canvas, UnitPoint point)
@@ -160,9 +130,7 @@ namespace Canvas.DrawTools
         {
             CanvasWrapper canvasWrapper = (CanvasWrapper)canvas;
             DataModel model = (DataModel)canvasWrapper.DataModel;
-            Pen pen = new Pen(Color.Gold);
-            AdjustableArrowCap cap = new AdjustableArrowCap(3f, 1.5f);
-            pen.CustomEndCap = cap;
+            Pen pen = new Pen(Color.Lime);
             pen.Width = 4 * model.Zoom;
 
             float xStart = unitrect.X;
@@ -170,11 +138,9 @@ namespace Canvas.DrawTools
             float xEnd = (unitrect.X + unitrect.Width);
             float yEnd = (unitrect.Y + unitrect.Height);
 
-            if (location.X > 20 && location.Y > 20 && location.X * model.Zoom + model.Zoom * (float)model.Distance / 2 >= xStart && location.X * model.Zoom - model.Zoom * (float)model.Distance / 2 <= xEnd && location.Y * model.Zoom + model.Zoom * (float)model.Distance / 2 >= yStart && location.Y * model.Zoom - model.Zoom * (float)model.Distance / 2 <= yEnd)
+            if (location.X >= 20 && location.Y >= 20 && location.X * model.Zoom + model.Zoom * model.Distance >= xStart && location.X * model.Zoom <= xEnd && location.Y * model.Zoom + model.Zoom * model.Distance >= yStart && location.Y * model.Zoom <= yEnd)
             {
-                P1 = new UnitPoint(location.X, location.Y - 10);
-                P2 = new UnitPoint(location.X, location.Y - 20);
-                canvas.DrawLine(canvas, pen, P1, P2);
+                canvas.DrawEledvator(canvas,pen,location);
             }
         }
 
@@ -254,7 +220,7 @@ namespace Canvas.DrawTools
 
         public void GetObjectData(System.Xml.XmlWriter wr)
         {
-            wr.WriteStartElement("ArrowUpTool");
+            wr.WriteStartElement("ElevatorTool");
             XmlUtil.WriteProperties(this, wr);
             wr.WriteEndElement();
         }
@@ -265,20 +231,19 @@ namespace Canvas.DrawTools
 
         public override void InitializeFromModel(Canvas.UnitPoint point, Canvas.Layers.DrawingLayer layer, Canvas.CanvasInterfaces.ISnapPoint snap)
         {
-            this.P2 = point;
-            this.P1 = point;
+            this.location = point;
             base.Width = layer.Width;
             base.Color = layer.Color;
             this.Selected = true;
         }
-
+    
         public override void InitializeFromModel(CanvasCtrller cc, Canvas.UnitPoint point, Canvas.Layers.DrawingLayer layer, Canvas.CanvasInterfaces.ISnapPoint snap)
         {
             IModel model = cc.m_model;
             x = (int)((point.X - 20) / model.Distance);
             y = model.YCount - (int)((point.Y - 20) / model.Distance) - 1;
-            mapNo = y * model.XCount + x ;
-            location = new UnitPoint(20 + X * model.Distance + (float)model.Distance / 2, 20 + (model.YCount - Y) * model.Distance - (float)model.Distance / 2);
+            mapNo = y * model.XCount + x;
+            location = new UnitPoint(20 + X * model.Distance, 20 + (model.YCount - Y) * model.Distance - (float)model.Distance);
             base.Width = layer.Width;
             base.Color = layer.Color;
             this.Selected = true;

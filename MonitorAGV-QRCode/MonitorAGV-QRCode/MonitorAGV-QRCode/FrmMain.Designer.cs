@@ -34,6 +34,7 @@
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.btnHand = new DevExpress.XtraBars.BarButtonItem();
             this.btnPath = new DevExpress.XtraBars.BarButtonItem();
+            this.btnElevator = new DevExpress.XtraBars.BarButtonItem();
             this.btnForbid = new DevExpress.XtraBars.BarButtonItem();
             this.btnLeft = new DevExpress.XtraBars.BarButtonItem();
             this.btnUp = new DevExpress.XtraBars.BarButtonItem();
@@ -642,9 +643,10 @@
             this.btnAdvice,
             this.btnLock,
             this.btnOpen,
-            this.lblMsg});
+            this.lblMsg,
+            this.btnElevator});
             this.barManager1.MainMenu = this.bar2;
-            this.barManager1.MaxItemId = 37;
+            this.barManager1.MaxItemId = 38;
             this.barManager1.StatusBar = this.bar3;
             // 
             // bar1
@@ -656,6 +658,7 @@
             this.bar1.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.btnHand),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnPath, true),
+            new DevExpress.XtraBars.LinkPersistInfo(this.btnElevator, true),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnForbid, true),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnLeft, true),
             new DevExpress.XtraBars.LinkPersistInfo(this.btnUp, true),
@@ -691,6 +694,15 @@
             this.btnPath.Name = "btnPath";
             this.btnPath.Tag = "Path";
             this.btnPath.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
+            // 
+            // btnElevator
+            // 
+            this.btnElevator.Caption = "电梯";
+            this.btnElevator.Id = 37;
+            this.btnElevator.ImageOptions.Image = ((System.Drawing.Image)(resources.GetObject("btnElevator.ImageOptions.Image")));
+            this.btnElevator.Name = "btnElevator";
+            this.btnElevator.Tag = "Elevator";
+            this.btnElevator.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnHand_ItemClick);
             // 
             // btnForbid
             // 
@@ -4952,5 +4964,6 @@
         private System.Windows.Forms.Panel pnlMain;
         private DevExpress.XtraEditors.HScrollBar hScrollBar1;
         private DevExpress.XtraEditors.VScrollBar vScrollBar1;
+        private DevExpress.XtraBars.BarButtonItem btnElevator;
     }
 }

@@ -159,5 +159,10 @@ namespace Canvas.CanvasCtrl
         {
             m_canvas.DrawAgv(canvas, no, color, angel, Point);
         }
+
+        public void DrawEledvator(ICanvas canvas, Pen pen, UnitPoint p)
+        {
+            m_canvas.DrawElevator(canvas, pen, p);
+        }
     }
 }

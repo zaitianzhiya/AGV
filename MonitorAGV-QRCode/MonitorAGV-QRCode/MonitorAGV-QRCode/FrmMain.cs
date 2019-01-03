@@ -26,6 +26,7 @@ using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraNavBar;
 using DAL;
 using MonitorAGV_QRCode.Windows;
+using HelpClass;
 
 namespace MonitorAGV_QRCode
 {
@@ -695,6 +696,7 @@ namespace MonitorAGV_QRCode
             m_data.AddDrawTool(btnCharge.Tag.ToString(), new ChargeTool());
             m_data.AddDrawTool(btnForbid.Tag.ToString(), new Forbid());
             m_data.AddDrawTool(btnShelf.Tag.ToString(), new Shelf());
+            m_data.AddDrawTool(btnElevator.Tag.ToString(), new Elevator());
             m_canvas = new CanvasCtrller(this, m_data);
             m_canvas.stepZoom = StepZoom;
             m_canvas.Location = new Point(0, 0);
@@ -816,13 +818,14 @@ namespace MonitorAGV_QRCode
                                 carIpEnd = agv_Ip.Substring(10, 3);
                                 carID = int.Parse(carIpEnd.Substring(1));
 
-                                carNowX = int.Parse(agv_Now_X) / (double)600;
-                                carNowY = int.Parse(agv_Now_Y) / (double)600;
+                                carNowX = int.Parse(agv_Now_X) / (double)650;
+                                carNowY = int.Parse(agv_Now_Y) / (double)650;
+
                                 carAngle = (double)(int.Parse(table.Rows[j][19].ToString().Trim()));
                               
                                 agv = new AGVTool();
                                 agv.AgvNo = carID.ToString();
-                                agv.Location = new UnitPoint(20 + carNowX * Distance, 20 + (Ycount - carNowY) * Distance);
+                                agv.Location = new UnitPoint(40 + carNowX * Distance,  (Ycount - carNowY) * Distance);
                                 if ((agv_Ac == 0) || (agv_ErrorCord != "0") || (agv_WarningCord != "0"))
                                 {
                                     agv.AgvColor = Color.Red;
@@ -858,129 +861,173 @@ namespace MonitorAGV_QRCode
                                     coordinates = "(" + carNowX.ToString() + "," + carNowY.ToString() + ")";
 
                                     this.Invoke(new Action(()=> {navBarGroup.Caption = agv_Ip;}));
-                                    
-                                    dtTemp = dtSourceProperty.Clone();
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "坐标";
-                                    drNew["VAL"] = coordinates;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "AGV当前角度值";
-                                    drNew["VAL"] = agv_Angle;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "料架当前角度值";
-                                    drNew["VAL"] = agv_Skip_Angle;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "当前任务执行编号";
-                                    drNew["VAL"] = agv_Now_Ord;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "当前任务数";
-                                    drNew["VAL"] = agv_Now_Ord_Count;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "剩余行程总和";
-                                    drNew["VAL"] = agv_Remaining_Trip;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "左轮转速";
-                                    drNew["VAL"] = agv_L_Speed;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "右轮转速";
-                                    drNew["VAL"] = agv_R_Speed;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "举升电机速度";
-                                    drNew["VAL"] = agv_Lifting_Speed;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "旋转电机速度";
-                                    drNew["VAL"] = agv_Rotating_Speed;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "电池电压值";
-                                    drNew["VAL"] = agv_Voltage;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "系统电流值";
-                                    drNew["VAL"] = agv_Electricity;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "错误代码";
-                                    drNew["VAL"] = agv_ErrorCord;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "警告代码";
-                                    drNew["VAL"] = agv_WarningCord;
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "当前货架编号";
-                                    drNew["VAL"] = agv_LineNo;
-                                    dtTemp.Rows.Add(drNew);
+                                    //dtTemp=dicGrid["gridControl" + (j * 2 + 1)].DataSource as DataTable;
+                                    //if (dtTemp == null)
+                                    //{
+                                        dtTemp = dtSourceProperty.Clone();
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "坐标";
+                                        drNew["VAL"] = coordinates;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "AGV当前角度值";
+                                        drNew["VAL"] = agv_Angle;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "料架当前角度值";
+                                        drNew["VAL"] = agv_Skip_Angle;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "当前任务执行编号";
+                                        drNew["VAL"] = agv_Now_Ord;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "当前任务数";
+                                        drNew["VAL"] = agv_Now_Ord_Count;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "剩余行程总和";
+                                        drNew["VAL"] = agv_Remaining_Trip;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "左轮转速";
+                                        drNew["VAL"] = agv_L_Speed;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "右轮转速";
+                                        drNew["VAL"] = agv_R_Speed;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "举升电机速度";
+                                        drNew["VAL"] = agv_Lifting_Speed;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "旋转电机速度";
+                                        drNew["VAL"] = agv_Rotating_Speed;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "电池电压值";
+                                        drNew["VAL"] = agv_Voltage;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "系统电流值";
+                                        drNew["VAL"] = agv_Electricity;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "错误代码";
+                                        drNew["VAL"] = agv_ErrorCord;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "警告代码";
+                                        drNew["VAL"] = agv_WarningCord;
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "当前货架编号";
+                                        drNew["VAL"] = agv_LineNo;
+                                        dtTemp.Rows.Add(drNew);
+                                        this.Invoke(new Action(() => { dicGrid["gridControl" + (j * 2 + 1)].DataSource = dtTemp; }));
+                                    //}
+                                    //else
+                                    //{
+                                    //    dtTemp.Rows[0]["VAL"] = coordinates;
+                                    //    dtTemp.Rows[1]["VAL"] = agv_Angle;
+                                    //    dtTemp.Rows[2]["VAL"] = agv_Skip_Angle;
+                                    //    dtTemp.Rows[3]["VAL"] = agv_Now_Ord;
+                                    //    dtTemp.Rows[4]["VAL"] = agv_Now_Ord_Count;
+                                    //    dtTemp.Rows[5]["VAL"] = agv_Remaining_Trip;
+                                    //    dtTemp.Rows[6]["VAL"] = agv_L_Speed;
+                                    //    dtTemp.Rows[7]["VAL"] = agv_R_Speed;
+                                    //    dtTemp.Rows[8]["VAL"] = agv_Lifting_Speed;
+                                    //    dtTemp.Rows[9]["VAL"] = agv_Rotating_Speed;
+                                    //    dtTemp.Rows[10]["VAL"] = agv_Voltage;
+                                    //    dtTemp.Rows[11]["VAL"] = agv_Electricity;
+                                    //    dtTemp.Rows[12]["VAL"] = agv_ErrorCord;
+                                    //    dtTemp.Rows[13]["VAL"] = agv_WarningCord;
+                                    //    dtTemp.Rows[14]["VAL"] = agv_LineNo;
+                                    //}
 
-                                    this.Invoke(new Action(() => { dicGrid["gridControl" + (j * 2 + 1)].DataSource = dtTemp; }));
-                                    dtTemp = dtSourceProperty.Clone();
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "执行任务状态";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "顶升复位标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "转盘复位标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "陀螺仪零偏纠正标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "携带料架信息";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "位置确定标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "小车当前故障标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "小车当前警告标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "激光感应器远距离标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "激光感应器中距离标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "激光感应器近距离标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "前端料架感应器标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "后端料架感应器标志";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
-                                    drNew = dtTemp.NewRow();
-                                    drNew["Property"] = "休眠状态指示";
-                                    drNew["VAL"] = "";
-                                    dtTemp.Rows.Add(drNew);
+                                    //this.Invoke(new Action(() => { dicGrid["gridControl" + (j * 2 + 1)].DataSource = dtTemp; }));
+                                    //dtTemp=dicGrid["gridControl" + (j * 2 + 2)].DataSource as DataTable;
+                                    //if (dtTemp == null)
+                                    //{
+                                        dtTemp = dtSourceProperty.Clone();
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "执行任务状态";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "顶升复位标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "转盘复位标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "陀螺仪零偏纠正标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "携带料架信息";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "位置确定标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "小车当前故障标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "小车当前警告标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "激光感应器远距离标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "激光感应器中距离标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "激光感应器近距离标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "前端料架感应器标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "后端料架感应器标志";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
+                                        drNew = dtTemp.NewRow();
+                                        drNew["Property"] = "休眠状态指示";
+                                        drNew["VAL"] = "";
+                                        dtTemp.Rows.Add(drNew);
 
-                                    this.Invoke(new Action(() => { dicGrid["gridControl" + (j * 2 + 2)].DataSource = dtTemp; }));
+                                        this.Invoke(
+                                            new Action(() => { dicGrid["gridControl" + (j*2 + 2)].DataSource = dtTemp; }));
+                                    //}
+                                    //else
+                                    //{
+                                        //dtTemp.Rows[0]["VAL"] = "";
+                                        //dtTemp.Rows[1]["VAL"] = "";
+                                        //dtTemp.Rows[2]["VAL"] = "";
+                                        //dtTemp.Rows[3]["VAL"] = "";
+                                        //dtTemp.Rows[4]["VAL"] = "";
+                                        //dtTemp.Rows[5]["VAL"] = "";
+                                        //dtTemp.Rows[6]["VAL"] = "";
+                                        //dtTemp.Rows[7]["VAL"] = "";
+                                        //dtTemp.Rows[8]["VAL"] = "";
+                                        //dtTemp.Rows[9]["VAL"] = "";
+                                        //dtTemp.Rows[10]["VAL"] = "";
+                                        //dtTemp.Rows[11]["VAL"] = "";
+                                        //dtTemp.Rows[12]["VAL"] = "";
+                                        //dtTemp.Rows[13]["VAL"] = "";
+                                    //}
                                 }
                                 this.Invoke(new Action(() => { navBarGroup.Visible = true; }));
                             }
@@ -1037,11 +1084,11 @@ namespace MonitorAGV_QRCode
                     int Map_B = int.Parse(MapTable.Rows[j][3].ToString().Trim());
                     int Map_C = int.Parse(MapTable.Rows[j][4].ToString().Trim());
                     int Map_D = int.Parse(MapTable.Rows[j][5].ToString().Trim());
-                    int Real_A = MapNo - int.Parse(txtX.Text);
+                    int Real_A = MapNo - int.Parse(txtX.Text)+1;
                     int Real_B = MapNo;
                     int Real_C = MapNo + 2;
-                    int Real_D = MapNo + 2 + int.Parse(txtX.Text);
-                    if (MapUsed == 2)
+                    int Real_D = MapNo + 1 + int.Parse(txtX.Text);
+                    if (MapUsed == 2)//禁止
                     {
                         Forbid forbid = new Forbid();
                         forbid.MapNo = MapNo;
@@ -1049,6 +1096,24 @@ namespace MonitorAGV_QRCode
                         forbid.Y = MapNo / Xcount;
                         forbid.Location = new UnitPoint(20 + forbid.X * Distance, 20 + (Ycount - forbid.Y) * Distance - (float)Distance);
                         lay.AddObject(forbid);
+                    }
+                    else if (MapUsed == 10)//充电站
+                    {
+                        ChargeTool chargeTool = new ChargeTool();
+                        chargeTool.MapNo = MapNo;
+                        chargeTool.X = MapNo % Xcount;
+                        chargeTool.Y = MapNo / Xcount;
+                        chargeTool.Location = new UnitPoint(20 + chargeTool.X * Distance, 20 + (Ycount - chargeTool.Y) * Distance - (float)Distance);
+                        lay.AddObject(chargeTool);
+                    }
+                    else if (MapUsed == 11)//电梯
+                    {
+                        Elevator elevator = new Elevator();
+                        elevator.MapNo = MapNo;
+                        elevator.X = MapNo % Xcount;
+                        elevator.Y = MapNo / Xcount;
+                        elevator.Location = new UnitPoint(20 + elevator.X * Distance, 20 + (Ycount - elevator.Y) * Distance - (float)Distance);
+                        lay.AddObject(elevator);
                     }
                     else
                     {
