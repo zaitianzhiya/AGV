@@ -1,0 +1,282 @@
+system_moduleName	NPortW2150A
+system_servername	NPortW2150A_6500
+system_location	
+system_timezone	23
+system_timesvr	
+system_DNS@0	0.0.0.0
+system_DNS@1	0.0.0.0
+system_eth_ipconfig	0
+system_eth_address	192.168.126.254
+system_eth_netmask	255.255.255.0
+system_eth_gateway	
+system_wlan_ipconfig	0
+system_wlan_address	192.168.1.204
+system_wlan_netmask	255.255.255.0
+system_wlan_gateway	
+system_wlan_network_type	1
+system_turbo_roaming	0
+system_advanced_fast_roaming	0
+system_scan_channel1	0
+system_scan_channel2	0
+system_scan_channel3	0
+system_extended_disconnect_detection	0
+system_low_rssi_threshold	-70
+system_low_rssi_period	3
+system_beacon_miss_time	3000
+system_wlan_log	0
+system_miscd_log	1
+system_debug_log	1
+system_auto_recovery_enable	0
+system_auto_recovery_time	30
+wireless_profile@0_name	Adhoc 
+wireless_profile@0_opmode	2
+wireless_profile@0_SSID	
+wireless_profile@0_channel	2412
+wireless_profile@0_authentication	1
+wireless_profile@0_encryption	1
+wireless_profile@0_WEP_key_length	1
+wireless_profile@0_WEP_key_index	0
+wireless_profile@0_WEP_key_format	1
+wireless_profile@0_WEP_key1	
+wireless_profile@0_WEP_key2	
+wireless_profile@0_WEP_key3	
+wireless_profile@0_WEP_key4	
+wireless_profile@1_name	Infrastructure
+wireless_profile@1_opmode	0
+wireless_profile@1_SSID	KJAGV-5G
+wireless_profile@1_authentication	6
+wireless_profile@1_encryption	4
+wireless_profile@1_WEP_key_length	1
+wireless_profile@1_WEP_key_index	0
+wireless_profile@1_WEP_key_format	1
+wireless_profile@1_WEP_key1	
+wireless_profile@1_WEP_key2	
+wireless_profile@1_WEP_key3	
+wireless_profile@1_WEP_key4	
+wireless_profile@1_EAP_Method	0
+wireless_profile@1_tunneled_authentication	0
+wireless_profile@1_username	
+wireless_profile@1_password	
+wireless_profile@1_anonymoususer_username	
+wireless_profile@1_pskpass	48564546435c4055
+system_gratuitous_arp_en	1
+system_gratuitous_arp_period	180
+system_gratuitous_arp_ip1	
+system_gratuitous_arp_ip2	
+system_gratuitous_arp_ip3	
+system_gratuitous_arp_ip4	
+system_gratuitous_arp_mac1	
+system_gratuitous_arp_mac2	
+system_gratuitous_arp_mac3	
+system_gratuitous_arp_mac4	
+system_active_interface	0
+port@1_opmode	513
+port@1_maxconn	1
+port@1_igjam	0
+port@1_alivecheck	7
+port@1_allowdrv	0
+port@1_rtsdtr_action	3
+port@1_inactivity	0
+port@1_localport	4001
+port@1_cmdport	966
+port@1_tcp_destaddr1	192.168.1.106
+port@1_tcp_destaddr2	192.168.1.150
+port@1_tcp_destaddr3	
+port@1_tcp_destaddr4	
+port@1_tcp_destaddr_p1	9000
+port@1_tcp_destaddr_p2	9000
+port@1_tcp_destaddr_p3	9000
+port@1_tcp_destaddr_p4	9000
+port@1_tcp_destlp1	9000
+port@1_tcp_destlp2	9001
+port@1_tcp_destlp3	9002
+port@1_tcp_destlp4	10000
+port@1_udp_destaddr1_begin	
+port@1_udp_destaddr2_begin	
+port@1_udp_destaddr3_begin	
+port@1_udp_destaddr4_begin	
+port@1_udp_destaddr1_end	
+port@1_udp_destaddr2_end	
+port@1_udp_destaddr3_end	
+port@1_udp_destaddr4_end	
+port@1_udp_destaddr_p1	4001
+port@1_udp_destaddr_p2	4001
+port@1_udp_destaddr_p3	4001
+port@1_udp_destaddr_p4	4001
+port@1_connctrl	257
+port@1_emodem_sreg0	0
+port@1_emodem_sreg1	0
+port@1_emodem_sreg2	43
+port@1_emodem_sreg3	13
+port@1_emodem_sreg4	10
+port@1_emodem_sreg5	8
+port@1_emodem_sreg6	2
+port@1_emodem_sreg7	3
+port@1_emodem_sreg8	2
+port@1_emodem_sreg9	6
+port@1_emodem_sreg10	14
+port@1_emodem_sreg11	100
+port@1_emodem_sreg12	50
+port@1_emodem_sreg13	1
+port@1_emodem_sreg14	1
+port@1_emodem_sreg15	0
+port@1_emodem_sreg16	1
+port@1_emodem_sreg17	1
+port@1_emodem_sreg18	0
+port@1_emodem_sreg19	0
+port@1_inactivity_min	0
+port@1_rterminal_tcpport	4001
+port@1_authtype	0
+port@1_rterminal_mapkeys	0
+port@1_buffering	0
+port@1_serial_data_log	0
+port@1_packlen	0
+port@1_delim_enable	0
+port@1_delim1	0
+port@1_delim2	0
+port@1_delimproc	1
+port@1_forcetx	0
+port@1_alias	
+port@1_baud	16
+port@1_sermode	27
+port@1_flowctl	0
+port@1_fifo	0
+port@1_interface	0
+accessible_ip_enable	0
+accessible_ip_entry@0	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@1	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@2	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@3	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@4	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@5	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@6	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@7	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@8	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@9	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@10	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@11	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@12	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@13	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@14	0,0.0.0.0,0.0.0.0
+accessible_ip_entry@15	0,0.0.0.0,0.0.0.0
+misc_snmp	1
+misc_read_community	public
+misc_write_community	private
+misc_snmp_contact	
+misc_snmp_agent_ver	7
+misc_snmp_RO_user	rouser
+misc_snmp_RO_auth	0
+misc_snmp_RO_passwd	
+misc_snmp_RO_privmode	0
+misc_snmp_RO_priv	
+misc_snmp_RW_user	rwuser
+misc_snmp_RW_auth	0
+misc_snmp_RW_passwd	
+misc_snmp_RW_privmode	0
+misc_snmp_RW_priv	
+user_table@0	,
+user_table@1	,
+user_table@2	,
+user_table@3	,
+user_table@4	,
+user_table@5	,
+user_table@6	,
+user_table@7	,
+user_table@8	,
+user_table@9	,
+user_table@10	,
+user_table@11	,
+user_table@12	,
+user_table@13	,
+user_table@14	,
+user_table@15	,
+user_table@16	,
+user_table@17	,
+user_table@18	,
+user_table@19	,
+user_table@20	,
+user_table@21	,
+user_table@22	,
+user_table@23	,
+user_table@24	,
+user_table@25	,
+user_table@26	,
+user_table@27	,
+user_table@28	,
+user_table@29	,
+user_table@30	,
+user_table@31	,
+user_table@32	,
+user_table@33	,
+user_table@34	,
+user_table@35	,
+user_table@36	,
+user_table@37	,
+user_table@38	,
+user_table@39	,
+user_table@40	,
+user_table@41	,
+user_table@42	,
+user_table@43	,
+user_table@44	,
+user_table@45	,
+user_table@46	,
+user_table@47	,
+user_table@48	,
+user_table@49	,
+user_table@50	,
+user_table@51	,
+user_table@52	,
+user_table@53	,
+user_table@54	,
+user_table@55	,
+user_table@56	,
+user_table@57	,
+user_table@58	,
+user_table@59	,
+user_table@60	,
+user_table@61	,
+user_table@62	,
+user_table@63	,
+misc_authserver_server	
+misc_authserver_key	
+misc_authserver_port	0
+misc_authserver_account	0
+warn_cold_start_mail	0
+warn_cold_start_trap	0
+warn_warm_start_mail	0
+warn_warm_start_trap	0
+warn_console_fail_mail	0
+warn_console_fail_trap	0
+warn_ip_change	0
+warn_pass_change	0
+warn_p@1_DCDchange_mail	0
+warn_p@1_DCDchange_trap	0
+warn_p@1_DSRchange_mail	0
+warn_p@1_DSRchange_trap	0
+mail_smtp_server	
+mail_require_auth	0
+mail_auth_user	
+mail_auth_password	
+mail_from_addr	
+mail_to_addr1	
+mail_to_addr2	
+mail_to_addr3	
+mail_to_addr4	
+warn_trap_server	
+warn_trap_version	0
+warn_trap_community	
+system_http_console	1
+system_https_console	1
+system_telnet_console	1
+system_ssh_console	1
+system_serial_console	1
+system_reset_button	1
+system_admin_password	
+system_user_password	
+system_log_system	0
+system_log_network	0
+system_log_config	0
+system_log_opmode	0
+system_ethernet_bridge	0
+

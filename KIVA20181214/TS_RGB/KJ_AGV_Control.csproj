@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3C4E1D8B-D545-40FA-831A-D3BE45746176}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TS_RGB</RootNamespace>
+    <AssemblyName>TS_RGB</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Interop.ACTETHERLib, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>bin\Debug\Interop.ACTETHERLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.PowerPacks.Vs, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Octopus_Traffic_Control, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\Octopus_Traffic_Control.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="cilpButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CVehicle.cs" />
+    <Compile Include="frm_AGV_Order.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_AGV_Order.Designer.cs">
+      <DependentUpon>frm_AGV_Order.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_Charge_ByHand.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_Charge_ByHand.Designer.cs">
+      <DependentUpon>frm_Charge_ByHand.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_WCS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_WCS.Designer.cs">
+      <DependentUpon>frm_WCS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GetPath\CPath.cs" />
+    <Compile Include="CRC.cs" />
+    <Compile Include="GetPath\CVertex.cs" />
+    <Compile Include="DBControl\SqlDBControl.cs" />
+    <Compile Include="FileControl\LogFile.cs" />
+    <Compile Include="FileControl\SetFileControl.cs" />
+    <Compile Include="frm_About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_About.Designer.cs">
+      <DependentUpon>frm_About.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_Car.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_Car.Designer.cs">
+      <DependentUpon>frm_Car.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_Login.Designer.cs">
+      <DependentUpon>frm_Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_Manage_Param.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_Manage_Param.Designer.cs">
+      <DependentUpon>frm_Manage_Param.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_PowerInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_PowerInfo.Designer.cs">
+      <DependentUpon>frm_PowerInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm_Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_Main.Designer.cs">
+      <DependentUpon>frm_Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Function\Function.cs" />
+    <Compile Include="GetPath\GetPathGroup.cs" />
+    <Compile Include="NoteTouch.cs" />
+    <Compile Include="Params.cs" />
+    <Compile Include="PLCControl\PlcControl.cs" />
+    <Compile Include="PLCControl\PlcStatus.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Sock_Wrapper.cs" />
+    <Compile Include="StateObject.cs" />
+    <Compile Include="frm_AddPower.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm_AddPower.Designer.cs">
+      <DependentUpon>frm_AddPower.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="frm_About.resx">
+      <DependentUpon>frm_About.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_AGV_Order.resx">
+      <DependentUpon>frm_AGV_Order.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_Car.resx">
+      <DependentUpon>frm_Car.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_Charge_ByHand.resx">
+      <DependentUpon>frm_Charge_ByHand.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_Login.resx">
+      <DependentUpon>frm_Login.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_Manage_Param.resx">
+      <DependentUpon>frm_Manage_Param.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_PowerInfo.resx">
+      <DependentUpon>frm_PowerInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_Main.resx">
+      <DependentUpon>frm_Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_WCS.resx">
+      <DependentUpon>frm_WCS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm_AddPower.resx">
+      <DependentUpon>frm_AddPower.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\RGB_Gmap.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\BackGd.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\MapGrd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\log.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\Background.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\img\background.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

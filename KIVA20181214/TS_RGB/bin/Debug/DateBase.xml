@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NoteTouch>
+  <Station From="002" To="000" Type="00" CarNumber="001">
+    <Setime>2015-07-17 22:33:13</Setime>
+    <Retime>2015-07-17 22:33:20</Retime>
+  </Station>
+  <Station From="002" To="001" Type="00" CarNumber="001">
+    <Setime>2015-07-17 22:33:39</Setime>
+    <Retime>2015-07-17 22:35:52</Retime>
+  </Station>
+  <Station From="002" To="001" Type="00" CarNumber="002">
+    <Setime>2015-07-17 22:37:21</Setime>
+    <Retime>2015-07-17 22:39:20</Retime>
+  </Station>
+  <Station From="002" To="001" Type="00" CarNumber="001">
+    <Setime>2015-07-17 22:41:40</Setime>
+    <Retime>2015-07-17 22:46:47</Retime>
+  </Station>
+  <Station From="002" To="001" Type="00" CarNumber="002">
+    <Setime>2015-07-17 22:47:31</Setime>
+    <Retime>2015-07-17 22:49:33</Retime>
+  </Station>
+  <Station From="002" To="001" Type="00" CarNumber="001">
+    <Setime>2015-07-17 22:50:23</Setime>
+    <Retime>2015-07-17 22:52:55</Retime>
+  </Station>
+  <Station From="001" To="000" Type="00" CarNumber="002">
+    <Setime>2015-07-17 22:54:38</Setime>
+    <Retime>2015-07-17 22:54:39</Retime>
+  </Station>
+  <Station From="001" To="002" Type="00" CarNumber="001">
+    <Setime>2015-07-17 22:58:59</Setime>
+    <Retime>2015-07-17 22:59:01</Retime>
+  </Station>
+  <Station From="001" To="002" Type="00" CarNumber="002">
+    <Setime>2015-07-17 22:59:02</Setime>
+    <Retime>2015-07-17 23:00:32</Retime>
+  </Station>
+</NoteTouch>
