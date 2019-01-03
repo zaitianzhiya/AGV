@@ -783,7 +783,7 @@ namespace Canvas.CanvasCtrl
                                 for (int i = yMin; i <= yMax; i++)
                                 {
                                     mapNo = i * m_model.XCount + x;
-                                    RealNo = mapNo + 2 + m_model.YCount;
+                                    RealNo = mapNo + 1 + m_model.YCount;
                                     lst = (from p in m_model.ActiveLayer.Objects
                                            where p.Id == "ArrowUp" && p.MapNo == mapNo
                                            select p).ToList();
@@ -821,7 +821,7 @@ namespace Canvas.CanvasCtrl
                                 for (int i = yMin; i <= yMax; i++)
                                 {
                                     mapNo = i * m_model.XCount + x;
-                                    RealNo = mapNo - m_model.YCount;
+                                    RealNo = mapNo - m_model.YCount+1;
                                     lst = (from p in m_model.ActiveLayer.Objects
                                            where p.Id == "ArrowDown" && p.MapNo == mapNo
                                            select p).ToList();
