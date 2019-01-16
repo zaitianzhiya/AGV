@@ -14,6 +14,8 @@ namespace TS_RGB
     public partial class frm_map : Form
     {
         #region params
+
+        public int lineNo;//线别
         public static int map_width = 1115;
         public static int map_height = 306;
 
@@ -186,7 +188,7 @@ namespace TS_RGB
 
         private void ShowAGV()
         {
-            DataTable AGV_Table = Function.SELETE_AGV_INFO();
+            DataTable AGV_Table = Function.SELETE_AGV_INFO(lineNo);
             if (AGV_Table != null && AGV_Table.Rows.Count > 0)
             {
                 RGV_Num = AGV_Table.Rows.Count;
@@ -217,7 +219,7 @@ namespace TS_RGB
         }
         public void RefShowAGV()
         {
-            DataTable AGV_Table = Function.SELETE_AGV_INFO();
+            DataTable AGV_Table = Function.SELETE_AGV_INFO(lineNo);
             if (AGV_Table != null && AGV_Table.Rows.Count > 0)
             {
                 var p = img_Map.Size;
@@ -286,7 +288,7 @@ namespace TS_RGB
         }
         public void RefShowAGV_flash()
         {
-            DataTable AGV_Table = Function.SELETE_AGV_INFO();
+            DataTable AGV_Table = Function.SELETE_AGV_INFO(lineNo);
             if (AGV_Table != null && AGV_Table.Rows.Count > 0)
             {
                 for (int i = 0; i < ShowRGV.Count(); i++)
@@ -437,7 +439,7 @@ namespace TS_RGB
 
         private void ShowPower()
         {
-            DataTable ELE_Table = Function.SELECT_Power_INFO();
+            DataTable ELE_Table = Function.SELECT_Power_INFO(lineNo);
             if (ELE_Table != null && ELE_Table.Rows.Count > 0)
             {
                 //
@@ -464,7 +466,7 @@ namespace TS_RGB
         }
         private void RefShowPower()
         {
-            DataTable ELE_Table = Function.SELECT_Power_INFO();
+            DataTable ELE_Table = Function.SELECT_Power_INFO(lineNo);
             if (ELE_Table != null && Show_Power != null && ELE_Table.Rows.Count >= Show_Power.Count)
             {
                 for (int i = 0; i < Show_Power.Count; i++)

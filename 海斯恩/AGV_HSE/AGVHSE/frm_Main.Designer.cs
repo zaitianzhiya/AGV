@@ -151,21 +151,21 @@
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size(152, 24);
+            this.toolStripMenuItem6.Size = new System.Drawing.Size(143, 24);
             this.toolStripMenuItem6.Text = "地图监控";
             this.toolStripMenuItem6.Click += new System.EventHandler(this.toolStripMenuItem6_Click);
             // 
             // mItems_RGVMonitor
             // 
             this.mItems_RGVMonitor.Name = "mItems_RGVMonitor";
-            this.mItems_RGVMonitor.Size = new System.Drawing.Size(152, 24);
+            this.mItems_RGVMonitor.Size = new System.Drawing.Size(143, 24);
             this.mItems_RGVMonitor.Text = "车辆监控";
             this.mItems_RGVMonitor.Click += new System.EventHandler(this.mItems_RGVMonitor_Click);
             // 
             // 电梯监控ToolStripMenuItem
             // 
             this.电梯监控ToolStripMenuItem.Name = "电梯监控ToolStripMenuItem";
-            this.电梯监控ToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.电梯监控ToolStripMenuItem.Size = new System.Drawing.Size(143, 24);
             this.电梯监控ToolStripMenuItem.Text = "电梯监控";
             this.电梯监控ToolStripMenuItem.Visible = false;
             this.电梯监控ToolStripMenuItem.Click += new System.EventHandler(this.电梯监控ToolStripMenuItem_Click);
@@ -173,14 +173,14 @@
             // 充电站监控ToolStripMenuItem
             // 
             this.充电站监控ToolStripMenuItem.Name = "充电站监控ToolStripMenuItem";
-            this.充电站监控ToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.充电站监控ToolStripMenuItem.Size = new System.Drawing.Size(143, 24);
             this.充电站监控ToolStripMenuItem.Text = "充电站监控";
             this.充电站监控ToolStripMenuItem.Click += new System.EventHandler(this.充电站监控ToolStripMenuItem_Click);
             // 
             // mItems_CANModel
             // 
             this.mItems_CANModel.Name = "mItems_CANModel";
-            this.mItems_CANModel.Size = new System.Drawing.Size(152, 24);
+            this.mItems_CANModel.Size = new System.Drawing.Size(143, 24);
             this.mItems_CANModel.Text = "自动门监控";
             this.mItems_CANModel.Visible = false;
             this.mItems_CANModel.Click += new System.EventHandler(this.mItems_CANModel_Click);
@@ -243,6 +243,7 @@
             this.rFID读取日志ToolStripMenuItem.Name = "rFID读取日志ToolStripMenuItem";
             this.rFID读取日志ToolStripMenuItem.Size = new System.Drawing.Size(160, 24);
             this.rFID读取日志ToolStripMenuItem.Text = "RFID读取日志";
+            this.rFID读取日志ToolStripMenuItem.Visible = false;
             this.rFID读取日志ToolStripMenuItem.Click += new System.EventHandler(this.rFID读取日志ToolStripMenuItem_Click);
             // 
             // aGV放行日志ToolStripMenuItem
@@ -250,6 +251,7 @@
             this.aGV放行日志ToolStripMenuItem.Name = "aGV放行日志ToolStripMenuItem";
             this.aGV放行日志ToolStripMenuItem.Size = new System.Drawing.Size(160, 24);
             this.aGV放行日志ToolStripMenuItem.Text = "AGV放行日志";
+            this.aGV放行日志ToolStripMenuItem.Visible = false;
             this.aGV放行日志ToolStripMenuItem.Click += new System.EventHandler(this.aGV放行日志ToolStripMenuItem_Click);
             // 
             // mItems_RGV_Alams
@@ -271,6 +273,7 @@
             this.aGV电压日志ToolStripMenuItem.Name = "aGV电压日志ToolStripMenuItem";
             this.aGV电压日志ToolStripMenuItem.Size = new System.Drawing.Size(160, 24);
             this.aGV电压日志ToolStripMenuItem.Text = "AGV电压日志";
+            this.aGV电压日志ToolStripMenuItem.Visible = false;
             this.aGV电压日志ToolStripMenuItem.Click += new System.EventHandler(this.aGV电压日志ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
@@ -283,6 +286,7 @@
             this.软件启停日志ToolStripMenuItem.Name = "软件启停日志ToolStripMenuItem";
             this.软件启停日志ToolStripMenuItem.Size = new System.Drawing.Size(160, 24);
             this.软件启停日志ToolStripMenuItem.Text = "系统操作日志";
+            this.软件启停日志ToolStripMenuItem.Visible = false;
             this.软件启停日志ToolStripMenuItem.Click += new System.EventHandler(this.软件启停日志ToolStripMenuItem_Click);
             // 
             // mItems_
@@ -297,7 +301,7 @@
             // 设置ToolStripMenuItem
             // 
             this.设置ToolStripMenuItem.Name = "设置ToolStripMenuItem";
-            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
             this.设置ToolStripMenuItem.Text = "设置";
             this.设置ToolStripMenuItem.Click += new System.EventHandler(this.设置ToolStripMenuItem_Click);
             // 
@@ -309,34 +313,35 @@
             this.toolStripMenuItem2,
             this.区域管理ToolStripMenuItem});
             this.管理ToolStripMenuItem.Name = "管理ToolStripMenuItem";
-            this.管理ToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.管理ToolStripMenuItem.Size = new System.Drawing.Size(104, 24);
             this.管理ToolStripMenuItem.Text = "管理";
+            this.管理ToolStripMenuItem.Visible = false;
             // 
             // 交通管理ToolStripMenuItem
             // 
             this.交通管理ToolStripMenuItem.Name = "交通管理ToolStripMenuItem";
-            this.交通管理ToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.交通管理ToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
             this.交通管理ToolStripMenuItem.Text = "路口管理";
             this.交通管理ToolStripMenuItem.Click += new System.EventHandler(this.交通管理ToolStripMenuItem_Click);
             // 
             // aGV管理ToolStripMenuItem
             // 
             this.aGV管理ToolStripMenuItem.Name = "aGV管理ToolStripMenuItem";
-            this.aGV管理ToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.aGV管理ToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
             this.aGV管理ToolStripMenuItem.Text = "AGV管理";
             this.aGV管理ToolStripMenuItem.Click += new System.EventHandler(this.aGV管理ToolStripMenuItem_Click);
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(152, 24);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(133, 24);
             this.toolStripMenuItem2.Text = "交互管理";
             this.toolStripMenuItem2.Click += new System.EventHandler(this.toolStripMenuItem2_Click_1);
             // 
             // 区域管理ToolStripMenuItem
             // 
             this.区域管理ToolStripMenuItem.Name = "区域管理ToolStripMenuItem";
-            this.区域管理ToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.区域管理ToolStripMenuItem.Size = new System.Drawing.Size(133, 24);
             this.区域管理ToolStripMenuItem.Text = "区域管理";
             this.区域管理ToolStripMenuItem.Click += new System.EventHandler(this.区域管理ToolStripMenuItem_Click);
             // 
@@ -771,7 +776,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel2.Location = new System.Drawing.Point(0, 27);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(225, 520);
+            this.panel2.Size = new System.Drawing.Size(242, 520);
             this.panel2.TabIndex = 5;
             this.panel2.Visible = false;
             // 
@@ -783,7 +788,7 @@
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 131);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(223, 105);
+            this.groupBox2.Size = new System.Drawing.Size(240, 105);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "调度控制";
@@ -828,21 +833,31 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(223, 131);
+            this.groupBox1.Size = new System.Drawing.Size(240, 131);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "手动启动";
             // 
             // comboBox_agvDir
             // 
+            this.comboBox_agvDir.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_agvDir.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.comboBox_agvDir.FormattingEnabled = true;
             this.comboBox_agvDir.Items.AddRange(new object[] {
-            "1:正方向",
-            "2:反方向"});
+            "1:出料口>>1#进料口",
+            "2:出料口>>2#进料口",
+            "3:进料口>>出料口",
+            "4:充电路径",
+            "5:充电点>>出料口",
+            "6:伸出货架",
+            "7:缩回货架",
+            "8:伸出充电桩",
+            "9:缩回充电桩",
+            "10:打开充电回路",
+            "11:关闭充电回路"});
             this.comboBox_agvDir.Location = new System.Drawing.Point(86, 56);
             this.comboBox_agvDir.Name = "comboBox_agvDir";
-            this.comboBox_agvDir.Size = new System.Drawing.Size(121, 22);
+            this.comboBox_agvDir.Size = new System.Drawing.Size(149, 22);
             this.comboBox_agvDir.TabIndex = 5;
             // 
             // label21
@@ -851,9 +866,9 @@
             this.label21.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label21.Location = new System.Drawing.Point(6, 60);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(77, 14);
+            this.label21.Size = new System.Drawing.Size(49, 14);
             this.label21.TabIndex = 4;
-            this.label21.Text = "启动方向：";
+            this.label21.Text = "指令：";
             // 
             // label24
             // 
@@ -877,6 +892,7 @@
             // 
             // comboBox_agvNo
             // 
+            this.comboBox_agvNo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_agvNo.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.comboBox_agvNo.FormattingEnabled = true;
             this.comboBox_agvNo.Items.AddRange(new object[] {
@@ -884,7 +900,7 @@
             "2#AGV"});
             this.comboBox_agvNo.Location = new System.Drawing.Point(86, 24);
             this.comboBox_agvNo.Name = "comboBox_agvNo";
-            this.comboBox_agvNo.Size = new System.Drawing.Size(121, 22);
+            this.comboBox_agvNo.Size = new System.Drawing.Size(149, 22);
             this.comboBox_agvNo.TabIndex = 2;
             // 
             // toolStripStatusLabel7

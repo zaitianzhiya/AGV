@@ -47,6 +47,10 @@ namespace TS_RGB
         /// </summary>
         public static bool volLog = false;
         /// <summary>
+        /// plc日志开关
+        /// </summary>
+        public static bool plcLog = true;
+        /// <summary>
         /// RFID日志记录标志
         /// </summary>
         public static string[] Log_Count_forRFID;

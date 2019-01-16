@@ -21,7 +21,7 @@ namespace TS_RGB
 
         public void GetInfo()
         {
-            DataTable power_Info = Fuction.Function.SELECT_Power_INFO();
+            DataTable power_Info = Fuction.Function.SELECT_Power_INFO(us_frmmain.lineNo);
             if (power_Info != null && power_Info.Rows.Count > 0)
             {
                 if (dg_PowerInfo.Rows.Count < power_Info.Rows.Count)

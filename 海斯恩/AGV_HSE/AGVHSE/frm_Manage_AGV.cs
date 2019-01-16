@@ -21,7 +21,7 @@ namespace TS_RGB
         }
         public void GetInfo()
         {
-            DataTable AGV_Info = Fuction.Function.SELETE_AGV_INFO();
+            DataTable AGV_Info = Fuction.Function.SELETE_AGV_INFO(us_frmmain.lineNo);
             if (AGV_Info != null && AGV_Info.Rows.Count > 0)
             {
                 if (dg_AGVInfo.Rows.Count < AGV_Info.Rows.Count)

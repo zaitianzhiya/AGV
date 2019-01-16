@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using TS_RGB.DBControl;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -86,7 +87,7 @@ namespace TS_RGB.Fuction
         /// <param name="AGV_TO"></param>
         /// <param name="AGV_LineNo"></param>
         /// <returns></returns>
-        public static int INSERET_AGV_INFO(string AGV_IP, int AGV_AC, string AGV_RFID_NOW, string AGV_FROM, string AGV_TO, string AGV_LineNo, string AGV_NUM, string ErroeCode, string Power, string Speed, int FW)
+        public static int INSERET_AGV_INFO(string AGV_IP, int AGV_AC, string AGV_RFID_NOW, string AGV_FROM, string AGV_TO, string AGV_LineNo, string AGV_NUM, string ErroeCode, string Power, string Speed, int FW,int isEmpty,int isPush,int lineType)
         {
             SqlCommand comm = new SqlCommand("PR_INSERET_AGV_INFO");
             comm.CommandType = CommandType.StoredProcedure;
@@ -101,6 +102,9 @@ namespace TS_RGB.Fuction
             comm.Parameters.Add("@AGV_Power", SqlDbType.VarChar, 50).Value = Power;
             comm.Parameters.Add("@AGV_Speed", SqlDbType.VarChar, 50).Value = Speed;
             comm.Parameters.Add("@AGV_FW", SqlDbType.Int).Value = FW;
+            comm.Parameters.Add("@AGV_ISEMPTY", SqlDbType.Int).Value =isEmpty;
+            comm.Parameters.Add("@AGV_ISPUSH", SqlDbType.Int).Value = isPush;
+            comm.Parameters.Add("@LINETYPE", SqlDbType.Int).Value = lineType;
             int i = -1;
             try
             {
@@ -266,7 +270,6 @@ namespace TS_RGB.Fuction
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.Add("@SCallBoxNo", SqlDbType.VarChar, 50).Value = LCallBoxNo;
             comm.Parameters.Add("@SAc", SqlDbType.Int, 10).Value = SAc;
-
 
             int i = -1;
             try
@@ -500,10 +503,11 @@ namespace TS_RGB.Fuction
             return CALL_MESSAGE;
         }
         //
-        public static DataTable SELETE_AGV_INFO()
+        public static DataTable SELETE_AGV_INFO(int lineNo)
         {
             SqlCommand comm = new SqlCommand("PR_SELETE_AGV_INFO");
             comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@LINETYPE", SqlDbType.Int).Value = lineNo;
             DataTable CALL_MESSAGE = null;
             try
             {
@@ -696,10 +700,11 @@ namespace TS_RGB.Fuction
             }
             return CALL_MESSAGE;
         }
-        public static DataTable SELECT_CallBoxLogic()
+        public static DataTable SELECT_CallBoxLogic(int lineType)
         {
             SqlCommand comm = new SqlCommand("PR_SELECT_CallBoxLogic");
             comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@LINETYPE", SqlDbType.Int).Value = lineType;
             DataTable CALL_MESSAGE = null;
             try
             {
@@ -1220,10 +1225,11 @@ namespace TS_RGB.Fuction
         #endregion
 
         //
-        public static DataTable SELECT_Power_INFO()
+        public static DataTable SELECT_Power_INFO(int lineType)
         {
             SqlCommand comm = new SqlCommand("PR_SELECT_Power_INFO");
             comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@LINETYPE", SqlDbType.Int).Value = lineType;
             DataTable CALL_MESSAGE = null;
             try
             {
@@ -1281,11 +1287,12 @@ namespace TS_RGB.Fuction
             }
             return CALL_MESSAGE;
         }
-        public static DataTable SELECT_CallBox_ByCallBoxNo(string callBoxNo)
+        public static DataTable SELECT_CallBox_ByCallBoxNo(string callBoxNo,int lineType)
         {
             SqlCommand comm = new SqlCommand("PR_SELECT_CallBox_ByCallBoxNo");
             comm.CommandType = CommandType.StoredProcedure;
             comm.Parameters.Add("@SCallBoxNo", SqlDbType.VarChar, 50).Value = callBoxNo;
+            comm.Parameters.Add("@LINETYPE", SqlDbType.Int).Value = lineType;
             DataTable CALL_MESSAGE = null;
             try
             {
@@ -2571,6 +2578,88 @@ namespace TS_RGB.Fuction
             {
             }
             return CALL_MESSAGE;
+        }
+
+
+        public static int PR_UPDATE_AGV_INFO_ISACTIVE(string agvIp,string agvTo)
+        {
+            SqlCommand comm = new SqlCommand("PR_UPDATE_AGV_INFO_ISACTIVE");
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@AGVIP", SqlDbType.VarChar,50).Value = agvIp;
+            comm.Parameters.Add("@AGVTO", SqlDbType.VarChar, 50).Value = agvTo;
+            try
+            {
+                return SqlDBControl.ExecuteNonQuery(comm);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static DataTable SELETE_AGV_INFO_ACTIVE(int lineNo)
+        {
+            SqlCommand comm = new SqlCommand("PR_SELETE_AGV_INFO_ACTIVE");
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@LINETYPE", SqlDbType.Int).Value = lineNo;
+            DataTable CALL_MESSAGE = null;
+            try
+            {
+                CALL_MESSAGE = SqlDBControl.ExecuteQuery(comm).Tables[0];
+            }
+            catch (Exception)
+            {
+            }
+            return CALL_MESSAGE;
+        }
+
+        public static int PR_UPDATE_POWER_AGVIP(string agvIp, string pip)
+        {
+            SqlCommand comm = new SqlCommand("PR_UPDATE_POWER_AGVIP");
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@AGVIP", SqlDbType.VarChar, 50).Value = agvIp;
+            comm.Parameters.Add("@POWERIP", SqlDbType.VarChar, 50).Value = pip;
+            try
+            {
+                return SqlDBControl.ExecuteNonQuery(comm);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static int PR_UPDATE_AGV_TO_CALLBOX(string AGV_IP, string AGV_To, int isCallBox)
+        {
+            SqlCommand comm = new SqlCommand("PR_UPDATE_AGV_TO_CALLBOX");
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@AGVIP", SqlDbType.VarChar, 50).Value = AGV_IP;
+            comm.Parameters.Add("@AGVTO", SqlDbType.VarChar, 50).Value = AGV_To;
+            comm.Parameters.Add("@AGV_ISCALLBOX", SqlDbType.VarChar, 50).Value = isCallBox;
+            try
+            {
+                return SqlDBControl.ExecuteNonQuery(comm);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static bool PR_SELECT_CALLBOX_FIRST_ISDOWN(string callBoxNo, string buttonNo)
+        {
+            SqlCommand comm = new SqlCommand("PR_SELECT_CALLBOX_FIRST_ISDOWN");
+            comm.CommandType = CommandType.StoredProcedure;
+            comm.Parameters.Add("@LCallBoxNo", SqlDbType.VarChar,50).Value = callBoxNo;
+            comm.Parameters.Add("@LAnJianNo", SqlDbType.VarChar,50).Value = buttonNo;
+            try
+            {
+                return  int.Parse(SqlDBControl.ExecuteQuery(comm).Tables[0].Rows[0][0].ToString())>0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

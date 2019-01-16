@@ -354,5 +354,73 @@ namespace FileControl
             return path + @"\" + ip + "_go.log";
         }
         #endregion
+
+        private static string GetFilePath_Plc()
+        {
+            string path = Application.StartupPath + @"\Log_Plc" + @"\" + DateTime.Now.ToString("yyyy_MM_dd");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            return path + @"\plc.log";
+        }
+
+        /// 异常日志
+        /// <summary>
+        /// 异常日志
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="fileMsg"></param>
+        public static void SaveExceptionLog(string fileMsg)
+        {
+            try
+            {
+                string path = Application.StartupPath + @"\Exception" + @"\" + DateTime.Now.ToString("yyyy_MM_dd");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                path = path + @"\errorLog.log";
+                using (FileStream _fStream = new FileStream(path, FileMode.Append, FileAccess.Write))
+                {
+                    using (StreamWriter _sWrite = new StreamWriter(_fStream))
+                    {
+                        _sWrite.WriteLine(GetCurrentTimeString() + fileMsg);
+                        _sWrite.Close();
+                        _fStream.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               
+            }
+        }
+
+        /// plc日志
+        /// <summary>
+        /// plc日志
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="fileMsg"></param>
+        public static void SavePlcLog(string fileMsg)
+        {
+            try
+            {
+                using (FileStream _fStream = new FileStream(GetFilePath_Plc(), FileMode.Append, FileAccess.Write))
+                {
+                    using (StreamWriter _sWrite = new StreamWriter(_fStream))
+                    {
+                        _sWrite.WriteLine(GetCurrentTimeString() + fileMsg);
+                        _sWrite.Close();
+                        _fStream.Close();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
     }
 }
