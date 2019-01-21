@@ -27,7 +27,7 @@ namespace TS_RGB
     {
         #region Params
         public int lineNo = 1;//线别
-        private string rfidCharge, rfidExchange, rfidWait, rfidIn1, rfidIn2,rfidOut;//充电，交换，待机RFID地标编号,进料点1RFID，进料点2RFID
+        private string rfidCharge, rfidExchange, rfidWait, rfidIn1, rfidIn2, rfidOut;//充电，交换，待机RFID地标编号,进料点1RFID，进料点2RFID
         private string plcOut, plcIn1, plcIn2;//PLC信息，1个出料两个进料
         //private int readCount;//PLC读取位数
         //private Dictionary<string, axTX_MS_QL_PLC> dicPlc;//PLC对象集合
@@ -579,7 +579,7 @@ namespace TS_RGB
                                     }
                                 }
 
-                                Function.INSERET_AGV_INFO(ipaddr, 1, NowRFID, "", "", LineNo, CarNo, ErrorCode, Power, Speed, AGV_FW, int.Parse(isEmpty), int.Parse(isPush),lineNo);
+                                Function.INSERET_AGV_INFO(ipaddr, 1, NowRFID, "", "", LineNo, CarNo, ErrorCode, Power, Speed, AGV_FW, int.Parse(isEmpty), int.Parse(isPush), lineNo);
                             }
                         }
                     }
@@ -668,136 +668,136 @@ namespace TS_RGB
                     Thread.Sleep(100);
 
                     #region AGV是否需要充电
-                    DataTable AGV_info = Function.SELETE_AGV_INFO(lineNo);
+                    //DataTable AGV_info = Function.SELETE_AGV_INFO(lineNo);
 
-                    if (AGV_info != null && AGV_info.Rows.Count > 0)
-                    {
-                        for (int i = 0; i < AGV_info.Rows.Count; i++)
-                        {
-                            string AGV_No = AGV_info.Rows[i][7].ToString().Trim();//AGV编号
-                            int AGV_Ac = int.Parse(AGV_info.Rows[i][2].ToString().Trim());//AGV状态
-                            string AGV_RFID = AGV_info.Rows[i][3].ToString().Trim();//当前RFID
-                            string AGV_TO = AGV_info.Rows[i][5].ToString().Trim();//AGV目标RFID编号
-                            string AGV_IP = AGV_info.Rows[i][1].ToString().Trim();//AGVIP;
-                            int AGV_Speed = int.Parse(AGV_info.Rows[i][10].ToString().Trim());//速度
-                            int AGV_Power = int.Parse(AGV_info.Rows[i][9].ToString().Trim());//电量
-                            int AGV_ISACTIVE = int.Parse(AGV_info.Rows[i]["AGV_ISACTIVE"].ToString().Trim());//是否使用中
-                            int AGV_ISEMPTY = int.Parse(AGV_info.Rows[i]["AGV_ISEMPTY"].ToString().Trim());//料架是否为空
-                            int AGV_ISPUSH = int.Parse(AGV_info.Rows[i]["AGV_ISPUSH"].ToString().Trim());//料架是否伸出
+                    //if (AGV_info != null && AGV_info.Rows.Count > 0)
+                    //{
+                    //    for (int i = 0; i < AGV_info.Rows.Count; i++)
+                    //    {
+                    //        string AGV_No = AGV_info.Rows[i][7].ToString().Trim();//AGV编号
+                    //        int AGV_Ac = int.Parse(AGV_info.Rows[i][2].ToString().Trim());//AGV状态
+                    //        string AGV_RFID = AGV_info.Rows[i][3].ToString().Trim();//当前RFID
+                    //        string AGV_TO = AGV_info.Rows[i][5].ToString().Trim();//AGV目标RFID编号
+                    //        string AGV_IP = AGV_info.Rows[i][1].ToString().Trim();//AGVIP;
+                    //        int AGV_Speed = int.Parse(AGV_info.Rows[i][10].ToString().Trim());//速度
+                    //        int AGV_Power = int.Parse(AGV_info.Rows[i][9].ToString().Trim());//电量
+                    //        int AGV_ISACTIVE = int.Parse(AGV_info.Rows[i]["AGV_ISACTIVE"].ToString().Trim());//是否使用中
+                    //        int AGV_ISEMPTY = int.Parse(AGV_info.Rows[i]["AGV_ISEMPTY"].ToString().Trim());//料架是否为空
+                    //        int AGV_ISPUSH = int.Parse(AGV_info.Rows[i]["AGV_ISPUSH"].ToString().Trim());//料架是否伸出
 
-                            DataTable dtPowInfo = Function.SELECT_Power_INFO(lineNo);
-                            if (dtPowInfo != null && dtPowInfo.Rows.Count > 0)
-                            {
-                                //充电条件:在线，自动调度，停止中，空料架，料架没有伸出,电压达到下限,在待机点上,充电桩没有在充电
-                                if (AGV_Ac == 1 && AutoControl && AGV_Speed == 2 && AGV_ISEMPTY == 0 && AGV_RFID == AGV_TO && AGV_ISPUSH == 0)
-                                {
-                                    #region 电量不足
-                                    if (AGV_Power <= int.Parse(dtPowInfo.Rows[0]["P_power_L"].ToString()))
-                                    {
-                                        //使用中的AGV
-                                        if (AGV_ISACTIVE == 1)
-                                        {
-                                            if (AGV_RFID == rfidWait && dtPowInfo.Rows[0]["P_InOut"].ToString() != "1")
-                                            {
-                                                Function.PR_UPDATE_AGV_INFO_ISACTIVE(AGV_IP, rfidExchange);
-                                                //发送命令去交换点
-                                                //SendAGV_ORD(int.Parse(AGV_No), 2, 1,5, AGV_IP);
-                                                SendAGV_ORD(int.Parse(AGV_No), 2, 1, 37, AGV_IP);
-                                                LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动去交换点/充电点，方向为：正向" + "\r\n", AGV_IP);
-                                                break;
-                                            }
-                                        }
-                                        //未使用中的AGV
-                                        else
-                                        {
-                                            //在充电点电量不足
-                                            if (AGV_RFID == rfidCharge)
-                                            {
-                                                if (dtPowInfo.Rows[0]["P_InOut"].ToString() != "1")
-                                                {
-                                                    Function.PR_UPDATE_POWER_AGVIP(AGV_IP,
-                                                        dtPowInfo.Rows[0]["P_IP"].ToString());
-                                                    //打开AGV充电回路
-                                                    SendAGV_OPERORD(int.Parse(AGV_No), 3, AGV_IP);
-                                                    //发送充电信号
-                                                    SendPower_ORD(int.Parse(dtPowInfo.Rows[0]["PNo"].ToString()), 1, AGV_IP);
-                                                    if (Params.powerLog)
-                                                    {
-                                                        LogFile.SaveLog_Power(
-                                                            "[" + dtPowInfo.Rows[0]["P_IP"].ToString().Trim() +
-                                                            "]:AGV(IP:" + AGV_IP + ")开始充电" + "\r\n",
-                                                            dtPowInfo.Rows[0]["P_IP"].ToString());
-                                                    }
-                                                }
-                                            }
-                                            else if (AGV_RFID == rfidExchange)
-                                            {
-                                                DataRow[] dataRows = AGV_info.Select(string.Format("AGV_IP!='{0}'", AGV_IP));
+                    //        DataTable dtPowInfo = Function.SELECT_Power_INFO(lineNo);
+                    //        if (dtPowInfo != null && dtPowInfo.Rows.Count > 0)
+                    //        {
+                    //            //充电条件:在线，自动调度，停止中，空料架，料架没有伸出,电压达到下限,在待机点上,充电桩没有在充电
+                    //            if (AGV_Ac == 1 && AutoControl && AGV_Speed == 2 && AGV_ISEMPTY == 0 && AGV_RFID == AGV_TO && AGV_ISPUSH == 0)
+                    //            {
+                    //                #region 电量不足
+                    //                if (AGV_Power <= int.Parse(dtPowInfo.Rows[0]["P_power_L"].ToString()))
+                    //                {
+                    //                    //使用中的AGV
+                    //                    if (AGV_ISACTIVE == 1)
+                    //                    {
+                    //                        if (AGV_RFID == rfidWait && dtPowInfo.Rows[0]["P_InOut"].ToString() != "1")
+                    //                        {
+                    //                            Function.PR_UPDATE_AGV_INFO_ISACTIVE(AGV_IP, rfidExchange);
+                    //                            //发送命令去交换点
+                    //                            //SendAGV_ORD(int.Parse(AGV_No), 2, 1,5, AGV_IP);
+                    //                            SendAGV_ORD(int.Parse(AGV_No), 2, 1, 37, AGV_IP);
+                    //                            LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动去交换点/充电点，方向为：正向" + "\r\n", AGV_IP);
+                    //                            break;
+                    //                        }
+                    //                    }
+                    //                    //未使用中的AGV
+                    //                    else
+                    //                    {
+                    //                        //在充电点电量不足
+                    //                        if (AGV_RFID == rfidCharge)
+                    //                        {
+                    //                            if (dtPowInfo.Rows[0]["P_InOut"].ToString() != "1")
+                    //                            {
+                    //                                Function.PR_UPDATE_POWER_AGVIP(AGV_IP,
+                    //                                    dtPowInfo.Rows[0]["P_IP"].ToString());
+                    //                                //打开AGV充电回路
+                    //                                SendAGV_OPERORD(int.Parse(AGV_No), 3, AGV_IP);
+                    //                                //发送充电信号
+                    //                                SendPower_ORD(int.Parse(dtPowInfo.Rows[0]["PNo"].ToString()), 1, AGV_IP);
+                    //                                if (Params.powerLog)
+                    //                                {
+                    //                                    LogFile.SaveLog_Power(
+                    //                                        "[" + dtPowInfo.Rows[0]["P_IP"].ToString().Trim() +
+                    //                                        "]:AGV(IP:" + AGV_IP + ")开始充电" + "\r\n",
+                    //                                        dtPowInfo.Rows[0]["P_IP"].ToString());
+                    //                                }
+                    //                            }
+                    //                        }
+                    //                        else if (AGV_RFID == rfidExchange)
+                    //                        {
+                    //                            DataRow[] dataRows = AGV_info.Select(string.Format("AGV_IP!='{0}'", AGV_IP));
 
-                                                if (dataRows.Length > 0)
-                                                {
-                                                    DataRow drOther = dataRows[0];
-                                                    if (drOther["AGV_RFID_Now"].ToString() == rfidWait)
-                                                    {
-                                                        Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidCharge);
-                                                        //发送命令去充电点
-                                                        //SendAGV_ORD(int.Parse(AGV_No), 2, 1, 6, AGV_IP);
-                                                        SendAGV_ORD(int.Parse(AGV_No), 2, 1, 37, AGV_IP);
-                                                        LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动去充电点，方向为：正向" + "\r\n", AGV_IP);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    #endregion
+                    //                            if (dataRows.Length > 0)
+                    //                            {
+                    //                                DataRow drOther = dataRows[0];
+                    //                                if (drOther["AGV_RFID_Now"].ToString() == rfidWait)
+                    //                                {
+                    //                                    Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidCharge);
+                    //                                    //发送命令去充电点
+                    //                                    //SendAGV_ORD(int.Parse(AGV_No), 2, 1, 6, AGV_IP);
+                    //                                    SendAGV_ORD(int.Parse(AGV_No), 2, 1, 37, AGV_IP);
+                    //                                    LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动去充电点，方向为：正向" + "\r\n", AGV_IP);
+                    //                                }
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                }
+                    //                #endregion
 
-                                    #region 电量充足
-                                    else
-                                    {
-                                        if (AGV_RFID == rfidCharge)
-                                        {
-                                            if (AGV_Power >= int.Parse(dtPowInfo.Rows[0]["P_power_H"].ToString()) && dtPowInfo.Rows[0]["P_InOut"].ToString() == "1")
-                                            {
-                                                Function.PR_UPDATE_POWER_AGVIP("", dtPowInfo.Rows[0]["P_IP"].ToString());
-                                                //关闭AGV充电回路
-                                                SendAGV_OPERORD(int.Parse(AGV_No), 4, AGV_IP);
-                                                //发送停止充电信号
-                                                SendPower_ORD(int.Parse(dtPowInfo.Rows[0]["PNo"].ToString()), 2, AGV_IP);
-                                                if (Params.powerLog)
-                                                {
-                                                    LogFile.SaveLog_Power(
-                                                        "[" + dtPowInfo.Rows[0]["P_IP"].ToString().Trim() + "]:AGV(IP:" + AGV_IP + ")停止充电" + "\r\n",
-                                                        dtPowInfo.Rows[0]["P_IP"].ToString());
-                                                }
-                                            }
-                                        }
-                                        //停止充电并且AGV使用中才允许去待机点
-                                        if (AGV_ISACTIVE == 1 && dtPowInfo.Rows[0]["P_InOut"].ToString() == "2")
-                                        {
-                                            DataRow[] dataRows = AGV_info.Select(string.Format("AGV_IP!='{0}'", AGV_IP));
-                                            if (dataRows.Length > 0)
-                                            {
-                                                DataRow drOther = dataRows[0];
-                                                //电量不足AGV已到交换点
-                                                if (drOther["AGV_Speed"].ToString() == "2" &&
-                                                    drOther["AGV_AC"].ToString() == "1" &&
-                                                    drOther["AGV_TO"].ToString() == rfidExchange &&
-                                                    drOther["AGV_RFID_Now"].ToString() == rfidExchange)
-                                                {
-                                                    Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidWait);
-                                                    //发送命令去待机点
-                                                    //SendAGV_ORD(int.Parse(AGV_No), 2, 2, 7, AGV_IP);
-                                                    SendAGV_ORD(int.Parse(AGV_No), 2, 2, 98, AGV_IP);
-                                                    LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动去待机点，方向为：反向" + "\r\n", AGV_IP);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    #endregion
-                                }
-                            }
-                        }
-                    }
+                    //                #region 电量充足
+                    //                else
+                    //                {
+                    //                    if (AGV_RFID == rfidCharge)
+                    //                    {
+                    //                        if (AGV_Power >= int.Parse(dtPowInfo.Rows[0]["P_power_H"].ToString()) && dtPowInfo.Rows[0]["P_InOut"].ToString() == "1")
+                    //                        {
+                    //                            Function.PR_UPDATE_POWER_AGVIP("", dtPowInfo.Rows[0]["P_IP"].ToString());
+                    //                            //关闭AGV充电回路
+                    //                            SendAGV_OPERORD(int.Parse(AGV_No), 4, AGV_IP);
+                    //                            //发送停止充电信号
+                    //                            SendPower_ORD(int.Parse(dtPowInfo.Rows[0]["PNo"].ToString()), 2, AGV_IP);
+                    //                            if (Params.powerLog)
+                    //                            {
+                    //                                LogFile.SaveLog_Power(
+                    //                                    "[" + dtPowInfo.Rows[0]["P_IP"].ToString().Trim() + "]:AGV(IP:" + AGV_IP + ")停止充电" + "\r\n",
+                    //                                    dtPowInfo.Rows[0]["P_IP"].ToString());
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                    //停止充电并且AGV使用中才允许去待机点
+                    //                    if (AGV_ISACTIVE == 1 && dtPowInfo.Rows[0]["P_InOut"].ToString() == "2")
+                    //                    {
+                    //                        DataRow[] dataRows = AGV_info.Select(string.Format("AGV_IP!='{0}'", AGV_IP));
+                    //                        if (dataRows.Length > 0)
+                    //                        {
+                    //                            DataRow drOther = dataRows[0];
+                    //                            //电量不足AGV已到交换点
+                    //                            if (drOther["AGV_Speed"].ToString() == "2" &&
+                    //                                drOther["AGV_AC"].ToString() == "1" &&
+                    //                                drOther["AGV_TO"].ToString() == rfidExchange &&
+                    //                                drOther["AGV_RFID_Now"].ToString() == rfidExchange)
+                    //                            {
+                    //                                Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidWait);
+                    //                                //发送命令去待机点
+                    //                                //SendAGV_ORD(int.Parse(AGV_No), 2, 2, 7, AGV_IP);
+                    //                                SendAGV_ORD(int.Parse(AGV_No), 2, 2, 98, AGV_IP);
+                    //                                LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动去待机点，方向为：反向" + "\r\n", AGV_IP);
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                }
+                    //                #endregion
+                    //            }
+                    //        }
+                    //    }
+                    //}
                     #endregion
 
                     #region 呼叫盒
@@ -809,7 +809,7 @@ namespace TS_RGB
                             string callBoxNo = CallBoxLogic_info.Rows[i][1].ToString().Trim();
                             string AnJianNo = CallBoxLogic_info.Rows[i][2].ToString().Trim();
 
-                            DataTable CallBox_info = Function.SELECT_CallBox_ByCallBoxNo(callBoxNo,lineNo);
+                            DataTable CallBox_info = Function.SELECT_CallBox_ByCallBoxNo(callBoxNo, lineNo);
                             string[] isRFID = null;
 
                             if (CallBox_info == null || CallBox_info.Rows.Count <= 0)
@@ -845,7 +845,7 @@ namespace TS_RGB
                                     if (AnJianNo == "1")
                                     {
                                         //在待机点并且小车为空车时才能呼叫
-                                        if (AGV_RFID_Now == rfidWait&&AGV_ISEMPTY == 0)
+                                        if (AGV_RFID_Now == rfidWait && AGV_ISEMPTY == 0)
                                         {
                                             if (isRFID[0] == rfidIn1)
                                             {
@@ -987,9 +987,9 @@ namespace TS_RGB
                 try
                 {
                     Thread.Sleep(100);
-                    //if (dicPlc["O_192.168.1.120"].Plcstatus == PlcStatus.Run)
+                    //if (dicPlc["192.168.1.190"].Plcstatus == PlcStatus.Run)
                     //{
-                    //    bool s_Read_M = dicPlc["O_192.168.1.120"].ax_ReadBit_hex("M1505", readCount, out readData);
+                    //    bool s_Read_M = dicPlc["192.168.1.190"].ax_ReadBit_hex("M1150", readCount, out readData);
                     //    //if (s_Read_M)
                     //    //{
                     //    //    dicPlc["O_192.168.1.120"].ax_WriteBit_hex("M1505", readCount, ref writeContent);
@@ -1017,6 +1017,7 @@ namespace TS_RGB
                                     plcCurrent = dicPlc[key];
 
                                     #region 出料PLC
+
                                     if (key.StartsWith("O_"))
                                     {
                                         if (plcCurrent.ax_ReadBit_hex("M1505", readCount, out readData))
@@ -1058,7 +1059,9 @@ namespace TS_RGB
                                                         {
                                                             //推送托盘
                                                             SendAGV_OPERORD(int.Parse(AGV_No), 1, AGV_IP);
-                                                            LogFile.SaveLog_Go("在地标 " + rfidWait + " 号给 " + AGV_No + " 号AGV发送推送托盘" + "\r\n", AGV_IP);
+                                                            LogFile.SaveLog_Go(
+                                                                "在地标 " + rfidWait + " 号给 " + AGV_No + " 号AGV发送推送托盘" +
+                                                                "\r\n", AGV_IP);
                                                         }
                                                     }
                                                     else
@@ -1067,12 +1070,15 @@ namespace TS_RGB
                                                         {
                                                             //收缩托盘
                                                             SendAGV_OPERORD(int.Parse(AGV_No), 2, AGV_IP);
-                                                            LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动收缩托盘" + "\r\n", AGV_IP);
+                                                            LogFile.SaveLog_Go(
+                                                                "在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动收缩托盘" +
+                                                                "\r\n", AGV_IP);
                                                         }
                                                         else if (AGV_Ispush == 0)
                                                         {
                                                             //完成后写入标志
-                                                            plcCurrent.ax_WriteBit_hex("M706", readCount, ref writeContent);
+                                                            plcCurrent.ax_WriteBit_hex("M706", readCount,
+                                                                ref writeContent);
                                                             if (Params.plcLog)
                                                             {
                                                                 LogFile.SavePlcLog("出料口写入完成");
@@ -1088,123 +1094,118 @@ namespace TS_RGB
                                     #region 进料PLC
                                     else
                                     {
-                                        //进料点B
-                                        if (plcCurrent.ax_ReadBit_hex("M1760", readCount, out readData))
+                                        //进料点
+                                        if (plcCurrent.ax_ReadBit_hex("M1150", readCount, out readData))
                                         {
                                             if (readData.Contains(1))
                                             {
-                                                if (Params.plcLog)
+                                                //进料点B
+                                                if (key == plcIn1.Split(':')[0])
                                                 {
-                                                    LogFile.SavePlcLog("1#进料口呼叫AGV");
-                                                }
-                                                //料架上无料时执行
-                                                if (AGV_ISEMPTY == 0)
-                                                {
-                                                    if (AGV_RFID == rfidWait && AGV_Ispush == 0)
+                                                    if (Params.plcLog)
                                                     {
-                                                        //呼叫AGV
-                                                        Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidIn1);
-                                                        //发送命令去进料点1
-                                                        //SendAGV_ORD(int.Parse(AGV_No), 2, 2, 1, AGV_IP);
-                                                        SendAGV_ORD(int.Parse(AGV_No), 2, 2, int.Parse(rfidIn1), AGV_IP);
-                                                        LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动去1#进料点，方向为：反向" + "\r\n", AGV_IP);
+                                                        LogFile.SavePlcLog("1#进料口呼叫AGV");
                                                     }
-                                                    else if (AGV_RFID == rfidIn1 && AGV_Ispush == 0)
+                                                    //料架上无料时执行
+                                                    if (AGV_ISEMPTY == 0)
                                                     {
-                                                        //写入到位标志
-                                                        plcCurrent.ax_WriteBit_hex("M980", readCount, ref writeContent);
-                                                        if (Params.plcLog)
+                                                        if (AGV_RFID == rfidWait && AGV_Ispush == 0)
                                                         {
-                                                            LogFile.SavePlcLog("1#进料口写入到位");
+                                                            //呼叫AGV
+                                                            Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidIn1);
+                                                            //发送命令去进料点1
+                                                            //SendAGV_ORD(int.Parse(AGV_No), 2, 2, 1, AGV_IP);
+                                                            SendAGV_ORD(int.Parse(AGV_No), 2, 2, int.Parse(rfidIn1),
+                                                                AGV_IP);
+                                                            LogFile.SaveLog_Go(
+                                                                "在地标 " + AGV_RFID + " 号给 " + AGV_No +
+                                                                " 号AGV发送启动去1#进料点，方向为：反向" + "\r\n", AGV_IP);
+                                                        }
+                                                        else if (AGV_RFID == rfidIn1 && AGV_Ispush == 0)
+                                                        {
+                                                            //写入到位标志
+                                                            plcCurrent.ax_WriteBit_hex("M1151", readCount,
+                                                                ref writeContent);
+                                                            if (Params.plcLog)
+                                                            {
+                                                                LogFile.SavePlcLog("1#进料口写入到位");
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    //进料点C
+                                                    if (Params.plcLog)
+                                                    {
+                                                        LogFile.SavePlcLog("2#进料口呼叫AGV");
+                                                    }
+                                                    //料架上无料时执行
+                                                    if (AGV_ISEMPTY == 0)
+                                                    {
+                                                        if (AGV_RFID == rfidWait && AGV_Ispush == 0)
+                                                        {
+                                                            //呼叫AGV
+                                                            Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidIn2);
+                                                            //发送命令去进料点2
+                                                            //SendAGV_ORD(int.Parse(AGV_No), 2, 2, 3, AGV_IP);
+                                                            SendAGV_ORD(int.Parse(AGV_No), 2, 2, int.Parse(rfidIn2),
+                                                                AGV_IP);
+                                                            LogFile.SaveLog_Go(
+                                                                "在地标 " + AGV_RFID + " 号给 " + AGV_No +
+                                                                " 号AGV发送启动去2#进料点，方向为：反向" + "\r\n", AGV_IP);
+                                                        }
+                                                        else if (AGV_RFID == rfidIn2 && AGV_Ispush == 0)
+                                                        {
+                                                            //写入到位标志
+                                                            plcCurrent.ax_WriteBit_hex("M1151", readCount,
+                                                                ref writeContent);
+                                                            if (Params.plcLog)
+                                                            {
+                                                                LogFile.SavePlcLog("2#进料口写入到位");
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
                                         }
-                                        //进料点C
-                                        else if (plcCurrent.ax_ReadBit_hex("M1761", readCount, out readData))
+                                        if (plcCurrent.ax_ReadBit_hex("M1152", readCount, out readData))
                                         {
                                             if (readData.Contains(1))
                                             {
-                                                if (Params.plcLog)
+                                                //进料点B
+                                                if (key == plcIn1.Split(':')[0])
                                                 {
-                                                    LogFile.SavePlcLog("2#进料口呼叫AGV");
-                                                }
-                                                //料架上无料时执行
-                                                if (AGV_ISEMPTY == 0)
-                                                {
-                                                    if (AGV_RFID == rfidWait && AGV_Ispush == 0)
+                                                    if (Params.plcLog)
                                                     {
-                                                        //呼叫AGV
-                                                        Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidIn2);
-                                                        //发送命令去进料点2
-                                                        //SendAGV_ORD(int.Parse(AGV_No), 2, 2, 3, AGV_IP);
-                                                        SendAGV_ORD(int.Parse(AGV_No), 2, 2, int.Parse(rfidIn2), AGV_IP);
+                                                        LogFile.SavePlcLog("1#进料口读取进料完成");
+                                                    }
+                                                    if (AGV_RFID == rfidIn1)
+                                                    {
+                                                        Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidWait);
+                                                        //SendAGV_ORD(int.Parse(AGV_No), 2, 1, 2, AGV_IP);
+                                                        SendAGV_ORD(int.Parse(AGV_No), 2, 1, int.Parse(rfidWait), AGV_IP);
                                                         LogFile.SaveLog_Go(
-                                                            "在地标 " + AGV_RFID + " 号给 " + AGV_No +
-                                                            " 号AGV发送启动去2#进料点，方向为：反向" + "\r\n", AGV_IP);
+                                                            "在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动回待机点，方向为：正向" +
+                                                            "\r\n", AGV_IP);
                                                     }
-                                                    else if (AGV_RFID == rfidIn2 && AGV_Ispush == 0)
+                                                }
+                                                else
+                                                {
+                                                    //进料点C
+                                                    if (Params.plcLog)
                                                     {
-                                                        //写入到位标志
-                                                        plcCurrent.ax_WriteBit_hex("M981", readCount, ref writeContent);
-                                                        if (Params.plcLog)
-                                                        {
-                                                            LogFile.SavePlcLog("2#进料口写入到位");
-                                                        }
+                                                        LogFile.SavePlcLog("2#进料口读取进料完成");
                                                     }
-                                                }
-                                            }
-                                        }
-                                        if (plcCurrent.ax_ReadBit_hex("M1010", readCount, out readData))
-                                        {
-                                            if (readData.Contains(1))
-                                            {
-                                                if (Params.plcLog)
-                                                {
-                                                    LogFile.SavePlcLog("1#进料口读取进料完成");
-                                                }
-                                                if (AGV_RFID == rfidIn1)
-                                                {
-                                                    //if (AGV_Ispush == 1)
-                                                    //{
-                                                    //    //收缩托盘
-                                                    //    SendAGV_ORD(int.Parse(AGV_No), 2, 1, 9, AGV_IP);
-                                                    //    LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动收缩托盘" +"\r\n", AGV_IP);
-                                                    //}
-                                                    //else
-                                                    //{
-                                                    Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidWait);
-                                                    //SendAGV_ORD(int.Parse(AGV_No), 2, 1, 2, AGV_IP);
-                                                     SendAGV_ORD(int.Parse(AGV_No), 2, 1, int.Parse(rfidWait), AGV_IP);
-                                                    LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动回待机点，方向为：正向" + "\r\n", AGV_IP);
-                                                    //}
-                                                }
-                                            }
-                                        }
-                                        if (plcCurrent.ax_ReadBit_hex("M1011", readCount, out readData))
-                                        {
-                                            if (readData.Contains(1))
-                                            {
-                                                if (Params.plcLog)
-                                                {
-                                                    LogFile.SavePlcLog("2#进料口读取进料完成");
-                                                }
-                                                if (AGV_RFID == rfidIn2)
-                                                {
-                                                    //if (AGV_Ispush == 1)
-                                                    //{
-                                                    //    //收缩托盘
-                                                    //    SendAGV_ORD(int.Parse(AGV_No), 2, 1, 9, AGV_IP);
-                                                    //    LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动收缩托盘" +"\r\n", AGV_IP);
-                                                    //}
-                                                    //else
-                                                    //{
-                                                    Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidWait);
-                                                    //SendAGV_ORD(int.Parse(AGV_No), 2, 2, 4, AGV_IP);
-                                                    SendAGV_ORD(int.Parse(AGV_No), 2, 1, int.Parse(rfidWait), AGV_IP);
-                                                    LogFile.SaveLog_Go("在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动回待机点，方向为：正向" + "\r\n", AGV_IP);
-                                                    //}
+                                                    if (AGV_RFID == rfidIn2)
+                                                    {
+                                                        Function.UPDATE_AGV_INFO_TO(AGV_IP, rfidWait);
+                                                        //SendAGV_ORD(int.Parse(AGV_No), 2, 1, 4, AGV_IP);
+                                                        SendAGV_ORD(int.Parse(AGV_No), 2, 1, int.Parse(rfidWait), AGV_IP);
+                                                        LogFile.SaveLog_Go(
+                                                            "在地标 " + AGV_RFID + " 号给 " + AGV_No + " 号AGV发送启动回待机点，方向为：正向" +
+                                                            "\r\n", AGV_IP);
+                                                    }
                                                 }
                                             }
                                         }
@@ -1227,7 +1228,7 @@ namespace TS_RGB
             MelsecMcNet plcCurrent;
             //bool[] writeContent = new bool[] { true };
             bool writeContent = true;
-           
+
             while (!bstop)
             {
                 try
@@ -1431,14 +1432,15 @@ namespace TS_RGB
                             }
                         }
                     }
-                    TimeSpan span= DateTime.Now-dtStart;
-                    double s=span.TotalSeconds;
+                    TimeSpan span = DateTime.Now - dtStart;
+                    double s = span.TotalSeconds;
                 }
                 catch (Exception ex)
                 {
                     LogFile.SaveExceptionLog("RunPlc:" + ex.Message + "\r\n" + ex.StackTrace);
                 }
             }
+            
             #endregion
         }
 
@@ -1754,9 +1756,9 @@ namespace TS_RGB
         {
             int agvNo = comboBox_agvNo.SelectedIndex + 1;
             int agvDir = comboBox_agvDir.SelectedIndex + 1;
-            if (agvNo != 0 && agvDir!=0)
+            if (agvNo != 0 && agvDir != 0)
             {
-                if (MessageBox.Show("即将给 " + agvNo.ToString() + " 号AGV发送指令：" +comboBox_agvDir.Text + "，确认发送吗？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+                if (MessageBox.Show("即将给 " + agvNo.ToString() + " 号AGV发送指令：" + comboBox_agvDir.Text + "，确认发送吗？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
                 {
                     //呼叫AGV
                     string AGV_IP = "192.168.1." + (192 + agvNo).ToString();
