@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<NoteTouch>
+  <Station Number="001">
+    <Order>0</Order>
+    <type>01</type>
+    <From>001</From>
+    <To>000</To>
+    <Setime>2015-06-18 15:13:02</Setime>
+    <Retime></Retime>
+    <Action>1</Action>
+  </Station>
+  <Station Number="002">
+    <Order>0</Order>
+    <type>01</type>
+    <From>001</From>
+    <To>000</To>
+    <Setime>2016-06-07 14:41:00</Setime>
+    <Retime></Retime>
+    <Action>0</Action>
+  </Station>
+  <Station Number="003">
+    <Order>0</Order>
+    <type>01</type>
+    <From>001</From>
+    <To>000</To>
+    <Setime>2016-06-07 14:41:00</Setime>
+    <Retime></Retime>
+    <Action>0</Action>
+  </Station>
+</NoteTouch>
