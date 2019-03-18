@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/admin-lte/css/AdminLTE.min.css" rel="stylesheet" />
+    <link href="~/admin-lte/css/skins/_all-skins.min.css" rel="stylesheet" />
+     <style type="text/css">
+        .headerStyle {
+            background-color: lightgray;
+            font-weight: bolder;
+        }
+
+        .alternatingRow {
+            background-color: lightblue;
+        }
+
+        .selectedRow {
+            background-color: #C7B3E5;
+        }
+
+        .rowStyle {
+            background-color: lightgreen;
+        }
+
+        .chkStyle {
+            text-align: center;
+            width: 40px;
+        }
+    </style>
+</head>
+<body class="hold-transition skin-purple-light sidebar-mini fixed">
+    <div class="wrapper">
+        <header class="main-header">
+            <a href="#" class="logo">
+                <span class="logo-mini"><b>康达</b></span>
+                <span class="logo-lg"><b>康达检测</b></span>
+            </a>
+            <nav class="navbar navbar-static-top">
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="@Url.Action("Logout", "Base")">
+                                <img src="~/images/avatar_140x140.png" alt="User Image" style="width: 16px; height: 16px;">
+                                <span class="hidden-xs">登出</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu" data-widget="tree">
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-book"></i><span>基本资料</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class=" treeview-menu">
+                            <li class="base"><a href="@Url.Action("Index", "UserManager")"><i class="fa fa-circle-o"></i>用户管理</a></li>
+                            <li class="base"><a href="@Url.Action("Index", "GroupManager")"><i class="fa fa-circle-o"></i>群组管理</a></li>
+                            <li class="base"><a href="@Url.Action("Index", "StoreManager")"><i class="fa fa-circle-o"></i>仓库管理</a></li>
+                            <li class="base"><a href="@Url.Action("Index", "WareHouseManager")"><i class="fa fa-circle-o"></i>货位管理</a></li>
+                        </ul>
+                    </li>
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-laptop"></i><span>功能操作</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li class="fun"><a href="@Url.Action("Index", "StoreIn")"><i class="fa fa-circle-o"></i>样品入库</a></li>
+                            <li class="fun"><a href="@Url.Action("Index", "StoreOut")"><i class="fa fa-circle-o"></i>样品出库</a></li>
+                            <li class="fun"><a href="@Url.Action("Index", "StoreBorrow")"><i class="fa fa-circle-o"></i>样品借用</a></li>
+                            <li class="fun"><a href="@Url.Action("Index", "StoreBack")"><i class="fa fa-circle-o"></i>样品归还</a></li>
+                            <li class="fun"><a href="@Url.Action("Index", "StoreExchange")"><i class="fa fa-circle-o"></i>物料流转</a></li>
+                        </ul>
+                    </li>
+                    <li id="liPri"><a href="@Url.Action("Index", "Privilege")"><i class="fa fa-dashboard"></i><span>权限设置</span></a></li>
+                </ul>
+            </section>
+        </aside>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                </h1>
+            </section>
+            <section class="content">
+                @RenderBody()
+            </section>
+        </div>
+    </div>
+    <div class="hidden">
+        <input type="text" id="txtForm" value="@ViewBag.Form"/>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: false)
+    <script src="~/admin-lte/js/adminlte.min.js"></script>
+    <script src="~/admin-lte/js/demo.js"></script>
+    <script src="~/Scripts/Layout.js"></script>
+</body>
+</html>
