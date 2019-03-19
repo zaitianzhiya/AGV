@@ -1,11 +1,11 @@
-﻿$(document).ready(function() {
+﻿$(document).ready(function () {
     var form = $("#txtForm").val();
     if (form == "U" || form == "G" || form == "S" || form == "W") {
         $(".treeview:eq(0)").addClass("active menu-open");
         switch (form) {
-        case "U":
-            $(".base:eq(0)").addClass("active");
-            break;
+            case "U":
+                $(".base:eq(0)").addClass("active");
+                break;
             case "G":
                 $(".base:eq(1)").addClass("active");
                 break;
