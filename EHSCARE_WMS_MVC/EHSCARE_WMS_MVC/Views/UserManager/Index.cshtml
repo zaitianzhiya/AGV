@@ -4,63 +4,203 @@
     ViewBag.Title = "用户管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<script>
+    $(document).ready(function () {
+        //$('.ajaxGrid table thead tr a').on('click', updateGrid);
+        $('.ajaxGrid table tfoot tr a').on('click', updateGrid);
 
+        $("#divGrid table tbody tr").on("click", function () {
+            $(".selectedRow").removeClass("selectedRow");
+            $(this).addClass("selectedRow");
+        });
+
+        $("#btnNew").click(function () {
+            $("#myModalLabel").val("用户-新增");
+            $(".modal form input").val('');
+            $("#modal_txtNo").removeAttr("disabled");
+            $('#myModal').modal('show');
+        });
+
+        $("#btnModify").click(function () {
+            var select = $(".selectedRow");
+            if (select == null || select == "undefined") {
+                alert("请选择要编辑的数据");
+                return;
+            }
+            $("#myModalLabel").val("用户-编辑");
+            $("#modal_txtNo").attr("disabled", "disabled");
+            $("#modal_txtNo").val();
+            $("#modal_txtName").val();
+            $("#modal_txtPwd").val();
+            $("#modal_txtGroup").val();
+        });
+    });
+
+    function updateGrid(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var grid = $(this).parents('.ajaxGrid');
+        var id = grid.attr('id');
+        grid.load(url + ' #' + id);
+
+    };
+
+    function BindClick() {
+        $("#divGrid table tbody tr").each(function () {
+            $(this).on("click", function () {
+                $(".selectedRow").removeClass("selectedRow");
+                $(this).addClass("selectedRow");
+            });
+        });
+    }
+</script>
 @Html.Raw(ViewBag.js)
-<form id="from" class="form-horizontal" method="post" action="@Url.Action("Index", "UserManager")">
+<form id="from" class="form-horizontal" method="POST" action="@Url.Action("Index", "UserManager")">
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="btn-toolbar">
                 <div class="btn-group">
                     <button class="btn btn-primary" type="submit" id="btnSearch">
-                        <i class="fa fa-search" aria-hidden="true"></i>查询
+                        <i class="fa fa-search" aria-hidden="true"></i>&nbsp;查询
                     </button>
                 </div>
                 <div class="btn-group">
-                    <button class="btn btn-primary" type="button" id="btnNew" data-toggle="modal" data-target="#Basic01_Modal02">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i>新增
+                    <button class="btn btn-primary" type="button" id="btnNew">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i>&nbsp;新增
                     </button>
                 </div>
                 <div class="btn-group">
-                    <button class="btn btn-primary" type="button" id="btnModify">
-                        <i class="fa fa-edit" aria-hidden="true"></i>编辑
+                    <button class="btn btn-primary" type="button" id="btnModify" data-toggle="modal" data-target="#myModal">
+                        <i class="fa fa-edit" aria-hidden="true"></i>&nbsp;编辑
                     </button>
                 </div>
                 <div class="btn-group">
                     <button class="btn btn-primary" type="button" id="btnDel">
-                        <i class="fa fa-times-circle" aria-hidden="true"></i>刪除
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>&nbsp;刪除
                     </button>
                 </div>
             </div>
         </div>
         <div class="panel-body">
-            
+            <div class="form-group">
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <label for="txtNo" class="col-sm-4 col-md-3 col-lg-3 control-label">编号:</label>
+                    <div class="col-sm-8 col-md-9 col-lg-9">
+                        <input type="text" id="txtNo" class="form-control" name="txtNo" value="@ViewBag.UserNo"/>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <label for="txtName" class="col-sm-4 col-md-3 col-lg-3 control-label">姓名:</label>
+                    <div class="col-sm-8 col-md-9 col-lg-9">
+                        <input type="text" id="txtName" class="form-control" name="txtName" value="@ViewBag.UserName"/>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-md-4 col-lg-4">
+                    <label for="txtGroup" class="col-sm-4 col-md-3 col-lg-3 control-label">群组:</label>
+                    <div class="col-sm-8 col-md-9 col-lg-9">
+                        <select name="txtGroup" id="txtGroup" class="form-control">
+                            @{
+                                foreach (var group in ViewBag.AllGroup)
+                                {
+                                    if (@group.GROUP_NO == ViewBag.Group)
+                                    {
+                                <option value="@group.GROUP_NO" selected = "selected">@group.GROUP_NAME</option>
+                                    }
+                                    else
+                                    {
+                                <option value="@group.GROUP_NO">@group.GROUP_NAME</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="divGrid">
+        <div id="divGrid" class="ajaxGrid">
             @{
 @*<input type="checkbox" id="chkAll" style="position: absolute; margin-left: 8px; margin-top: 13px;" />*@
-                var webGrid = new WebGrid(source: (IEnumerable<User>)ViewData["DisplayData"],rowsPerPage:10, canPage: true, canSort: false, defaultSort: "USER_NO", ajaxUpdateContainerId: "divGrid");
+                var webGrid = new WebGrid(null, rowsPerPage: Model.PageSize, canPage: true, canSort: false, defaultSort: "USER_NO", ajaxUpdateContainerId: "divGrid", ajaxUpdateCallback: "BindClick()");
+                webGrid.Bind(Model.Products, rowCount: Model.TotalNum, autoSortAndPage: false);
             }
             @webGrid.GetHtml(
-                    tableStyle: "table table-bordered table-responsive",
-                    headerStyle: "headerStyle",
-                    alternatingRowStyle: "alternatingRow",
-                    selectedRowStyle: "selectedRow",
-                    mode: WebGridPagerModes.All, firstText: "第一页", previousText: "上一页", nextText: "下一页", lastText: "最后一页", numericLinksCount: 10,
-                    columns: webGrid.Columns(
-                        webGrid.Column(format:
-                            @<text>
-                                <input type="checkbox" id="chk" name="chk" value="@item.USER_NO"/>
-                            </text>, style: "chkStyle"),
-                        webGrid.Column(columnName: "USER_NO", header: "编号"),
-                        webGrid.Column(columnName: "USER_NAME", header: "姓名"),
-                        webGrid.Column(columnName: "USER_PWD", header: "密码", format:
-                            @<text>
-                                <span>******</span>
-                                <span class="sr-only">@item.USER_PWD</span>
-                            </text>),
-                        webGrid.Column(columnName: "GROUP_NAME", header: "群组")
-                        )
+                tableStyle: "table table-bordered table-responsive tableStyle",
+                headerStyle: "headerStyle",
+                    //alternatingRowStyle: "alternatingRow",
+                selectedRowStyle: "selectedRow",
+                mode: WebGridPagerModes.All, firstText: "第一页", previousText: "上一页", nextText: "下一页", lastText: "最后一页", numericLinksCount: 10,
+                columns: webGrid.Columns(
+                    webGrid.Column(format:
+                        @<text>
+            <input type="checkbox" id="chk" name="chk" value="@item.USER_NO"/>
+            </text>, style: "chkStyle"),
+                    webGrid.Column(columnName: "USER_NO", header: "编号"),
+                    webGrid.Column(columnName: "USER_NAME", header: "姓名"),
+                    webGrid.Column(columnName: "USER_PWD", header: "密码", format:
+                        @<text>
+            <span>******</span>
+            <span class="sr-only">@item.USER_PWD</span>
+            </text>),
+                                webGrid.Column(columnName: "USER_GROUPID", header: "群组ID", format:
+                        @<text>
+            @item.USER_GROUPID
+            </text>, style: "hideStyle"),
+                    webGrid.Column(columnName: "GROUP_NAME", header: "群组")
                     )
+                )
         </div>
     </div>
 </form>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">用户</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form form-horizontal">
+                    <div class="form-group">
+                        <label for="modal_txtNo" class="control-label col-sm-4 col-md-2 col-lg-2">编号:</label>
+                        <div class="col-sm-8 col-md-10 col-lg-10">
+                            <input type="text" class="form-control" id="modal_txtNo" name="modal_txtNo" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal_txtName" class="control-label col-sm-4 col-md-2 col-lg-2">姓名:</label>
+                        <div class="col-sm-8 col-md-10 col-lg-10">
+                            <input type="text" class="form-control" id="modal_txtName" name="modal_txtName" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal_txtPwd" class="control-label col-sm-4 col-md-2 col-lg-2">密码:</label>
+                        <div class="col-sm-8 col-md-10 col-lg-10">
+                            <input type="password" class="form-control" id="modal_txtPwd" name="modal_txtPwd" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal_txtGroup" class="control-label col-sm-4 col-md-2 col-lg-2">群组:</label>
+                        <div class="col-sm-8 col-md-10 col-lg-10">
+                            <select id="modal_txtGroup" class="form-control" name="modal_txtGroup">
+                                @{
+                                    foreach (var group in ViewBag.AllGroup)
+                                    {
+                                    <option value="@group.GROUP_NO">@group.GROUP_NAME</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">保存</button>
+                <button type="button" class="btn btn-primary">保存并继续</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -44,7 +44,7 @@ namespace EHSCARE_WMS.Controllers
                 return View();
             }
             Session["UID"] = uid;
-            return RedirectToAction("Index", "Base");
+            return RedirectToAction("Main", "Base");
         }
     }
 }

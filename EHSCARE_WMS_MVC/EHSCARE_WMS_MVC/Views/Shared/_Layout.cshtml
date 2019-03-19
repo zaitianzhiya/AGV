@@ -11,18 +11,27 @@
     <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/admin-lte/css/AdminLTE.min.css" rel="stylesheet" />
     <link href="~/admin-lte/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/Scripts/bootstrapValidator.min.js"></script>
+    <script src="~/admin-lte/js/adminlte.min.js"></script>
+    <script src="~/admin-lte/js/demo.js"></script>
+    <script src="~/Scripts/Layout.js"></script>
      <style type="text/css">
         .headerStyle {
-            background-color: lightgray;
+            background-color: lightblue;
             font-weight: bolder;
         }
 
         .alternatingRow {
-            background-color: lightblue;
+            background-color: lightgrey;
         }
 
         .selectedRow {
-            background-color: #C7B3E5;
+            background-color: lightsalmon;
         }
 
         .rowStyle {
@@ -32,6 +41,14 @@
         .chkStyle {
             text-align: center;
             width: 40px;
+        }
+
+        .tableStyle {
+            margin-top: -15px;
+        }
+
+        .hideStyle {
+            display: none;
         }
     </style>
 </head>
@@ -113,8 +130,5 @@
     </div>
     @Scripts.Render("~/bundles/jquery")
     @RenderSection("scripts", required: false)
-    <script src="~/admin-lte/js/adminlte.min.js"></script>
-    <script src="~/admin-lte/js/demo.js"></script>
-    <script src="~/Scripts/Layout.js"></script>
 </body>
 </html>
