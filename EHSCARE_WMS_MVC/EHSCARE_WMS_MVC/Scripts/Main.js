@@ -6,6 +6,7 @@
         $(this).addClass("selectedRow");
     });
 });
+
 function updateGrid(e) {
     e.preventDefault();
     var url = $(this).attr('href');
@@ -13,6 +14,7 @@ function updateGrid(e) {
     var id = grid.attr('id');
     grid.load(url + ' #' + id);
 };
+
 function BindClick() {
     $("#divGrid table tbody tr").each(function () {
         $(this).on("click", function () {

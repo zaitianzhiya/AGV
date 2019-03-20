@@ -9,17 +9,18 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Content/bootstrapValidator.min.css" rel="stylesheet" />
-    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
     <link href="~/admin-lte/css/AdminLTE.min.css" rel="stylesheet" />
     <link href="~/admin-lte/css/skins/_all-skins.min.css" rel="stylesheet" />
     @*<link href="~/Content/jquery-ui.css" rel="stylesheet" />*@
-    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
     <script src="~/Scripts/tether.js"></script>
     @*<script src="~/Scripts/jquery-ui.js"></script>*@
     <script src="~/Scripts/bootstrap.js"></script>
-    @*<script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>*@
+    <script src="~/Scripts/bootstrap-datetimepicker.min.js"></script>
     <script src="~/Scripts/bootstrapValidator.js"></script>
-    <script src="~/admin-lte/js/app.js"></script>
+    <script src="~/admin-lte/js/adminlte.js"></script>
     <script src="~/Scripts/Layout.js"></script>
      <style type="text/css">
         .headerStyle {
@@ -94,6 +95,7 @@
                             <li class="base"><a href="@Url.Action("Index", "GroupManager")"><i class="fa fa-circle-o"></i>群组管理</a></li>
                             <li class="base"><a href="@Url.Action("Index", "StoreManager")"><i class="fa fa-circle-o"></i>仓库管理</a></li>
                             <li class="base"><a href="@Url.Action("Index", "WareHouseManager")"><i class="fa fa-circle-o"></i>货位管理</a></li>
+                            <li class="base"><a href="@Url.Action("Index", "StockManager")"><i class="fa fa-circle-o"></i>库存信息</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
@@ -129,7 +131,7 @@
     <div class="hidden">
         <input type="text" id="txtForm" value="@ViewBag.Form"/>
     </div>
-    @Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jquery")*@
     @RenderSection("scripts", required: false)
 </body>
 </html>

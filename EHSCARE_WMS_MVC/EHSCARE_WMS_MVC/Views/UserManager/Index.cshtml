@@ -4,7 +4,6 @@
     ViewBag.Title = "用户管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script src="~/Scripts/Main.js"></script>
 <script>
     $(document).ready(function () {
         $("#btnNew").click(function () {
@@ -13,27 +12,159 @@
             $("#modal_txtNo").val('');
             $("#modal_txtName").val('');
             $("#modal_txtPwd").val('');
-            $("#modal_txtGroup").val('');
+            $("#modal_txtGroup option[selected='selected']").removeAttr('selected');
+            $("#modal_txtGroup option[value='']").attr('selected', 'selected');
+
             $("#myModal").modal('show');
         });
 
         $("#btnModify").click(function () {
             var select = $(".selectedRow");
-            if (select.length==0) {
+            if (select.length == 0) {
                 alert("请选择要编辑的数据");
                 return;
             }
             $("#myModalLabel").text("用户-编辑");
             $("#modal_txtNo").attr("disabled", "disabled");
-            $("#modal_txtNo").val();
-            $("#modal_txtName").val();
-            $("#modal_txtPwd").val();
-            $("#modal_txtGroup").val();
+            $("#modal_txtNo").val($(".selectedRow td:eq(1)").text());
+            $("#modal_txtName").val($(".selectedRow td:eq(2)").text());
+            $("#modal_txtPwd").val($(".selectedRow td:eq(3)").find(".sr-only").text());
+            $("#modal_txtGroup option[selected='selected']").removeAttr('selected');
+            $("#modal_txtGroup option").each(function () {
+                if ($(this).text() == $(".selectedRow td:eq(4)").text()) {
+                    $(this).attr("selected", "selected");
+                }
+            });
+
             $("#myModal").modal('show');
+        });
+
+        $("#btnSave").click(function () {
+            Save('S');
+        });
+
+        $("#btnSaveAndKeep").click(function () {
+            Save('K');
+        });
+
+        $("#btnDel").click(function () {
+            var select = $("[name='chk']:checked");
+            if (select.length == 0) {
+                alert("请选择要删除的用户");
+                return;
+            }
+            var nos = '';
+            select.each(function () {
+                nos = nos + "'" + $(this).val() + "',";
+            });
+            $.ajax({
+                url: '@Url.Action("DelUser","UserManager")',
+            type: "POST",
+            datatype: "text",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify({ Nos: nos }),
+            success: function (data) {
+                if (data === "OK") {
+                    alert("删除成功");
+                    $("#btnSearch").click();
+                } else {
+                    alert(data);
+                }
+            },
+            error: function (message) {
+                alert("删除失败,原因：" + message);
+            }
         });
     });
 
- 
+        $("#btnClear").click(function () {
+            $("#txtNo").val('');
+            $("#txtName").val('');
+            $("#txtGroup option[selected='selected']").removeAttr('selected');
+            $("#txtGroup option[value='']").attr('selected', 'selected');
+        });
+
+        $("#myModal").on('hidden.bs.modal', function () {
+            $("#btnSearch").click();
+        });
+    });
+
+function FormValiad() {
+    $("#modal_form").bootstrapValidator({
+        fields: {
+            modal_txtNo: {
+                validators: {
+                    notEmpty: {
+                        message: "编号不能为空"
+                    }
+                }
+            },
+            modal_txtName: {
+                validators: {
+                    notEmpty: {
+                        message: "姓名不能为空"
+                    }
+                }
+            },
+            modal_txtPwd: {
+                validators: {
+                    notEmpty: {
+                        message: "密码不能为空"
+                    }
+                }
+            }
+        }
+    });
+}
+
+function Save(symbol) {
+    FormValiad();
+    $("#modal_form").data('bootstrapValidator').validate();
+    if (!$('#modal_form').data('bootstrapValidator').isValid()) {
+        return;
+    } else {
+        var model = {
+            USER_NO: $("#modal_txtNo").val(),
+            USER_NAME: $("#modal_txtName").val(),
+            USER_PWD: $("#modal_txtPwd").val(),
+            USER_GROUPID: $("#modal_txtGroup").val()
+        };
+        var url = '@Url.Action("AddUser", "UserManager")';
+        //编辑
+        if ($("#modal_txtNo").attr("disabled")) {
+            url = '@Url.Action("UpdateUser", "UserManager")';
+        }
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            datatype: "text",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(model),
+            success: function (data) {
+                if (data === "OK") {
+                    alert("保存成功");
+                    if (symbol == "S") {
+                        $("#myModal").modal('hide');
+                    } else {
+                        if ($("#modal_txtNo").attr("disabled") != "disabled") {
+                            $("#modal_txtNo").val('');
+                            $("#modal_txtName").val('');
+                            $("#modal_txtPwd").val('');
+                            $("#modal_txtGroup option[selected='selected']").removeAttr('selected');
+                            $("#modal_txtGroup option[value='']").attr('selected', 'selected');
+                        }
+                    }
+                } else {
+                    alert(data);
+                }
+            },
+            error: function (message) {
+                alert("保存失败,原因：" + message);
+            }
+        });
+    }
+}
 </script>
 @Html.Raw(ViewBag.js)
 <form id="from" class="form-horizontal" method="POST" action="@Url.Action("Index", "UserManager")">
@@ -58,6 +189,11 @@
                 <div class="btn-group">
                     <button class="btn btn-primary" type="button" id="btnDel">
                         <i class="fa fa-times-circle" aria-hidden="true"></i>&nbsp;刪除
+                    </button>
+                </div>
+                  <div class="btn-group">
+                    <button class="btn btn-primary" type="button" id="btnClear">
+                        <i class="fa fa-eraser" aria-hidden="true"></i>&nbsp;清空
                     </button>
                 </div>
             </div>
@@ -109,7 +245,7 @@
                 headerStyle: "headerStyle",
                     //alternatingRowStyle: "alternatingRow",
                 selectedRowStyle: "selectedRow",
-                mode: WebGridPagerModes.All, firstText: "第一页", previousText: "上一页", nextText: "下一页", lastText: "最后一页", numericLinksCount: 10,
+                mode: WebGridPagerModes.All, firstText: "首页", previousText: "上一页", nextText: "下一页", lastText: "尾页", numericLinksCount: 10,
                 columns: webGrid.Columns(
                     webGrid.Column(format:
                         @<text>
@@ -128,6 +264,7 @@
         </div>
     </div>
 </form>
+
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -138,7 +275,9 @@
                 <h4 class="modal-title" id="myModalLabel">用户</h4>
             </div>
             <div class="modal-body">
-                <form class="form form-horizontal">
+                <form class="form-horizontal" id="modal_form">
+                    <input type="text" name="hideUserID" class="hidden"/>
+                    <input type="password" name="hidePwd" class="hidden"/>
                     <div class="form-group">
                         <label for="modal_txtNo" class="control-label col-sm-4 col-md-2 col-lg-2">编号:</label>
                         <div class="col-sm-8 col-md-10 col-lg-10">
@@ -164,7 +303,7 @@
                                 @{
                                     foreach (var group in ViewBag.AllGroup)
                                     {
-                                    <option value="@group.GROUP_NO">@group.GROUP_NAME</option>
+                                        <option value="@group.GROUP_NO">@group.GROUP_NAME</option>
                                     }
                                 }
                             </select>
@@ -173,9 +312,15 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">保存</button>
-                <button type="button" class="btn btn-primary">保存并继续</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="btnSave">
+                    <i class="fa fa-floppy-o" aria-hidden="true"></i>&nbsp;保存
+                </button>
+                <button type="button" class="btn btn-primary" id="btnSaveAndKeep">
+                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>&nbsp;保存并继续
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <i class="fa fa-undo" aria-hidden="true"></i>&nbsp;取消
+                </button>
             </div>
         </div>
     </div>

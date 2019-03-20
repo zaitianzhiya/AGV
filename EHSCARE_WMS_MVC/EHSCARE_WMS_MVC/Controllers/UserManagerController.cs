@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -12,9 +13,7 @@ namespace EHSCARE_WMS.Controllers
     {
         DataAccess.DataAccess dataAccess = new DataAccess.DataAccess(MvcApplication.conStr);
         List<User> lstUsers = new List<User>();
-        //
-        // GET: /UserManager/
-
+       
         public ActionResult Index()
         {
             ViewBag.Form = "U";
@@ -29,12 +28,9 @@ namespace EHSCARE_WMS.Controllers
             }
             else
             {
-                string txtNo = Request.Form["txtNo"];
-                string txtName = Request.Form["txtName"];
-                string txtGroup = Request.Form["txtGroup"];
-                ViewBag.Group = txtGroup;
-                ViewBag.UserNo = txtNo;
-                ViewBag.UserName = txtName;
+                string txtNo = TempData["txtNo"].ToString();
+                string txtName = TempData["txtName"].ToString();
+                string txtGroup = TempData["txtGroup"].ToString();
 
                 string sql = @"SELECT tui.*,
                                    tgi.GROUP_NAME
@@ -78,6 +74,10 @@ namespace EHSCARE_WMS.Controllers
                     user.GROUP_NAME = dr["GROUP_NAME"].ToString();
                     lstUsers.Add(user);
                 }
+                TempData["txtNo"] = txtNo;
+                TempData["txtName"] = txtName;
+                TempData["txtGroup"] = txtGroup;
+
             }
             model.Products = lstUsers;
             return View(model);
@@ -97,9 +97,10 @@ namespace EHSCARE_WMS.Controllers
             string txtNo = fc["txtNo"];
             string txtName = fc["txtName"];
             string txtGroup = fc["txtGroup"];
-            ViewBag.Group = txtGroup;
-            ViewBag.UserNo = txtNo;
-            ViewBag.UserName = txtName;
+           
+            TempData["txtNo"] = ViewBag.UserNo = txtNo;
+            TempData["txtName"] = ViewBag.UserName = txtName;
+            TempData["txtGroup"] = ViewBag.Group = txtGroup;
 
             string sql = @"SELECT tui.*,
                                    tgi.GROUP_NAME
@@ -145,6 +146,89 @@ namespace EHSCARE_WMS.Controllers
             }
             model.Products = lstUsers;
             return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateUser(User user)
+        {
+            if (int.Parse(
+                dataAccess.ExecuteScalar_Text("SELECT COUNT(1) FROM TB_USER_INFO AS tui WHERE tui.USER_NO=@USER_NO",
+                    new SqlParameter[]
+                    {
+                        DataAccess.DataAccess.CreateParameter("USER_NO", SqlDbType.VarChar, user.USER_NO)
+                    }).ToString()) == 0)
+            {
+                return Json("编号不存在", JsonRequestBehavior.AllowGet);
+            }
+            dataAccess.ExecuteNonQuery_Text(@"UPDATE TB_USER_INFO
+                                                SET	[USER_NAME] =@USER_NAME,
+	                                                USER_PWD = @USER_PWD,
+	                                                UPDATE_TIME = GETDATE(),
+	                                                UPDATE_USERID = @UPDATE_USERID,
+	                                                USER_GROUPID = @USER_GROUPID
+                                                WHERE USER_NO=@USER_NO", new SqlParameter[]
+            {
+                DataAccess.DataAccess.CreateParameter("USER_NAME", SqlDbType.VarChar, user.USER_NAME),
+                DataAccess.DataAccess.CreateParameter("USER_PWD", SqlDbType.VarChar, user.USER_PWD),
+                DataAccess.DataAccess.CreateParameter("UPDATE_USERID", SqlDbType.VarChar, Session["UID"]),
+                DataAccess.DataAccess.CreateParameter("USER_GROUPID", SqlDbType.Int, user.USER_GROUPID),
+                DataAccess.DataAccess.CreateParameter("USER_NO", SqlDbType.VarChar, user.USER_NO)
+            });
+
+            return Json("OK", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult AddUser(User user)
+        {
+            if (int.Parse(
+                dataAccess.ExecuteScalar_Text("SELECT COUNT(1) FROM TB_USER_INFO AS tui WHERE tui.USER_NO=@USER_NO",
+                    new SqlParameter[]
+                    {
+                        DataAccess.DataAccess.CreateParameter("USER_NO", SqlDbType.VarChar, user.USER_NO)
+                    }).ToString()) > 0)
+            {
+                return Json("编号已存在", JsonRequestBehavior.AllowGet);
+            }
+            dataAccess.ExecuteNonQuery_Text(@"INSERT INTO TB_USER_INFO
+                                                (
+	                                                USER_NO,
+	                                                [USER_NAME],
+	                                                USER_PWD,
+	                                                CREATE_TIME,
+	                                                CREATE_USERID,
+	                                                USER_GROUPID,
+	                                                USER_IS_USED
+                                                )
+                                                VALUES
+                                                (
+	                                                @USER_NO,
+	                                                @USER_NAME,
+	                                                @USER_PWD,
+	                                                GETDATE(),
+	                                                @CREATE_USERID,
+	                                                @USER_GROUPID,
+	                                                1
+                                                )", new SqlParameter[]
+            {
+                DataAccess.DataAccess.CreateParameter("USER_NO", SqlDbType.VarChar, user.USER_NO),
+                DataAccess.DataAccess.CreateParameter("USER_NAME", SqlDbType.VarChar, user.USER_NAME),
+                DataAccess.DataAccess.CreateParameter("USER_PWD", SqlDbType.VarChar, user.USER_PWD),
+                DataAccess.DataAccess.CreateParameter("CREATE_USERID", SqlDbType.VarChar, Session["UID"]),
+                DataAccess.DataAccess.CreateParameter("USER_GROUPID", SqlDbType.Int, user.USER_GROUPID)
+            });
+
+            return Json("OK", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult DelUser(string Nos)
+        {
+            string sql = string.Format("DELETE FROM TB_USER_INFO WHERE USER_NO IN ({0})", Nos.TrimEnd(','));
+          
+            int i = dataAccess.ExecuteNonQuery_Text(sql,null);
+
+            return Json("OK", JsonRequestBehavior.AllowGet);
         }
     }
 }

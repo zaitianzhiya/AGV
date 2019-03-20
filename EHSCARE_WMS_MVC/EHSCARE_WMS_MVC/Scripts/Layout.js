@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var form = $("#txtForm").val();
-    if (form == "U" || form == "G" || form == "S" || form == "W") {
+    if (form == "U" || form == "G" || form == "S" || form == "W" || form == "K") {
         $(".treeview:eq(0)").addClass("active menu-open");
         switch (form) {
             case "U":
@@ -14,6 +14,9 @@
                 break;
             case "W":
                 $(".base:eq(3)").addClass("active");
+                break;
+            case "K":
+                $(".base:eq(4)").addClass("active");
                 break;
         }
     }

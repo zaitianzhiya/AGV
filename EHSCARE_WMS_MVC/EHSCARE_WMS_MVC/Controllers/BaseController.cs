@@ -69,5 +69,29 @@ namespace EHSCARE_WMS.Controllers
             }
             return lstGroup;
         }
+
+        /// 取得所有仓库方法
+        /// <summary>
+        /// 取得所有仓库方法
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<Store> GetStore()
+        {
+            DataTable dtData = dataAccess.ExecuteQueryDataTable_Text(@"SELECT * FROM TB_STORE AS ts", null);
+            List<Store> lstStore = new List<Store>();
+            Store store = new Store();
+            store.STORE_NO = "";
+            store.STORE_NAME = "";
+            lstStore.Add(store);
+
+            foreach (DataRow dr in dtData.Rows)
+            {
+                store = new Store();
+                store.STORE_NO = dr["STORE_NO"].ToString();
+                store.STORE_NAME = dr["STORE_NAME"].ToString();
+                lstStore.Add(store);
+            }
+            return lstStore;
+        }
     }
 }
