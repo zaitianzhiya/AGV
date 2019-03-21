@@ -146,9 +146,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Box.cs" />
+    <Compile Include="Models\Boxs.cs" />
+    <Compile Include="Models\Common.cs" />
     <Compile Include="Models\DataModel.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\Stock.cs" />
+    <Compile Include="Models\StockRecord.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\WareHouse.cs" />
@@ -255,6 +259,7 @@
     <Content Include="images\boxed-bg.png" />
     <Content Include="images\logo.png" />
     <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
+    <Content Include="Scripts\bootstrap-datetimepicker.zh-CN.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrapValidator.js" />
@@ -269,6 +274,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="admin-lte\css\adminlte.min.css.map" />
     <Content Include="admin-lte\css\adminlte.css.map" />
+    <None Include="Properties\PublishProfiles\EHSCARE_WMS.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

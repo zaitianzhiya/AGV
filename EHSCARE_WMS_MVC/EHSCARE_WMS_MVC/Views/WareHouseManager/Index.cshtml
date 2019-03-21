@@ -1,11 +1,12 @@
 ﻿@{
-    ViewBag.Title = "货位管理";
+    ViewBag.Title = "库位管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script>
+    var save = false;
     $(document).ready(function () {
         $("#btnNew").click(function () {
-            $("#myModalLabel").text("货位-新增"); 
+            $("#myModalLabel").text("库位-新增");
             $("#modal_txtNo").removeAttr("disabled");
             $("#modal_txtStore").removeAttr("disabled");
             $("#modal_txtNo").val('');
@@ -14,6 +15,7 @@
             $("#modal_txtStore option[selected='selected']").removeAttr('selected');
             $("#modal_txtStore option[value='']").attr('selected', 'selected');
             $("#modal_txtIsUsed").prop('checked', false);
+            save = false;
             $("#myModal").modal('show');
         });
 
@@ -23,7 +25,7 @@
                 alert("请选择要编辑的数据");
                 return;
             }
-            $("#myModalLabel").text("货位-编辑");
+            $("#myModalLabel").text("库位-编辑");
             $("#modal_txtNo").attr("disabled", "disabled");
             $("#modal_txtStore").attr("disabled", "disabled");
             $("#modal_txtNo").val($(".selectedRow td:eq(1)").text());
@@ -38,7 +40,7 @@
             if ($(".selectedRow td:eq(3)").text() == "禁用") {
                 $("#modal_txtIsUsed").attr('checked','checked');
             }
-
+            save = false;
             $("#myModal").modal('show');
         });
 
@@ -53,7 +55,7 @@
         $("#btnDel").click(function () {
             var select = $("[name='chk']:checked");
             if (select.length == 0) {
-                alert("请选择要删除的货位");
+                alert("请选择要删除的库位");
                 return;
             }
             var nos = '';
@@ -90,7 +92,9 @@
         });
 
         $("#myModal").on('hidden.bs.modal', function () {
-            $("#btnSearch").click();
+            if (save) {
+                $("#btnSearch").click();
+            }
         });
     });
 
@@ -154,6 +158,7 @@
                 success: function (data) {
                     if (data === "OK") {
                         alert("保存成功");
+                        save = true;
                         if (symbol == "S") {
                             $("#myModal").modal('hide');
                         } else {
@@ -269,7 +274,7 @@
                             {
                                 <input type="radio" name="chkIsUsed" value="1">
                             }
-                            启用
+                            正常
                         </label>
                             <label class="radio-inline">
                                 @if (ViewBag.IsUsed == "0")
@@ -311,7 +316,7 @@
             </text>, style: "chkStyle"),
                          webGrid.Column(columnName: "WH_NO", header: "编号"),
                          webGrid.Column(columnName: "WH_NAME", header: "名称"),
-                         webGrid.Column(columnName: "WH_IS_USED_NAME", header: "启用/禁用"),
+                         webGrid.Column(columnName: "WH_IS_USED_NAME", header: "正常/禁用"),
                          webGrid.Column(columnName: "FORBBIDEN_REASON", header: "禁用原因"),
                          webGrid.Column(columnName: "STORE_NAME", header: "仓库")
                     )
@@ -327,7 +332,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">货位</h4>
+                <h4 class="modal-title" id="myModalLabel">库位</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal" id="modal_form">
@@ -345,13 +350,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="modal_txtNo" class="control-label col-sm-4 col-md-2 col-lg-2">货位编号:</label>
+                        <label for="modal_txtNo" class="control-label col-sm-4 col-md-2 col-lg-2">库位编号:</label>
                         <div class="col-sm-8 col-md-10 col-lg-10">
                             <input type="text" class="form-control" id="modal_txtNo" name="modal_txtNo" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="modal_txtName" class="control-label col-sm-4 col-md-2 col-lg-2">货位名称:</label>
+                        <label for="modal_txtName" class="control-label col-sm-4 col-md-2 col-lg-2">库位名称:</label>
                         <div class="col-sm-8 col-md-10 col-lg-10">
                             <input type="text" class="form-control" id="modal_txtName" name="modal_txtName" />
                         </div>

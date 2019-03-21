@@ -80,7 +80,7 @@ namespace EHSCARE_WMS.Controllers
                     {
                         wareHouse.PID = int.Parse(dr["PID"].ToString());
                     }
-                    wareHouse.WH_IS_USED_NAME = "启用";
+                    wareHouse.WH_IS_USED_NAME = "正常";
                     if (!string.IsNullOrEmpty(dr["WH_IS_USED"].ToString()))
                     {
                         wareHouse.WH_IS_USED = int.Parse(dr["WH_IS_USED"].ToString());
@@ -182,7 +182,7 @@ namespace EHSCARE_WMS.Controllers
                 {
                     wareHouse.PID = int.Parse(dr["PID"].ToString());
                 }
-                wareHouse.WH_IS_USED_NAME = "启用";
+                wareHouse.WH_IS_USED_NAME = "正常";
                 if (!string.IsNullOrEmpty(dr["WH_IS_USED"].ToString()))
                 {
                     wareHouse.WH_IS_USED = int.Parse(dr["WH_IS_USED"].ToString());

@@ -10,6 +10,10 @@
                 alert("请选择要编辑的数据");
                 return;
             }
+            if ($(".selectedRow td:eq(4)").text() == "") {
+                alert("请先入库");
+                return;
+            }
             $("#myModalLabel").text("库存管理-编辑");
             $("#modal_txtNo").attr("disabled", "disabled");
             $("#modal_txtStore").attr("disabled", "disabled");
@@ -37,8 +41,15 @@
             }
             var nos = '';
             select.each(function () {
-                nos = nos + "'" + $(this).val() + "',";
+                if ($(this).val() != '') {
+                    nos = nos + "'" + $(this).val() + "',";
+                }
             });
+            if (nos.length == 0) {
+                alert("删除成功");
+                $("#btnSearch").click();
+                return;
+            }
             $.ajax({
                 url: '@Url.Action("DelStock", "StockManager")',
                 type: "POST",
@@ -77,8 +88,51 @@
         });
 
         $("#myModal").on('hidden.bs.modal', function () {
-            $("#btnSearch").click();
+            //$("#btnSearch").click();
         });
+
+        $(".details").click(function () {
+            $("#myModalLabel2").text("箱明细:" + $(this).val());
+            $.ajax({
+                url: '@Url.Action("GetDetails", "StockManager")',
+                 type: "POST",
+                 datatype: "json",
+                 contentType: "application/json;charset=utf-8",
+                 data: JSON.stringify({ BOX_BARCODE: $(this).val() }),
+                 success: function (data) {
+                     $("#tabDetail tbody").empty();
+                     var modal = eval(data);
+                     for (var i = 0; i < modal.length; i++) {
+                         $("#tabDetail tbody").append("<tr><td>" + modal[i].BARCODE + "</td><td>" + modal[i].DEMO_NO + "</td><td>" + modal[i].CHECK_DATE_STR + "</td><td>" + modal[i].SAVE_DATE_STR + "</td><td>" + modal[i].STATENAME + "</td><td>" + modal[i].REMARK + "</td></tr>");
+                     }
+                     $("#myModal2").modal('show');
+                 },
+                 error: function (message) {
+                     alert("查询明细失败,原因：" + message);
+                 }
+             });
+        });
+
+        $("#btnCollect").click(function () {
+            $.ajax({
+                url: '@Url.Action("GetSum", "StockManager")',
+                type: "POST",
+                datatype: "json",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({ BOX_BARCODE: $(this).val() }),
+                success: function (data) {
+                    $("#tabSum tbody").empty();
+                    var modal = eval(data);
+                    for (var i = 0; i < modal.length; i++) {
+                        $("#tabSum tbody").append("<tr><td>" + modal[i].PARA2 + "</td><td>" + modal[i].PARA3 + "</td><td>" + modal[i].PARA10 + "</td><td>" + modal[i].PARA5 + "</td><td>" + modal[i].PARA4 + "</td><td>" + modal[i].PARA6 + "</td><td>" + modal[i].PARA7 + "</td><td>" + modal[i].PARA8+ "</td></tr>");
+                    }
+                    $("#myModal3").modal('show');
+                },
+                error: function (message) {
+                    alert("查询失败,原因：" + message);
+                }
+            });
+                });
     });
 
     function FormValiad() {
@@ -117,6 +171,7 @@
                     if (data === "OK") {
                         alert("保存成功");
                         $("#myModal").modal('hide');
+                        $("#btnSearch").click();
                     } else {
                         alert(data);
                     }
@@ -158,6 +213,11 @@
                         <i class="fa fa-eraser" aria-hidden="true"></i>&nbsp;清空
                     </button>
                 </div>
+                 <div class="btn-group">
+                    <button class="btn btn-primary" type="button" id="btnCollect">
+                        <i class="fa fa-globe" aria-hidden="true"></i>&nbsp;数据统计
+                    </button>
+                </div>
             </div>
         </div>
         <div class="panel-body">
@@ -165,9 +225,8 @@
                 <div class="col-sm-4 col-md-4 col-lg-4">
                     <label for="txtDateStart" class="col-sm-5 col-md-4 col-lg-4 control-label">入库时间起:</label>
                     <div class="col-sm-7 col-md-8 col-lg-8">
-                        <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="txtDate" data-link-format="yyyy-mm-dd">
+                        <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="txtDateStart" data-link-format="yyyy-mm-dd">
                             <input class="form-control dateRead" size="16" type="text" value="@ViewBag.DateStart" readonly="readonly" />
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         </div>
                         <input type="hidden" id="txtDateStart" name="txtDateStart" value="@ViewBag.DateStart" />
@@ -176,9 +235,8 @@
                 <div class="col-sm-4 col-md-4 col-lg-4">
                     <label for="txtDateEnd" class="col-sm-5 col-md-4 col-lg-4 control-label">入库时间止:</label>
                     <div class="col-sm-7 col-md-8 col-lg-8">
-                        <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="txtDate" data-link-format="yyyy-mm-dd">
+                        <div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="txtDateEnd" data-link-format="yyyy-mm-dd">
                             <input class="form-control dateRead" size="16" type="text" value="@ViewBag.DateEnd" readonly="readonly"/>
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
                             <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
                         </div>
                         <input type="hidden" id="txtDateEnd" name="txtDateEnd" value="@ViewBag.DateEnd" />
@@ -344,8 +402,8 @@
                 columns: webGrid.Columns(
                         webGrid.Column(format:
                             @<text>
-            <input type="checkbox" name="chk" value="@item.BOX_BARCODE"/>
-            </text>, style: "chkStyle"),
+                                <input type="checkbox" name="chk" value="@item.BOX_BARCODE"/>
+                            </text>, style: "chkStyle"),
                          webGrid.Column(columnName: "STORE_NAME", header: "仓库"),
                          webGrid.Column(columnName: "WH_NO", header: "库位编号"),
                          webGrid.Column(columnName: "BOX_NO", header: "箱编号"),
@@ -353,9 +411,30 @@
                          webGrid.Column(columnName: "DEMOSUM", header: "样品数"),
                          webGrid.Column(columnName: "CREATE_TIME", header: "入库日期"),
                          webGrid.Column(columnName: "WH_IS_USED_NAME", header: "仓库状态"),
-                         webGrid.Column(columnName: "FORBBIDEN_REASON", header: "禁用原因")
-                    )
-                )
+                         webGrid.Column(columnName: "FORBBIDEN_REASON", header: "禁用原因"),
+                         webGrid.Column(header: "操作",
+                             format:
+                                 @<text>
+                                    @if (item.BOX_BARCODE != "")
+                                    {
+                                        <div class="btn-toolbar">
+                                            <div class="btn-group">
+                                                @Html.ActionLink("出库", "Index", "StoreOut", new { id = item.BOX_BARCODE }, new { @class = "btn btn-default btn-xs" })
+                                            </div>
+                                            <div class="btn-group">
+                                                @Html.ActionLink("借出", "Index", "StoreBorrow", new { id = item.BOX_BARCODE }, new { @class = "btn btn-default btn-xs" })
+                                            </div>
+                                            <div class="btn-group">
+                                                @Html.ActionLink("移库", "Index", "StoreExchange", new { id = item.BOX_BARCODE }, new { @class = "btn btn-default btn-xs"})
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-xs details" value="@item.BOX_BARCODE">明细</button>
+                                            </div>
+                                        </div>
+                                     }
+                                    </text>)
+                                          )
+                                      )
         </div>
     </div>
 </form>
@@ -378,7 +457,7 @@
                                 @{
                                     foreach (var store in ViewBag.AllStore)
                                     {
-                                    <option value="@store.STORE_NAME">@store.STORE_NO</option>
+                                        <option value="@store.STORE_NAME">@store.STORE_NO</option>
                                     }
                                 }
                             </select>
@@ -409,6 +488,79 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">箱明细</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-hover table-responsive" id="tabDetail">
+                    <thead>
+                        <tr class="headerStyle">
+                            <th>样品条码</th>
+                            <th>样品编号</th>
+                            <th>检测期限</th>
+                            <th>保存期限</th>
+                            <th>状态</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <i class="fa fa-undo" aria-hidden="true"></i>&nbsp;取消
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel3">数据统计</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-hover table-responsive" id="tabSum">
+                    <thead>
+                        <tr class="headerStyle">
+                            <th>仓库</th>
+                            <th>库位总数</th>
+                            <th>已用库位数</th>
+                            <th>空库位数</th>
+                            <th>禁用库位数</th>
+                            <th>样品数量</th>
+                            <th>已检样品数量</th>
+                            <th>待检样品数量</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">
+                    <i class="fa fa-undo" aria-hidden="true"></i>&nbsp;取消
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 

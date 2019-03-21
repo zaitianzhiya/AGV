@@ -4,12 +4,14 @@
 }
 
 <script>
+    var save = false;
     $(document).ready(function () {
         $("#btnNew").click(function () {
             $("#myModalLabel").text("仓库-新增");
             $("#modal_txtNo").removeAttr("disabled");
             $("#modal_txtNo").val('');
             $("#modal_txtName").val('');
+            save = false;
             $("#myModal").modal('show');
         });
 
@@ -23,6 +25,7 @@
             $("#modal_txtNo").attr("disabled", "disabled");
             $("#modal_txtNo").val($(".selectedRow td:eq(1)").text());
             $("#modal_txtName").val($(".selectedRow td:eq(2)").text());
+            save = false;
             $("#myModal").modal('show');
         });
 
@@ -46,23 +49,23 @@
             });
             $.ajax({
                 url: '@Url.Action("DelStore","StoreManager")',
-            type: "POST",
-            datatype: "text",
-            contentType: "application/json;charset=utf-8",
-            data: JSON.stringify({ Nos: nos }),
-            success: function (data) {
-                if (data === "OK") {
-                    alert("删除成功");
-                    $("#btnSearch").click();
-                } else {
-                    alert(data);
+                type: "POST",
+                datatype: "text",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({ Nos: nos }),
+                success: function (data) {
+                    if (data === "OK") {
+                        alert("删除成功");
+                        $("#btnSearch").click();
+                    } else {
+                        alert(data);
+                    }
+                },
+                error: function (message) {
+                    alert("删除失败,原因：" + message);
                 }
-            },
-            error: function (message) {
-                alert("删除失败,原因：" + message);
-            }
+            });
         });
-    });
 
         $("#btnClear").click(function () {
             $("#txtNo").val('');
@@ -70,74 +73,77 @@
         });
 
         $("#myModal").on('hidden.bs.modal', function () {
-            $("#btnSearch").click();
+            if (save) {
+                $("#btnSearch").click();
+            }
         });
     });
 
-function FormValiad() {
-    $("#modal_form").bootstrapValidator({
-        fields: {
-            modal_txtNo: {
-                validators: {
-                    notEmpty: {
-                        message: "编号不能为空"
-                    }
-                }
-            },
-            modal_txtName: {
-                validators: {
-                    notEmpty: {
-                        message: "名称不能为空"
-                    }
-                }
-            }
-        }
-    });
-}
-
-function Save(symbol) {
-    FormValiad();
-    $("#modal_form").data('bootstrapValidator').validate();
-    if (!$('#modal_form').data('bootstrapValidator').isValid()) {
-        return;
-    } else {
-        var model = {
-            Store_NO: $("#modal_txtNo").val(),
-            Store_NAME: $("#modal_txtName").val()
-        };
-        var url = '@Url.Action("AddStore", "StoreManager")';
-        //编辑
-        if ($("#modal_txtNo").attr("disabled")) {
-            url = '@Url.Action("UpdateStore", "StoreManager")';
-        }
-
-        $.ajax({
-            url: url,
-            type: "POST",
-            datatype: "text",
-            contentType: "application/json;charset=utf-8",
-            data: JSON.stringify(model),
-            success: function (data) {
-                if (data === "OK") {
-                    alert("保存成功");
-                    if (symbol == "S") {
-                        $("#myModal").modal('hide');
-                    } else {
-                        if ($("#modal_txtNo").attr("disabled") != "disabled") {
-                            $("#modal_txtNo").val('');
-                            $("#modal_txtName").val('');
+    function FormValiad() {
+        $("#modal_form").bootstrapValidator({
+            fields: {
+                modal_txtNo: {
+                    validators: {
+                        notEmpty: {
+                            message: "编号不能为空"
                         }
                     }
-                } else {
-                    alert(data);
+                },
+                modal_txtName: {
+                    validators: {
+                        notEmpty: {
+                            message: "名称不能为空"
+                        }
+                    }
                 }
-            },
-            error: function (message) {
-                alert("保存失败,原因：" + message);
             }
         });
     }
-}
+
+    function Save(symbol) {
+        FormValiad();
+        $("#modal_form").data('bootstrapValidator').validate();
+        if (!$('#modal_form').data('bootstrapValidator').isValid()) {
+            return;
+        } else {
+            var model = {
+                Store_NO: $("#modal_txtNo").val(),
+                Store_NAME: $("#modal_txtName").val()
+            };
+            var url = '@Url.Action("AddStore", "StoreManager")';
+            //编辑
+            if ($("#modal_txtNo").attr("disabled")) {
+                url = '@Url.Action("UpdateStore", "StoreManager")';
+            }
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                datatype: "text",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(model),
+                success: function (data) {
+                    if (data === "OK") {
+                        alert("保存成功");
+                        save = true;
+                        if (symbol == "S") {
+                            $("#myModal").modal('hide');
+                        } else {
+                            if ($("#modal_txtNo").attr("disabled") != "disabled") {
+                                $("#modal_txtNo").val('');
+                                $("#modal_txtName").val('');
+                            }
+                        }
+                    } else {
+                        alert(data);
+                    }
+                },
+                error: function (message) {
+                    alert("保存失败,原因：" + message);
+                }
+            });
+        }
+    }
 </script>
 @Html.Raw(ViewBag.js)
 <form id="from" class="form-horizontal" method="POST" action="@Url.Action("Index", "StoreManager")">

@@ -23,6 +23,5 @@ namespace EHSCARE_WMS.Models
         public string UPDATE_USERID { get; set; }
         public string UPDATE_USERNAME { get; set; }
         public int DEMOSUM { get; set; }
-
     }
 }
