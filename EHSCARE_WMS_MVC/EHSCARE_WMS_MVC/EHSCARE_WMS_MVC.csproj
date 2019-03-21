@@ -148,6 +148,7 @@
     </Compile>
     <Compile Include="Models\DataModel.cs" />
     <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\Stock.cs" />
     <Compile Include="Models\Store.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\WareHouse.cs" />
@@ -223,6 +224,7 @@
     <Content Include="admin-lte\js\demo.js" />
     <Content Include="admin-lte\js\pages\dashboard.js" />
     <Content Include="admin-lte\js\pages\dashboard2.js" />
+    <Content Include="Content\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -252,6 +254,7 @@
     <Content Include="images\boxed-bg.jpg" />
     <Content Include="images\boxed-bg.png" />
     <Content Include="images\logo.png" />
+    <Content Include="Scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrapValidator.js" />
